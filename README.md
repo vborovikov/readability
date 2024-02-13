@@ -1,34 +1,31 @@
-# Readability.js
+# Readability
 
-A standalone version of the readability library used for [Firefox Reader View](https://support.mozilla.org/kb/firefox-reader-view-clutter-free-web-pages).
+A C# port of standalone version of the readability library used for [Firefox Reader View](https://support.mozilla.org/kb/firefox-reader-view-clutter-free-web-pages).
 
 ## Installation
 
-Readability is available on npm:
+Readability is available on Nuget:
 
 ```bash
-npm install @mozilla/readability
+dotnet add package Readability
 ```
 
-You can then `require()` it, or for web-based projects, load the `Readability.js` script from your webpage.
+You can then `using Readability;` it.
 
 ## Basic usage
 
-To parse a document, you must create a new `Readability` object from a DOM document object, and then call the [`parse()`](#parse) method. Here's an example:
+To parse a document, you must create a new `DocumentReader` object from a Brackets document object, and then call the [`Parse()`](#parse) method. Here's an example:
 
-```javascript
-var article = new Readability(document).parse();
+```csharp
+var article = new DocumentReader(document).Parse();
 ```
-
-If you use Readability in a web browser, you will likely be able to use a `document` reference from elsewhere (e.g. fetched via XMLHttpRequest, in a same-origin `<iframe>` you have access to, etc.). In Node.js, you can [use an external DOM library](#nodejs-usage).
 
 ## API Reference
 
-### `new Readability(document, options)`
+### `new DocumentReader(document, options)`
 
 The `options` object accepts a number of properties, all optional:
 
-* `debug` (boolean, default `false`): whether to enable logging.
 * `maxElemsToParse` (number, default `0` i.e. no limit): the maximum number of elements to parse.
 * `nbTopCandidates` (number, default `5`): the number of top candidates to consider when analysing how tight the competition is among candidates.
 * `charThreshold` (number, default `500`): the number of characters an article must have in order to return a result.
@@ -38,7 +35,7 @@ The `options` object accepts a number of properties, all optional:
 * `serializer` (function, default `el => el.innerHTML`) controls how the `content` property returned by the `parse()` method is produced from the root DOM element. It may be useful to specify the `serializer` as the identity function (`el => el`) to obtain a DOM element instead of a string for `content` if you plan to process it further.
 * `allowedVideoRegex` (RegExp, default `undefined` ): a regular expression that matches video URLs that should be allowed to be included in the article content. If `undefined`, the [default regex](https://github.com/mozilla/readability/blob/8e8ec27cd2013940bc6f3cc609de10e35a1d9d86/Readability.js#L133) is applied.
 
-### `parse()`
+### `Parse()`
 
 Returns an object containing the following properties:
 
@@ -55,12 +52,12 @@ Returns an object containing the following properties:
 
 The `parse()` method works by modifying the DOM. This removes some elements in the web page, which may be undesirable. You can avoid this by passing the clone of the `document` object to the `Readability` constructor:
 
-```js
-var documentClone = document.cloneNode(true);
-var article = new Readability(documentClone).parse();
+```csharp
+var documentClone = document.Clone();
+var article = new DocumentReader(documentClone).Parse();
 ```
 
-### `isProbablyReaderable(document, options)`
+### `IsProbablyReaderable(document, options)`
 
 A quick-and-dirty way of figuring out if it's plausible that the contents of a given document are suitable for processing with Readability. It is likely to produce both false positives and false negatives. The reason it exists is to avoid bogging down a time-sensitive process (like loading and showing the user a webpage) with the complex logic in the core of Readability. Improvements to its logic (while not deteriorating its performance) are very welcome.
 
@@ -81,35 +78,6 @@ if (isProbablyReaderable(document)) {
     let article = new Readability(document).parse();
 }
 ```
-
-## Node.js usage
-
-Since Node.js does not come with its own DOM implementation, we rely on external libraries like [jsdom](https://github.com/jsdom/jsdom). Here's an example using `jsdom` to obtain a DOM document object:
-
-```js
-var { Readability } = require('@mozilla/readability');
-var { JSDOM } = require('jsdom');
-var doc = new JSDOM("<body>Look at this cat: <img src='./cat.jpg'></body>", {
-  url: "https://www.example.com/the-page-i-got-the-source-from"
-});
-let reader = new Readability(doc.window.document);
-let article = reader.parse();
-```
-
-Remember to pass the page's URI as the `url` option in the `JSDOM` constructor (as shown in the example above), so that Readability can convert relative URLs for images, hyperlinks, etc. to their absolute counterparts.
-
-`jsdom` has the ability to run the scripts included in the HTML and fetch remote resources. For security reasons these are [disabled by default](https://github.com/jsdom/jsdom#executing-scripts), and we **strongly** recommend you keep them that way.
-
-## Security
-
-If you're going to use Readability with untrusted input (whether in HTML or DOM form), we **strongly** recommend you use a sanitizer library like [DOMPurify](https://github.com/cure53/DOMPurify) to avoid script injection when you use
-the output of Readability. We would also recommend using [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) to add further defense-in-depth
-restrictions to what you allow the resulting content to do. The Firefox integration of
-reader mode uses both of these techniques itself. Sanitizing unsafe content out of the input is explicitly not something we aim to do as part of Readability itself - there are other good sanitizer libraries out there, use them!
-
-## Contributing
-
-Please see our [Contributing](CONTRIBUTING.md) document.
 
 ## License
 
