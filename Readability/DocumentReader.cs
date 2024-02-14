@@ -308,15 +308,15 @@ public class DocumentReader
         PrepareDocument();
         var metadata = GetArticleMetadata(jsonMetadata);
         this.articleTitle = metadata.Title;
-        var article = GrabArticle() ?? throw new ArticleNotFoundException();
-        PostProcessContent(article);
+        var articleContent = GrabArticle() ?? throw new ArticleNotFoundException();
+        PostProcessContent(articleContent);
 
         return new Article
         {
             Title = this.articleTitle,
             Byline = metadata.Byline ?? this.articleByline,
-            Excerpt = metadata.Excerpt ?? GetArticleExcerpt(article),
-            Content = article,
+            Excerpt = metadata.Excerpt ?? GetArticleExcerpt(articleContent),
+            Content = articleContent,
             SiteName = metadata.SiteName,
             PublishedTime = metadata.Published,
             Language = this.articleLang,
@@ -2022,9 +2022,18 @@ public class DocumentReader
         }
     }
 
-    private string? GetArticleExcerpt(ParentTag article)
+    private static string? GetArticleExcerpt(ParentTag articleContent)
     {
-        return string.Empty;
+        // If we haven't found an excerpt in the article's metadata, use the article's
+        // first paragraph as the excerpt. This is used for displaying a preview of
+        // the article's content.
+        if (articleContent.Find<ParentTag>(e => e.Name == "p") is ParentTag para &&
+            para.FirstOrDefault() is Content textContent)
+        {
+            return textContent.Data.Trim().ToString();
+        }
+
+        return null;
     }
 
     private float GetClassWeight(Tag tag)
