@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -261,6 +262,7 @@ public class DocumentReader
     private record Attempt(ParentTag ArticleContent, int TextLength);
 
     private readonly Document document;
+    private readonly DocumentUrl documentUrl;
     private CleanFlags flags;
     private string? articleLang;
     private string? articleByline;
@@ -273,14 +275,25 @@ public class DocumentReader
     private readonly List<Attempt> attempts;
 
     public DocumentReader(Document document, ReadabilityOptions? options = null)
+        : this(document, new DocumentUrl(document), options)
+    {
+    }
+
+    public DocumentReader(Document document, Uri documentUri, ReadabilityOptions? options = null)
+        : this(document, new DocumentUrl(documentUri), options)
+    {
+    }
+
+    private DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions? options)
     {
         this.document = document;
+        this.documentUrl = documentUrl;
         this.flags = CleanFlags.All;
 
         this.nbTopCandidates = options?.NbTopCandidates ?? DefaultNTopCandidates;
         this.charThreshold = options?.CharThreshold ?? DefaultCharThreshold;
         this.keepClasses = options?.KeepClasses ?? false;
-        this.classesToPreserve = [..DefaultClassesToPreserve, ..(options?.ClassesToPreserve ?? [])];
+        this.classesToPreserve = [.. DefaultClassesToPreserve, .. (options?.ClassesToPreserve ?? [])];
 
         this.attempts = [];
     }
@@ -1415,7 +1428,7 @@ public class DocumentReader
         // Remove extra paragraphs
         foreach (var paragraph in articleContent.FindAll<ParentTag>(t => t.Name == "p").ToArray())
         {
-            var imgCount = paragraph.Count(t => t is Tag { Name: "img"});
+            var imgCount = paragraph.Count(t => t is Tag { Name: "img" });
             var embedCount = paragraph.Count(t => t is Tag { Name: "embed" });
             var objectCount = paragraph.Count(t => t is Tag { Name: "object" });
             // At this point, nasty iframes have been removed, only remain embedded video ones.
@@ -1431,7 +1444,7 @@ public class DocumentReader
         foreach (var br in articleContent.FindAll<ParentTag>(t => t.Name == "p").ToArray())
         {
             var next = br.NextSiblingOrDefault().NextElement();
-            if (next is ParentTag { Name: "p"})
+            if (next is ParentTag { Name: "p" })
             {
                 br.Remove();
             }
@@ -1881,8 +1894,60 @@ public class DocumentReader
      * @return void
      */
     // _fixRelativeUris
-    private static void FixRelativeUris(ParentTag articleContent)
+    private void FixRelativeUris(ParentTag articleContent)
     {
+        var links = articleContent.FindAll<ParentTag>(e => e.Name == "a");
+        foreach (var link in links)
+        {
+            var href = link.Attributes["href"];
+            if (!href.IsEmpty)
+            {
+                // Remove links with javascript: URIs, since
+                // they won't work after scripts have been removed from the page.
+                if (href.StartsWith("javascript:"))
+                {
+                    // if the link only contains simple text content, it can be converted to a text node
+                    if (link.Count() == 1 && link.Single() is Content textContent)
+                    {
+                        var text = textContent.Clone();
+                        link.ReplaceWith(text);
+                    }
+                    else
+                    {
+                        // if the link has multiple children, they should all be preserved
+                        var container = (ParentTag)Document.Html.CreateTag("span");
+                        while (link.FirstOrDefault() is Element child)
+                        {
+                            link.Remove(child);
+                            container.Add(child);
+                        }
+                        link.ReplaceWith(container);
+                    }
+                }
+                else if (this.documentUrl.TryMakeAbsolute(href, out var absoluteUrl))
+                {
+                    link.Attributes["href"] = absoluteUrl;
+                }
+            }
+        }
+
+        var medias = articleContent.FindAll<Tag>(e => e.Name is "img" or "picture" or "figure" or "video" or "audio" or "source");
+        foreach (var media in medias)
+        {
+            if (media.Attributes["src"] is { Length: > 0 } src && this.documentUrl.TryMakeAbsolute(src, out var absoluteSrc))
+            {
+                media.Attributes["src"] = absoluteSrc;
+            }
+            if (media.Attributes["poster"] is { Length: > 0 } poster && this.documentUrl.TryMakeAbsolute(poster, out var absolutePoster))
+            {
+                media.Attributes["poster"] = absolutePoster;
+            }
+            if (media.Attributes["srcset"] is { Length: > 0 } srcset)
+            {
+                //todo: handle srcset urls
+                throw new NotImplementedException();
+            }
+        }
     }
 
     private static void SimplifyNestedElements(ParentTag articleContent)

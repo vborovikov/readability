@@ -5,7 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Readability", "Readability\Readability.csproj", "{B5D5187C-829A-449C-9DF9-CDB787D5385C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readability.Tests", "test\Readability.Tests.csproj", "{C35C3C24-DC9F-441E-92C5-B1E34B91E729}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Readability.Tests", "test\Readability.Tests.csproj", "{C35C3C24-DC9F-441E-92C5-B1E34B91E729}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83375958-B95E-41BA-AE25-3C74D4DA8469}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
