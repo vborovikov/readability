@@ -41,7 +41,7 @@ namespace Readability.Tests
             var sourceFileName = Path.Combine(path, "source.html");
             await using var sourceStream = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read);
             var sourceDocument = await Document.Html.ParseAsync(sourceStream, default);
-            var reader = new DocumentReader(sourceDocument);
+            var reader = new DocumentReader(sourceDocument, new Uri("http://fakehost/"));
             var parsed = reader.Parse();
             Assert.IsNotNull(parsed);
 
