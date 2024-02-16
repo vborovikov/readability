@@ -1800,7 +1800,7 @@ public class DocumentReader
                 }
                 if (haveToRemove)
                 {
-                    node.Remove();
+                    node.TryRemove();
                 }
                 else
                 {
@@ -1944,8 +1944,40 @@ public class DocumentReader
             }
             if (media.Attributes["srcset"] is { Length: > 0 } srcset)
             {
-                //todo: handle srcset urls
-                throw new NotImplementedException();
+                var absoluteSrcset = new StringBuilder();
+
+                var sets = srcset.ToString().Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                foreach (var set in sets)
+                {
+                    var span = set.AsSpan();
+                    var urlEnd = span.IndexOf(' ');
+                    if (urlEnd > 0)
+                    {
+                        var url = span[..urlEnd];
+                        var descStart = span[urlEnd..].IndexOfAnyExcept(' ');
+                        if (descStart > 0)
+                        {
+                            descStart += urlEnd;
+                            var desc = span[descStart..];
+
+                            if (absoluteSrcset.Length > 0) absoluteSrcset.Append(", ");
+                            if (this.documentUrl.TryMakeAbsolute(url, out var absoluteUrl))
+                            {
+                                absoluteSrcset.Append(absoluteUrl);
+                            }
+                            else
+                            {
+                                absoluteSrcset.Append(url);
+                            }
+                            absoluteSrcset.Append(' ').Append(desc);
+                        }
+                    }
+                }
+
+                if (absoluteSrcset.Length > 0)
+                {
+                    media.Attributes["srcset"] = absoluteSrcset.ToString();
+                }
             }
         }
     }
