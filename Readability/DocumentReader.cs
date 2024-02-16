@@ -1225,7 +1225,7 @@ public class DocumentReader
                             append = true;
                         }
                         else if (nodeLength < 80 && nodeLength > 0 && linkDensity == 0 &&
-                                   (nodeContent.Contains(". ") || nodeContent.EndsWith(".")))
+                            (nodeContent.Contains(". ") || nodeContent.EndsWith('.')))
                         {
                             append = true;
                         }
@@ -1295,7 +1295,7 @@ public class DocumentReader
             // grabArticle with different flags set. This gives us a higher likelihood of
             // finding the content, and the sieve approach gives us a higher likelihood of
             // finding the -right- content.
-            var textLength = GetInnerText(articleContent, true).Length;
+            var textLength = articleContent.GetContentLength(true);
             if (textLength < this.charThreshold)
             {
                 parseSuccessful = false;
@@ -2119,7 +2119,7 @@ public class DocumentReader
 
     private static float GetLinkDensity(ParentTag parent)
     {
-        var textLength = GetInnerText(parent).Length;
+        var textLength = parent.GetContentLength();
         if (textLength == 0)
             return 0f;
 
@@ -2129,7 +2129,7 @@ public class DocumentReader
             var href = a.Attributes["href"].Trim();
             var coefficient = href.Length > 1 && href[0] == '#' ? 0.3f : 1f;
 
-            linkLength += GetInnerText(a).Length * coefficient;
+            linkLength += a.GetContentLength() * coefficient;
         }
 
         return linkLength / textLength;
