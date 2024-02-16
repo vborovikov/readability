@@ -1,14 +1,36 @@
 namespace Readability.Tests
 {
+    using System.Globalization;
     using System.Text.Json;
+    using System.Text.Json.Serialization;
     using Brackets;
 
     [TestClass]
     public class SampleTests
     {
-        private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+        private sealed class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            private const DateTimeStyles ParsingStyle =
+                DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AssumeUniversal;
+
+            public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                return DateTimeOffset.Parse(reader.GetString() ?? string.Empty, CultureInfo.InvariantCulture, ParsingStyle);
+            }
+
+            public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
+            {
+                throw new NotImplementedException();
+            }
+        };
+
+        private static readonly JsonSerializerOptions jsonOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters =
+            {
+                new DateTimeOffsetConverter(),
+            }
         };
 
         [DataTestMethod]

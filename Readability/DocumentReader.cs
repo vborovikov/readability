@@ -1896,8 +1896,7 @@ public class DocumentReader
     // _fixRelativeUris
     private void FixRelativeUris(ParentTag articleContent)
     {
-        var links = articleContent.FindAll<ParentTag>(e => e.Name == "a");
-        foreach (var link in links)
+        foreach (var link in articleContent.FindAll<ParentTag>(e => e.Name == "a").ToArray())
         {
             var href = link.Attributes["href"];
             if (!href.IsEmpty)
