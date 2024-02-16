@@ -626,6 +626,12 @@ public class DocumentReader
 
     private void PrepareDocument()
     {
+        // remove comments
+        foreach (var comment in this.document.FindAll(e => e is Comment).ToArray())
+        {
+            comment.Remove();
+        }
+
         // Remove all style tags in head
         foreach (var styleTag in this.document.FindAll<Tag>(t => t.Name == "style").ToArray())
         {
