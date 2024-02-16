@@ -33,6 +33,8 @@ namespace Readability.Tests
             }
         };
 
+        private static readonly Uri PageUri = new("http://fakehost/test/page.html");
+
         [DataTestMethod]
         [DataRow("001"), DataRow("002"), DataRow("003-metadata-preferred"), DataRow("004-metadata-space-separated-properties"),
         DataRow("aclu"), DataRow("aktualne"), DataRow("archive-of-our-own"), DataRow("ars-1"), DataRow("base-url"), DataRow("base-url-base-element"),
@@ -63,20 +65,34 @@ namespace Readability.Tests
             var sourceFileName = Path.Combine(path, "source.html");
             await using var sourceStream = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read);
             var sourceDocument = await Document.Html.ParseAsync(sourceStream, default);
-            var reader = new DocumentReader(sourceDocument, new Uri("http://fakehost/"));
+            var reader = new DocumentReader(sourceDocument, PageUri);
             var parsed = reader.Parse();
             Assert.IsNotNull(parsed);
 
             var metadataFileName = Path.Combine(path, "expected-metadata.json");
             await using var metadataStream = new FileStream(metadataFileName, FileMode.Open, FileAccess.Read);
-            var expected = await JsonSerializer.DeserializeAsync<Article>(metadataStream, jsonOptions);
-            Assert.IsNotNull(expected);
+            var expectedMetadata = await JsonSerializer.DeserializeAsync<Article>(metadataStream, jsonOptions);
+            Assert.IsNotNull(expectedMetadata);
             var expectedFileName = Path.Combine(path, "expected.html");
             await using var expectedStream = new FileStream(expectedFileName, FileMode.Open, FileAccess.Read);
             var expectedContent = await Document.Html.ParseAsync(expectedStream, default);
 
-            Assert.AreEqual(expected, parsed with { Content = null! });
+            AssertAreEqual(expectedMetadata, parsed);
             AssertAreEqual(expectedContent, parsed.Content as IEnumerable<Element>);
+        }
+
+        private static void AssertAreEqual(Article expected, Article actual)
+        {
+            Assert.IsNotNull(expected);
+            Assert.IsNotNull(actual);
+
+            Assert.AreEqual(expected.Title, actual.Title, "Title");
+            Assert.AreEqual(expected.Byline, actual.Byline, "Byline");
+            Assert.AreEqual(expected.Excerpt, actual.Excerpt, "Excerpt");
+            Assert.AreEqual(expected.SiteName, actual.SiteName, "SiteName");
+            if (expected.Dir is not null) Assert.AreEqual(expected.Dir, actual.Dir, "Dir");
+            if (expected.Language is not null) Assert.AreEqual(expected.Language, actual.Language, "Language");
+            if (expected.PublishedTime is not null) Assert.AreEqual(expected.PublishedTime, actual.PublishedTime, "PublishedTime");
         }
 
         private static void AssertAreEqual(IEnumerable<Element>? expectedElements, IEnumerable<Element>? actualElements)

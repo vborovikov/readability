@@ -36,7 +36,6 @@ public record Article
     
     /** author metadata */
     public string? Byline { get; init; }
-    public string? Author { get; init; }
     
     /** content direction */
     public string? Dir { get; init; }
@@ -45,12 +44,11 @@ public record Article
     public string? SiteName { get; init; }
     
     /** content language */
+    [JsonPropertyName("lang")]
     public string? Language { get; init; }
     
     /** published time */
     public DateTimeOffset? PublishedTime { get; init; }
-
-    public string? FeaturedImage { get; init; }
 }
 
 [Serializable]
