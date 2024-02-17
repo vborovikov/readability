@@ -112,10 +112,10 @@ public class SampleTests
 
             Assert.AreNotSame(expected, actual, elemStr);
 
-            if (expected is CharacterData && actual is CharacterData)
+            if (expected is CharacterData expectedChars && actual is CharacterData actualChars)
             {
-                Assert.AreEqual(expected.Length, actual.Length, elemStr);
-                Assert.AreEqual(expected.ToString(), actual.ToString(), elemStr);
+                Assert.AreEqual(expectedChars.Length, actualChars.Length, elemStr);
+                Assert.AreEqual(expectedChars.Data.Trim().ToString(), actualChars.Data.Trim().ToString(), elemStr);
             }
             else if (expected is Tag expectedTag && actual is Tag actualTag)
             {

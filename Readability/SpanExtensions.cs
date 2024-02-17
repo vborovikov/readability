@@ -10,6 +10,59 @@ delegate bool SpanPredicate<T>(ReadOnlySpan<T> span);
 
 static class SpanExtensions
 {
+    public static string ToTrimString(this ReadOnlySpan<char> span)
+    {
+        if (span.IsEmpty)
+            return string.Empty;
+
+        return ToTrimString(span.ToArray());
+    }
+
+    public static string ToTrimString(this string str)
+    {
+        if (str.Length == 0)
+            return string.Empty;
+
+        return ToTrimString(str.ToCharArray());
+    }
+
+    private static string ToTrimString(Span<char> span)
+    {
+        var len = span.Length;
+        if (len == 0)
+            return string.Empty;
+
+        ref char src = ref MemoryMarshal.GetReference(span);
+        ref char dst = ref MemoryMarshal.GetReference(span);
+        var space = false;
+        var pos = 0;
+        while (len > 0)
+        {
+            if (char.IsWhiteSpace(src))
+            {
+                space = true;
+            }
+            else
+            {
+                if (space && pos > 0)
+                {
+                    dst = ' ';
+                    dst = ref Unsafe.Add(ref dst, 1);
+                    ++pos;
+                }
+                space = false;
+                dst = src;
+                dst = ref Unsafe.Add(ref dst, 1);
+                ++pos;
+            }
+
+            src = ref Unsafe.Add(ref src, 1);
+            --len;
+        }
+
+        return new string(span[..pos]);
+    }
+
     public static bool HasAnyWord(this ReadOnlySpan<char> span, string[] words)
     {
         foreach (var token in span.EnumerateTokens())

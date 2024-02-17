@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Brackets" Version="0.5.8-beta.12" />
+    <PackageReference Include="Brackets" Version="0.5.8-beta.13" />
     <PackageReference Include="FuzzyCompare" Version="0.2.9-beta.1" />
   </ItemGroup>
 

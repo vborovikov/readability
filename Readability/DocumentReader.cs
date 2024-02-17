@@ -528,7 +528,7 @@ public class DocumentReader
         if (this.document.Find<ParentTag>(t => t.Name == "title") is ParentTag titleTag &&
             titleTag.FirstOrDefault() is Content titleText)
         {
-            origTitle = titleText.Data.Trim().ToString();
+            origTitle = titleText.Data.ToTrimString();
         }
 
         var titleTokens = origTitle.Tokenize().ToArray().AsSpan();
@@ -559,7 +559,8 @@ public class DocumentReader
                 // Check if we have an heading containing this exact string, so we
                 // could assume it's the full title.
                 var headings = this.document.FindAll<ParentTag>(t => t.Name == "h1" || t.Name == "h2");
-                if (!headings.Any(h => h.FirstOrDefault() is Content hText && hText.Data.Trim().Equals(origTitle, StringComparison.Ordinal)))
+                if (!headings.Any(h => h.FirstOrDefault() is Content hText &&
+                    hText.Data.JaroWinklerSimilarity(origTitle) > 0.9f))
                 {
                     curTitle = titleTokens[(separatorIndex + 2)..];
                     if (CountWords(curTitle) <= 3)
@@ -581,7 +582,7 @@ public class DocumentReader
                 var hOnes = this.document.FindAll<ParentTag>(t => t.Name == "h1").ToArray();
                 if (hOnes is [ParentTag hOne] && hOne.FirstOrDefault() is Content hOneText)
                 {
-                    curTitle = hOneText.Data.Trim().ToString().Tokenize().ToArray().AsSpan();
+                    curTitle = hOneText.Data.ToTrimString().Tokenize().ToArray().AsSpan();
                 }
             }
         }
@@ -641,9 +642,8 @@ public class DocumentReader
         if (this.document.Find<ParentTag>(el => el.Name == "body") is ParentTag body)
         {
             ReplaceBrs(body);
+            ReplaceTags(body, "font", "span");
         }
-
-        ReplaceTags("font", "span");
     }
 
     private static void ReplaceBrs(ParentTag elem)
@@ -722,9 +722,9 @@ public class DocumentReader
         };
     }
 
-    private void ReplaceTags(string oldTagName, string newTagName)
+    private static void ReplaceTags(ParentTag root, string oldTagName, string newTagName)
     {
-        foreach (var oldTag in this.document.FindAll<ParentTag>(t => t.Name == oldTagName).ToArray())
+        foreach (var oldTag in root.FindAll<ParentTag>(t => t.Name == oldTagName).ToArray())
         {
             ChangeTagName(oldTag, newTagName);
         }
@@ -767,7 +767,11 @@ public class DocumentReader
             var property = meta.Attributes["property"].Trim();
             if (!property.IsEmpty)
             {
-                values[ToCleanString(property)] = content.ToString();
+                var contentStr = content.ToString();
+                foreach (var propertyName in property.EnumerateValues())
+                {
+                    values[ToCleanString(propertyName)] = contentStr;
+                }
             }
             else
             {
@@ -1429,7 +1433,7 @@ public class DocumentReader
         CleanConditionally(articleContent, "div");
 
         // replace H1 with H2 as H1 should be only title that is displayed separately
-        ReplaceTags("h1", "h2");
+        ReplaceTags(articleContent, "h1", "h2");
 
         // Remove extra paragraphs
         foreach (var paragraph in articleContent.FindAll<ParentTag>(t => t.Name == "p").ToArray())
@@ -2067,7 +2071,7 @@ public class DocumentReader
         if (articleContent.Find<ParentTag>(e => e.Name == "p") is ParentTag para &&
             para.FirstOrDefault() is Content textContent)
         {
-            return textContent.Data.Trim().ToString();
+            return textContent.Data.ToTrimString();
         }
 
         return null;
