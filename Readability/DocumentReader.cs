@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -1082,7 +1081,7 @@ public class DocumentReader
                 // so we even include text directly in the body:
                 while (page.FirstOrDefault() is Element element)
                 {
-                    Debug.WriteLine($"Moving child out: {element}");
+                    Debug.WriteLine($"Moving child out: {element.ToText()}");
                     page.Remove(element);
                     newTopCandidate.Add(element);
                 }
@@ -1196,7 +1195,7 @@ public class DocumentReader
                 var siblingScore = candidates.GetValueOrDefault(sibling);
                 var append = false;
 
-                Debug.WriteLine($"Looking at sibling node: {sibling} {(siblingScore != default ? ("with score " + siblingScore) : "")}");
+                Debug.WriteLine($"Looking at sibling node: \n{sibling.ToText()}\n {(siblingScore != default ? ("with score " + siblingScore) : "")}");
                 Debug.WriteLine($"Sibling has score {(siblingScore != default ? siblingScore : "Unknown")}");
 
                 if (sibling == topCandidate.Element)
@@ -1238,13 +1237,13 @@ public class DocumentReader
 
                 if (append)
                 {
-                    Debug.WriteLine($"Appending node: {sibling}");
+                    Debug.WriteLine($"Appending node: \n{sibling.ToText()}\n");
 
                     if (!AlterToDivExceptions.Contains(sibling.Name))
                     {
                         // We have a node that isn't a common block level element, like a form or td tag.
                         // Turn it into a div so it doesn't get filtered out later by accident.
-                        Debug.WriteLine($"Altering sibling: {sibling} to div.");
+                        Debug.WriteLine($"Altering sibling: \n{sibling.ToText()}\n to div.");
 
                         sibling = ChangeTagName(sibling, "div");
                     }
@@ -1263,10 +1262,10 @@ public class DocumentReader
                 }
             }
 
-            Debug.WriteLine($"Article content pre-prep: {articleContent}");
+            Debug.WriteLine($"Article content pre-prep: \n{articleContent.ToText()}\n");
             // So we have all of the content that we need. Now we clean it up for presentation.
             PrepArticle(articleContent);
-            Debug.WriteLine($"Article content post-prep: {articleContent}");
+            Debug.WriteLine($"Article content post-prep: \n{articleContent.ToText()}\n");
 
             if (neededToCreateTopCandidate)
             {
@@ -1290,7 +1289,7 @@ public class DocumentReader
                 articleContent.Add(div);
             }
 
-            Debug.WriteLine($"Article content after paging: {articleContent}");
+            Debug.WriteLine($"Article content after paging: \n{articleContent.ToText()}\n");
 
             var parseSuccessful = true;
 
@@ -1491,7 +1490,7 @@ public class DocumentReader
             var shouldRemove = GetClassWeight(heading) < 0;
             if (shouldRemove)
             {
-                Debug.WriteLine($"Removing header with low class weight: {heading}");
+                Debug.WriteLine($"Removing header with low class weight: \n{heading.ToText()}\n");
                 heading.Remove();
             }
         }
@@ -1741,7 +1740,7 @@ public class DocumentReader
             }
 
             var weight = GetClassWeight(node);
-            Debug.WriteLine($"Cleaning Conditionally {node}");
+            Debug.WriteLine($"Cleaning Conditionally \n{node.ToText()}\n");
             var contentScore = 0;
             if (weight + contentScore < 0)
             {

@@ -2,6 +2,7 @@
 
 using System;
 using System.Buffers;
+using System.Text;
 using Brackets;
 
 static class DomExtensions
@@ -199,5 +200,135 @@ static class DomExtensions
             value.Contains(".jpeg", StringComparison.OrdinalIgnoreCase) ||
             value.Contains(".png", StringComparison.OrdinalIgnoreCase) ||
             value.Contains(".webp", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private const int TabSize = 4;
+
+    public static string ToText(this Document document) => ToText(document.GetEnumerator());
+
+    public static string ToText(this ParentTag root) => ToText(root.GetEnumerator());
+
+    public static string ToText(this Element element) => new StringBuilder().AppendElement(element).ToString();
+
+    private static string ToText(in Element.Enumerator elements)
+    {
+        var text = new StringBuilder();
+
+        foreach (var element in elements)
+        {
+            text.AppendElement(element);
+        }
+
+        return text.ToString();
+    }
+
+    private static StringBuilder AppendElement(this StringBuilder text, Element element, int offset = 0)
+    {
+        if (element is ParentTag parent)
+        {
+            text.Append(' ', offset).Append('<').Append(parent.Name);
+            if (parent.HasAttributes)
+            {
+                text.Append(' ').AppendAttributes(parent.EnumerateAttributes());
+            }
+            text.Append('>')
+                .AppendLine();
+
+            foreach (var child in parent)
+            {
+                text.AppendElement(child, offset + TabSize);
+            }
+
+            if (text[^1] is not '\n' and not '\r')
+            {
+                text.AppendLine();
+            }
+            text.Append(' ', offset).Append("</").Append(parent.Name).Append('>')
+                .AppendLine();
+        }
+        else
+        {
+            text.AppendSimpleElement(element, offset);
+        }
+
+        return text;
+    }
+
+    private static StringBuilder AppendSimpleElement(this StringBuilder text, Element element, int offset)
+    {
+        switch (element)
+        {
+            case Tag tag:
+                if (tag.Level == ElementLevel.Block)
+                {
+                    if (text[^1] is not '\n' and not '\r')
+                    {
+                        text.AppendLine();
+                    }
+                    text.Append(' ', offset);
+                }
+
+                text.Append('<').Append(tag.Name);
+                if (tag.HasAttributes)
+                {
+                    text.Append(' ').AppendAttributes(tag.EnumerateAttributes());
+                }
+                text.Append(" />");
+
+                if (tag.Level == ElementLevel.Block)
+                {
+                    text.AppendLine();
+                }
+                break;
+
+            case Comment comment:
+                text.AppendInlineOffset(offset).Append("<!--").Append(comment.Data).Append("-->");
+                break;
+
+            case Section section:
+                text.AppendInlineOffset(offset).Append("<[CDATA[").Append(section.Data).Append("]]>");
+                break;
+
+            case Content content:
+                text.AppendInlineOffset(offset).Append(content.Data.ToTrimString());
+                break;
+
+            default:
+                text.AppendInlineOffset(offset).Append(element.ToString());
+                break;
+        }
+
+        return text;
+    }
+
+    private static StringBuilder AppendInlineOffset(this StringBuilder text, int offset)
+    {
+        if (text[^1] is '\n' or '\r')
+        {
+            text.Append(' ', offset);
+        }
+        return text;
+    }
+
+    private static StringBuilder AppendAttributes(this StringBuilder text, in Attr.Enumerator attributes)
+    {
+        foreach (var attribute in attributes)
+        {
+            if (text.Length > 0 && text[^1] != ' ')
+            {
+                text.Append(' ');
+            }
+            text.Append(attribute.Name);
+            if (attribute.HasValue)
+            {
+                text
+                    .Append('=')
+                    .Append('"')
+                    .Append(attribute.Value)
+                    .Append('"');
+            }
+        }
+
+        return text;
     }
 }

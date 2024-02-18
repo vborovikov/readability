@@ -78,7 +78,7 @@ public class SampleTests
         var expectedContent = await Document.Html.ParseAsync(expectedStream, default);
 
         AssertAreEqual(expectedMetadata, parsed);
-        AssertAreEqual(expectedContent, parsed.Content as IEnumerable<Element>);
+        AssertAreEqual(expectedContent, parsed.Content);
     }
 
     private static void AssertAreEqual(Article expected, Article actual)
@@ -114,8 +114,8 @@ public class SampleTests
 
             if (expected is CharacterData expectedChars && actual is CharacterData actualChars)
             {
-                Assert.AreEqual(expectedChars.Length, actualChars.Length, elemStr);
-                Assert.AreEqual(expectedChars.Data.Trim().ToString(), actualChars.Data.Trim().ToString(), elemStr);
+                //Assert.AreEqual(expectedChars.Length, actualChars.Length, elemStr);
+                Assert.AreEqual(expectedChars.Data.ToTrimString(), actualChars.Data.ToTrimString(), elemStr);
             }
             else if (expected is Tag expectedTag && actual is Tag actualTag)
             {

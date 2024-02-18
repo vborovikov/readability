@@ -22,7 +22,7 @@ public record Article
 
     /** HTML string of processed article content */
     [JsonIgnore]
-    public Element Content { get; init; }
+    public ParentTag Content { get; init; }
 
     /** text content of the article, with all the HTML tags removed */
     //[JsonIgnore]
