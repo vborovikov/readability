@@ -261,7 +261,7 @@ static class DomExtensions
             case Tag tag:
                 if (tag.Level == ElementLevel.Block)
                 {
-                    if (text[^1] is not '\n' and not '\r')
+                    if (text.Length > 0 && text[^1] is not '\n' and not '\r')
                     {
                         text.AppendLine();
                     }
@@ -303,7 +303,7 @@ static class DomExtensions
 
     private static StringBuilder AppendInlineOffset(this StringBuilder text, int offset)
     {
-        if (text[^1] is '\n' or '\r')
+        if (text.Length > 0 && text[^1] is '\n' or '\r')
         {
             text.Append(' ', offset);
         }
