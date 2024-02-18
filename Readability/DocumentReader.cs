@@ -2214,21 +2214,30 @@ public class DocumentReader
         if (this.articleByline is not null)
             return false;
 
-        if ((tag.Attributes.Has("rel", "rel") || tag.Attributes.Has("itemprop", "author") ||
+        var textContent = tag.ToString().Trim();
+        if ((tag.Attributes.Has("rel", "author") || tag.Attributes.Has("itemprop", "author") ||
             Bylines.Any(bl => matchString.Contains(bl, StringComparison.OrdinalIgnoreCase))) &&
-            IsValidByline(tag.ToString()))
+            IsValidByline(textContent))
         {
-            this.articleByline = tag.ToString().Trim();
+            this.articleByline = textContent;
             return true;
         }
 
         return false;
     }
 
-    private static bool IsValidByline(ReadOnlySpan<char> text)
+    /**
+     * Check whether the input string could be a byline.
+     * This verifies that the input is a string, and that the length
+     * is less than 100 chars.
+     *
+     * @param possibleByline {string} - a string to check whether its a byline.
+     * @return Boolean - whether the input string is a byline.
+     */
+    // _isValidByline
+    private static bool IsValidByline(ReadOnlySpan<char> byline)
     {
-        text = text.Trim();
-        return text.Length > 0 && text.Length < 100;
+        return byline.Length > 0 && byline.Length < 100;
     }
 
     private static bool IsProbablyVisible(Tag tag)
