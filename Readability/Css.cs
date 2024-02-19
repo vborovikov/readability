@@ -51,7 +51,7 @@ static class Css
                 while (end > 0 && remaining[end - 1] == '\\')
                 {
                     if (++end == remaining.Length)
-                        goto InvalidDecalaration;
+                        goto InvalidDeclaration;
 
                     end = remaining[end..].IndexOf(';');
                     if (end >= 0)
@@ -61,19 +61,19 @@ static class Css
                 var decl = end > 0 ? remaining[..end] : remaining;
                 var col = decl.IndexOf(':');
                 if (col <= 0)
-                    goto InvalidDecalaration;
+                    goto InvalidDeclaration;
 
                 var property = decl[..col].TrimEnd();
                 var value = decl[(col + 1)..].Trim();
                 if (property.IsEmpty || value.IsEmpty)
-                    goto InvalidDecalaration;
+                    goto InvalidDeclaration;
 
                 this.current = new(property, value);
                 this.span = end > 0 ? remaining[(end + 1)..] : default;
                 return true;
             }
 
-        InvalidDecalaration:
+        InvalidDeclaration:
             this.span = default;
             return false;
         }
