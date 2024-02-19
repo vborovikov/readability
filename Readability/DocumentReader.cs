@@ -2272,10 +2272,15 @@ public class DocumentReader
         if (!tag.HasAttributes)
             return true;
 
-        if (tag.Attributes.Has("style", "hidden"))
+        if (tag.Attributes["style"] is { Length: > 0 } style)
         {
-            //todo: parse styles?
-            return false;
+            foreach (var cssDeclaration in style.EnumerateCssDeclarations())
+            {
+                if (cssDeclaration.Property is "display" && cssDeclaration.Value is "none")
+                    return false;
+                if (cssDeclaration.Property is "visibility" && cssDeclaration.Value is "hidden")
+                    return false;
+            }
         }
 
         if (tag.Attributes.Has("hidden"))
