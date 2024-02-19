@@ -1760,7 +1760,7 @@ public class DocumentReader
             var weight = GetClassWeight(node);
             Debug.WriteLine($"Cleaning Conditionally \n{node.ToText()}\n");
             var contentScore = 0;
-            if (weight + contentScore < 0)
+            if (weight + contentScore < 0f)
             {
                 node.Remove();
                 continue;
@@ -2183,14 +2183,23 @@ public class DocumentReader
         return parent.Any(el => el is ParentTag tag && (DivToParaElems.Contains(tag.Name) || HasChildBlockElement(tag)));
     }
 
+    /**
+     * Check if this node has only whitespace and a single element with given tag
+     * Returns false if the DIV node contains non-empty text nodes
+     * or if it contains no element with given tag or more than 1 element.
+     *
+     * @param Element
+     * @param string tag of child element
+    **/
+    // _hasSingleTagInsideElement
     private static bool HasSingleTagInsideElement(ParentTag parent, string tagName)
     {
         // There should be exactly 1 element child with given tag
-        if (parent.Count(t => t is Tag tag && tag.Name == tagName) != 1)
+        if (!(parent.Count<Tag>() == 1 && parent.First<Tag>().Name == tagName))
             return false;
 
         // And there should be no text nodes with real content
-        return !parent.Any(el => el is Content content && !content.Data.IsWhiteSpace());
+        return !parent.Any<Content>(content => !content.Data.IsWhiteSpace());
     }
 
     private static bool IsWhiteSpace(Element element)
