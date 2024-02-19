@@ -911,7 +911,7 @@ public class DocumentReader
 
                 if (shouldRemoveTitleHeader && HeaderDuplicatesTitle(node))
                 {
-                    Debug.WriteLine($"Removing header: '{node.ToString().Trim()}' -- '{this.articleTitle?.Trim()}'");
+                    Debug.WriteLine($"Removing header: '{node.ToTrimString()}' -- '{this.articleTitle?.Trim()}'");
                     shouldRemoveTitleHeader = false;
                     node = node.RemoveAndGetNextTag();
                     continue;
@@ -994,7 +994,7 @@ public class DocumentReader
                     {
                         var newNode = (ParentTag)div.First();
                         div.Remove(newNode);
-                        div.Parent?.Replace(div, newNode);
+                        div.ReplaceWith(newNode);
                         node = newNode;
                         elementsToScore.Add(node);
                     }
@@ -1099,7 +1099,7 @@ public class DocumentReader
                 // so we even include text directly in the body:
                 while (page.FirstOrDefault() is Element element)
                 {
-                    Debug.WriteLine($"Moving child out: {element.ToText()}");
+                    Debug.WriteLine($"Moving child out: \n{element.ToText()}\n");
                     page.Remove(element);
                     newTopCandidate.Add(element);
                 }
@@ -2145,7 +2145,7 @@ public class DocumentReader
             return 0f;
 
         var linkLength = 0f;
-        foreach (var a in parent.FindAll(t => t is ParentTag { Name: "a" }).Cast<ParentTag>())
+        foreach (var a in parent.FindAll<ParentTag>(t => t.Name == "a"))
         {
             var href = a.Attributes["href"].Trim();
             var coefficient = href.Length > 1 && href[0] == '#' ? 0.3f : 1f;
@@ -2156,26 +2156,18 @@ public class DocumentReader
         return linkLength / textLength;
     }
 
+    /**
+     * Get the inner text of a node - cross browser compatibly.
+     * This also strips out any excess whitespace to be found.
+     *
+     * @param Element
+     * @param Boolean normalizeSpaces (default: true)
+     * @return string
+    **/
+    // _getInnerText
     private static string GetInnerText(Element element, bool normalizeSpaces = true)
     {
-        var text = element.ToString()!.Trim();
-
-        if (normalizeSpaces)
-        {
-            var normalized = new StringBuilder(text.Length);
-
-            foreach (var token in text.EnumerateTokens())
-            {
-                if (token.Category == TokenCategory.WhiteSpace)
-                    normalized.Append(' ');
-                else
-                    normalized.Append(token.Span);
-            }
-
-            text = normalized.ToString();
-        }
-
-        return text;
+        return normalizeSpaces ? element.ToTrimString() : element.ToString()!.Trim();
     }
 
     private static bool HasChildBlockElement(ParentTag parent)
@@ -2214,16 +2206,17 @@ public class DocumentReader
 
     private static bool IsElementWithoutContent(Element node)
     {
-        if (node is not ParentTag parent)
-            return true;
-        if (!parent.Any())
-            return true;
-
-        var text = parent.ToString();
-        if (string.IsNullOrWhiteSpace(text))
+        if (node is not ParentTag root)
+            return false;
+        if (!root.Any())
             return true;
 
-        return parent.All(el => el is Tag { Name: "br" or "hr" } || (el is Content content && content.Data.IsWhiteSpace()));
+        var text = root.ToTrimString();
+        if (!string.IsNullOrWhiteSpace(text))
+            return false;
+
+        var tagCount = root.Count<Tag>();
+        return tagCount == 0 || tagCount == root.FindAll<Tag>(t => t is { Name: "br" or "hr" }).Count();
     }
 
     private bool HeaderDuplicatesTitle(Tag tag)
@@ -2231,7 +2224,7 @@ public class DocumentReader
         if (tag is not ParentTag { Name: "h1" or "h2" } header)
             return false;
 
-        var heading = header.ToString();
+        var heading = header.ToTrimString();
         Debug.WriteLine($"Evaluating similarity of header: '{heading}', '{this.articleTitle}'");
         return ComparisonMethods.JaroWinklerSimilarity(this.articleTitle, heading) > 0.75f;
     }
@@ -2241,7 +2234,7 @@ public class DocumentReader
         if (this.articleByline is not null)
             return false;
 
-        var textContent = tag.ToString().Trim();
+        var textContent = tag.ToTrimString();
         if ((tag.Attributes.Has("rel", "author") || tag.Attributes.Has("itemprop", "author") ||
             Bylines.Any(bl => matchString.Contains(bl, StringComparison.OrdinalIgnoreCase))) &&
             IsValidByline(textContent))

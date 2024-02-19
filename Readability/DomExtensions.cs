@@ -2,11 +2,14 @@
 
 using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Text;
 using Brackets;
 
 static class DomExtensions
 {
+    public static string ToTrimString(this Element element) => element.ToString()!.ToTrimString();
+
     public static IEnumerable<ParentTag> EnumerateAncestors(this Element element, int maxDepth = 0)
     {
         var count = 0;
@@ -111,6 +114,16 @@ static class DomExtensions
         if (element.Parent is ParentTag parent)
         {
             parent.Remove(element);
+#if DEBUG
+            if (element is Tag { Name: "img" } tag ||
+                element is ParentTag root && 
+                (root.Name is "p" or "h1" or "h2" ||
+                root.FindAll<Tag>(t => t.Name is "p" or "h1" or "h2" or "img").Any()))
+            {
+                Debug.WriteLine("Removed important element:");
+                Debug.WriteLine(element.ToText());
+            }
+#endif
             return true;
         }
 
