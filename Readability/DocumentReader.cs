@@ -784,38 +784,41 @@ public class DocumentReader
 
         return new ArticleMetadata
         {
-            Title = WebUtility.HtmlDecode(
-                jsonMetadata?.Title ??
-                values.GetValueOrDefault("dc:title") ??
-                values.GetValueOrDefault("dcterm:title") ??
-                values.GetValueOrDefault("og:title") ??
-                values.GetValueOrDefault("weibo:article:title") ??
-                values.GetValueOrDefault("weibo:webpage:title") ??
-                values.GetValueOrDefault("title") ??
-                values.GetValueOrDefault("twitter:title") ??
+            Title = WebUtility.HtmlDecode(FindLongestString(
+                jsonMetadata?.Title,
+                values.GetValueOrDefault("dc:title"),
+                values.GetValueOrDefault("dcterm:title"),
+                values.GetValueOrDefault("og:title"),
+                values.GetValueOrDefault("weibo:article:title"),
+                values.GetValueOrDefault("weibo:webpage:title"),
+                values.GetValueOrDefault("title"),
+                values.GetValueOrDefault("twitter:title")) ??
                 GetArticleTitle()),
 
-            Byline = WebUtility.HtmlDecode(
-                jsonMetadata?.Byline ??
-                values.GetValueOrDefault("dc:creator") ??
-                values.GetValueOrDefault("dcterm:creator") ??
-                values.GetValueOrDefault("author")),
+            Byline = WebUtility.HtmlDecode(FindLongestString(
+                jsonMetadata?.Byline,
+                values.GetValueOrDefault("dc:creator"),
+                values.GetValueOrDefault("dcterm:creator"),
+                values.GetValueOrDefault("author"))),
 
-            Excerpt = WebUtility.HtmlDecode(
-                jsonMetadata?.Excerpt ??
-                values.GetValueOrDefault("dc:description") ??
-                values.GetValueOrDefault("dcterm:description") ??
-                values.GetValueOrDefault("og:description") ??
-                values.GetValueOrDefault("weibo:article:description") ??
-                values.GetValueOrDefault("weibo:webpage:description") ??
-                values.GetValueOrDefault("description") ??
-                values.GetValueOrDefault("twitter:description")),
+            Excerpt = WebUtility.HtmlDecode(FindLongestString(
+                jsonMetadata?.Excerpt,
+                values.GetValueOrDefault("dc:description"),
+                values.GetValueOrDefault("dcterm:description"),
+                values.GetValueOrDefault("og:description"),
+                values.GetValueOrDefault("weibo:article:description"),
+                values.GetValueOrDefault("weibo:webpage:description"),
+                values.GetValueOrDefault("description"),
+                values.GetValueOrDefault("twitter:description"))),
 
-            SiteName = WebUtility.HtmlDecode(
-                jsonMetadata?.SiteName ?? values.GetValueOrDefault("og:site_name")),
+            SiteName = WebUtility.HtmlDecode(FindLongestString(
+                jsonMetadata?.SiteName, values.GetValueOrDefault("og:site_name"))),
 
             Published = jsonMetadata?.Published ??
-                (DateTimeOffset.TryParse(WebUtility.HtmlDecode(values.GetValueOrDefault("article:published_time")),
+                (DateTimeOffset.TryParse(WebUtility.HtmlDecode(
+                    values.GetValueOrDefault("article:published_time") ??
+                    values.GetValueOrDefault("parsely-pud-date") ??
+                    values.GetValueOrDefault("article:modified_time")),
                     out var dateTime) ? dateTime : null),
         };
 
@@ -832,6 +835,21 @@ public class DocumentReader
             }
 
             return builder.ToString();
+        }
+
+        static string? FindLongestString(params string?[] strings)
+        {
+            string? longestString = null;
+
+            foreach (var str in strings)
+            {
+                if (str is not null && (longestString is null || str.Length > longestString.Length))
+                {
+                    longestString = str;
+                }
+            }
+
+            return longestString;
         }
     }
 
