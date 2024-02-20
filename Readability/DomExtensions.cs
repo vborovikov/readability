@@ -114,16 +114,16 @@ static class DomExtensions
         if (element.Parent is ParentTag parent)
         {
             parent.Remove(element);
-#if DEBUG
-            if (element is Tag { Name: "img" } tag ||
-                element is ParentTag root && 
-                (root.Name is "p" or "h1" or "h2" ||
-                root.FindAll<Tag>(t => t.Name is "p" or "h1" or "h2" or "img").Any()))
-            {
-                Debug.WriteLine("Removed important element:");
-                Debug.WriteLine(element.ToText());
-            }
-#endif
+//#if DEBUG
+//            if (element is Tag { Name: "img" } tag ||
+//                element is ParentTag root &&
+//                (root.Name is "p" or "h1" or "h2" ||
+//                root.FindAll<Tag>(t => t.Name is "p" or "h1" or "h2" or "img").Any()))
+//            {
+//                Debug.WriteLine("Removed important element:");
+//                Debug.WriteLine(element.ToText());
+//            }
+//#endif
             return true;
         }
 
@@ -239,25 +239,47 @@ static class DomExtensions
     {
         if (element is ParentTag parent)
         {
-            text.Append(' ', offset).Append('<').Append(parent.Name);
+            if (parent.Level == ElementLevel.Block)
+            {
+                text.Append(' ', offset);
+            }
+            else
+            {
+                text.AppendInlineOffset(offset);
+            }
+            text.Append('<').Append(parent.Name);
             if (parent.HasAttributes)
             {
                 text.Append(' ').AppendAttributes(parent.EnumerateAttributes());
             }
-            text.Append('>')
-                .AppendLine();
+            text.Append('>');
+            if (parent.Level == ElementLevel.Block)
+            {
+                text.AppendLine();
+            }
 
             foreach (var child in parent)
             {
                 text.AppendElement(child, offset + TabSize);
             }
 
-            if (text[^1] is not '\n' and not '\r')
+            if (parent.Level == ElementLevel.Block)
+            {
+                if (text[^1] is not '\n' and not '\r')
+                {
+                    text.AppendLine();
+                }
+                text.Append(' ', offset);
+            }
+            else
+            {
+                text.AppendInlineOffset(offset);
+            }
+            text.Append("</").Append(parent.Name).Append('>');
+            if (parent.Level == ElementLevel.Block)
             {
                 text.AppendLine();
             }
-            text.Append(' ', offset).Append("</").Append(parent.Name).Append('>')
-                .AppendLine();
         }
         else
         {
@@ -279,6 +301,10 @@ static class DomExtensions
                         text.AppendLine();
                     }
                     text.Append(' ', offset);
+                }
+                else
+                {
+                    text.AppendInlineOffset(offset);
                 }
 
                 text.Append('<').Append(tag.Name);

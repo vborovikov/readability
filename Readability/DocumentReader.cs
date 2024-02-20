@@ -890,7 +890,7 @@ public class DocumentReader
                 var matchString = string.Concat(node.Attributes["class"], " ", node.Attributes["id"]);
                 if (!IsProbablyVisible(node))
                 {
-                    Debug.WriteLine($"Removing hidden node - {matchString}");
+                    Debug.WriteLine($"Removing hidden node - \"{matchString}\"");
                     node = node.RemoveAndGetNextTag();
                     continue;
                 }
@@ -925,7 +925,7 @@ public class DocumentReader
                         node.FindAncestor(p => p is { Name: "table" or "code" }) is null &&
                         node is not { Name: "body" or "a" })
                     {
-                        Debug.WriteLine($"Removing unlikely candidate - {matchString}");
+                        Debug.WriteLine($"Removing unlikely candidate - \"{matchString}\"");
                         node = node.RemoveAndGetNextTag();
                         continue;
                     }
@@ -933,7 +933,7 @@ public class DocumentReader
                     var role = node.Attributes["role"].ToString();
                     if (role.Length > 0 && UnlikelyRoles.Contains(role))
                     {
-                        Debug.WriteLine($"Removing content with role '{role}' - {matchString}");
+                        Debug.WriteLine($"Removing content with role '{role}' - \"{matchString}\"");
                         node = node.RemoveAndGetNextTag();
                         continue;
                     }
@@ -1069,7 +1069,7 @@ public class DocumentReader
                 // should have a relatively small link density (5% or less) and be mostly
                 // unaffected by this operation.
                 var candidateScore = candidate.Value * (1f - GetLinkDensity(candidate.Key));
-                candidates[candidate.Key] = (int)candidateScore;
+                candidates[candidate.Key] = candidateScore;
 
                 Debug.WriteLine($"Candidate: {candidate.Key.Name} with score {candidateScore}");
 
@@ -1202,7 +1202,7 @@ public class DocumentReader
                 articleContent.Attributes["id"] = "readability-content";
             }
 
-            var siblingScoreThreshold = Math.Max(10, topCandidate.ContentScore * 0.2f);
+            var siblingScoreThreshold = Math.Max(10f, topCandidate.ContentScore * 0.2f);
             // Keep potential top candidate's parent node to try to get text direction of it later.
             parentOfTopCandidate = topCandidate.Element!.Parent!;
             var siblings = parentOfTopCandidate!.OfType<ParentTag>().ToArray();
@@ -1213,8 +1213,8 @@ public class DocumentReader
                 var siblingScore = candidates.GetValueOrDefault(sibling);
                 var append = false;
 
-                Debug.WriteLine($"Looking at sibling node: \n{sibling.ToText()}\n {(siblingScore != default ? ("with score " + siblingScore) : "")}");
-                Debug.WriteLine($"Sibling has score {(siblingScore != default ? siblingScore : "Unknown")}");
+                Debug.WriteLine($"Looking at sibling node: {sibling.Name}\n{sibling.ToText()}\n{(siblingScore != default ? ("with score " + siblingScore) : "")}");
+                Debug.WriteLine($"Sibling has score {(siblingScore != default ? siblingScore : "<unknown>")}");
 
                 if (sibling == topCandidate.Element)
                 {
@@ -1255,13 +1255,13 @@ public class DocumentReader
 
                 if (append)
                 {
-                    Debug.WriteLine($"Appending node: \n{sibling.ToText()}\n");
+                    Debug.WriteLine($"Appending node: {sibling.Name}\n{sibling.ToText()}\n");
 
                     if (!AlterToDivExceptions.Contains(sibling.Name))
                     {
                         // We have a node that isn't a common block level element, like a form or td tag.
                         // Turn it into a div so it doesn't get filtered out later by accident.
-                        Debug.WriteLine($"Altering sibling: \n{sibling.ToText()}\n to div.");
+                        Debug.WriteLine($"Altering sibling: {sibling.Name}\n{sibling.ToText()}\n to div.");
 
                         sibling = ChangeTagName(sibling, "div");
                     }
@@ -1280,10 +1280,10 @@ public class DocumentReader
                 }
             }
 
-            Debug.WriteLine($"Article content pre-prep: \n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content pre-prep: {articleContent.Name}\n{articleContent.ToText()}\n");
             // So we have all of the content that we need. Now we clean it up for presentation.
             PrepArticle(articleContent);
-            Debug.WriteLine($"Article content post-prep: \n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content post-prep: {articleContent.Name}\n{articleContent.ToText()}\n");
 
             if (neededToCreateTopCandidate)
             {
@@ -1307,7 +1307,7 @@ public class DocumentReader
                 articleContent.Add(div);
             }
 
-            Debug.WriteLine($"Article content after paging: \n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content after paging: {articleContent.Name}\n{articleContent.ToText()}\n");
 
             var parseSuccessful = true;
 
@@ -1508,7 +1508,7 @@ public class DocumentReader
             var shouldRemove = GetClassWeight(heading) < 0;
             if (shouldRemove)
             {
-                Debug.WriteLine($"Removing header with low class weight: \n{heading.ToText()}\n");
+                Debug.WriteLine($"Removing header with low class weight: {heading.Name}\n{heading.ToText()}\n");
                 heading.Remove();
             }
         }
@@ -1758,7 +1758,7 @@ public class DocumentReader
             }
 
             var weight = GetClassWeight(node);
-            Debug.WriteLine($"Cleaning Conditionally \n{node.ToText()}\n");
+            Debug.WriteLine($"Cleaning Conditionally {node.Name}\n{node.ToText()}\n");
             var contentScore = 0;
             if (weight + contentScore < 0f)
             {
@@ -2244,20 +2244,20 @@ public class DocumentReader
         }
 
         return false;
-    }
 
-    /**
-     * Check whether the input string could be a byline.
-     * This verifies that the input is a string, and that the length
-     * is less than 100 chars.
-     *
-     * @param possibleByline {string} - a string to check whether its a byline.
-     * @return Boolean - whether the input string is a byline.
-     */
-    // _isValidByline
-    private static bool IsValidByline(ReadOnlySpan<char> byline)
-    {
-        return byline.Length > 0 && byline.Length < 100;
+        /*
+         * Check whether the input string could be a byline.
+         * This verifies that the input is a string, and that the length
+         * is less than 100 chars.
+         *
+         * @param possibleByline {string} - a string to check whether its a byline.
+         * @return Boolean - whether the input string is a byline.
+         */
+        // _isValidByline
+        static bool IsValidByline(ReadOnlySpan<char> byline)
+        {
+            return byline.Length > 0 && byline.Length < 100 && !byline.IsWhiteSpace();
+        }
     }
 
     private static bool IsProbablyVisible(Tag tag)
