@@ -1182,7 +1182,7 @@ public class DocumentReader
                 // joining logic when adjacent content is actually located in parent's sibling node.
                 parentOfTopCandidate = topCandidate.Element.Parent;
                 while (parentOfTopCandidate is not null and not { Name: "body" } &&
-                    parentOfTopCandidate.Count(el => el is Tag) == 1)
+                    parentOfTopCandidate.Count<Tag>() == 1)
                 {
                     topCandidate = (parentOfTopCandidate, candidates.GetValueOrDefault(parentOfTopCandidate));
                     parentOfTopCandidate = parentOfTopCandidate.Parent;
@@ -1455,11 +1455,11 @@ public class DocumentReader
         // Remove extra paragraphs
         foreach (var paragraph in articleContent.FindAll<ParentTag>(t => t.Name == "p").ToArray())
         {
-            var imgCount = paragraph.Count(t => t is Tag { Name: "img" });
-            var embedCount = paragraph.Count(t => t is Tag { Name: "embed" });
-            var objectCount = paragraph.Count(t => t is Tag { Name: "object" });
+            var imgCount = paragraph.FindAll(t => t is Tag { Name: "img" }).Count();
+            var embedCount = paragraph.FindAll(t => t is Tag { Name: "embed" }).Count();
+            var objectCount = paragraph.FindAll(t => t is Tag { Name: "object" }).Count();
             // At this point, nasty iframes have been removed, only remain embedded video ones.
-            var iframeCount = paragraph.Count(t => t is Tag { Name: "iframe" });
+            var iframeCount = paragraph.FindAll(t => t is Tag { Name: "iframe" }).Count();
             var totalCount = imgCount + embedCount + objectCount + iframeCount;
 
             if (totalCount == 0 && paragraph.GetContentLength(false) == 0)
@@ -1806,7 +1806,7 @@ public class DocumentReader
                 if (isList && haveToRemove)
                 {
                     // Don't filter in lists with li's that contain more than one child
-                    if (node.Any(e => e is ParentTag p && p.Count(e => e is Tag) > 1))
+                    if (node.Any(e => e is ParentTag p && p.Count<Tag>() > 1))
                     {
                         if (haveToRemove)
                         {
