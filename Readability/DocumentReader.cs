@@ -1071,7 +1071,7 @@ public class DocumentReader
                 var candidateScore = candidate.Value * (1f - GetLinkDensity(candidate.Key));
                 candidates[candidate.Key] = candidateScore;
 
-                Debug.WriteLine($"Candidate: {candidate.Key.Name} with score {candidateScore}");
+                Debug.WriteLine($"Candidate: {candidate.Key.ToId()} with score {candidateScore}");
 
                 if (topCandidates.Count < this.nbTopCandidates)
                 {
@@ -1213,7 +1213,7 @@ public class DocumentReader
                 var siblingScore = candidates.GetValueOrDefault(sibling);
                 var append = false;
 
-                Debug.WriteLine($"Looking at sibling node: {sibling.Name}\n{sibling.ToText()}\n{(siblingScore != default ? ("with score " + siblingScore) : "")}");
+                Debug.WriteLine($"Looking at sibling node: {sibling.ToId()}\n{sibling.ToText()}\n{(siblingScore != default ? ("with score " + siblingScore) : "")}");
                 Debug.WriteLine($"Sibling has score {(siblingScore != default ? siblingScore : "<unknown>")}");
 
                 if (sibling == topCandidate.Element)
@@ -1255,13 +1255,13 @@ public class DocumentReader
 
                 if (append)
                 {
-                    Debug.WriteLine($"Appending node: {sibling.Name}\n{sibling.ToText()}\n");
+                    Debug.WriteLine($"Appending node: {sibling.ToId()}\n{sibling.ToText()}\n");
 
                     if (!AlterToDivExceptions.Contains(sibling.Name))
                     {
                         // We have a node that isn't a common block level element, like a form or td tag.
                         // Turn it into a div so it doesn't get filtered out later by accident.
-                        Debug.WriteLine($"Altering sibling: {sibling.Name}\n{sibling.ToText()}\n to div.");
+                        Debug.WriteLine($"Altering sibling: {sibling.ToId()}\n{sibling.ToText()}\n to div.");
 
                         sibling = ChangeTagName(sibling, "div");
                     }
@@ -1280,10 +1280,10 @@ public class DocumentReader
                 }
             }
 
-            Debug.WriteLine($"Article content pre-prep: {articleContent.Name}\n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content pre-prep: {articleContent.ToId()}\n{articleContent.ToText()}\n");
             // So we have all of the content that we need. Now we clean it up for presentation.
             PrepArticle(articleContent);
-            Debug.WriteLine($"Article content post-prep: {articleContent.Name}\n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content post-prep: {articleContent.ToId()}\n{articleContent.ToText()}\n");
 
             if (neededToCreateTopCandidate)
             {
@@ -1307,7 +1307,7 @@ public class DocumentReader
                 articleContent.Add(div);
             }
 
-            Debug.WriteLine($"Article content after paging: {articleContent.Name}\n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content after paging: {articleContent.ToId()}\n{articleContent.ToText()}\n");
 
             var parseSuccessful = true;
 

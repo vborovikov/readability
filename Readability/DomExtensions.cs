@@ -8,6 +8,28 @@ using Brackets;
 
 static class DomExtensions
 {
+    public static string ToId(this Tag tag)
+    {
+        if (tag.HasAttributes)
+        {
+            if (tag.Attributes["id"] is { Length: > 0 } id)
+            {
+                if (tag.Attributes["class"] is { Length: > 0 } klass)
+                {
+                    return $"{tag.Name}#{id}.\"{klass}\"";
+                }
+
+                return $"{tag.Name}#{id}";
+            }
+            else if (tag.Attributes["class"] is { Length: > 0 } klass)
+            {
+                return $"{tag.Name}.\"{klass}\"";
+            }
+        }
+
+        return tag.Name;
+    }
+
     public static string ToTrimString(this Element element) => element.ToString()!.ToTrimString();
 
     public static IEnumerable<ParentTag> EnumerateAncestors(this Element element, int maxDepth = 0)
