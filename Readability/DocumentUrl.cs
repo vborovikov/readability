@@ -69,8 +69,17 @@ class DocumentUrl
             return false;
         }
 
-        if (Uri.IsWellFormedUriString(url.ToString(), UriKind.Absolute))
+        var urlStr = url.ToString();
+        if (Uri.TryCreate(urlStr, UriKind.Absolute, out var urlObj))
         {
+            urlStr = urlObj.ToString();
+            if (urlStr.Length > url.Length)
+            {
+                // return a better form url
+                absoluteUrl = urlStr;
+                return true;
+            }
+
             // ignore absolute URLs
             absoluteUrl = null;
             return false;

@@ -1926,8 +1926,7 @@ public class DocumentReader
     {
         foreach (var link in articleContent.FindAll<ParentTag>(e => e.Name == "a").ToArray())
         {
-            var href = link.Attributes["href"];
-            if (!href.IsEmpty)
+            if (link.Attributes["href"] is { Length: > 0 } href)
             {
                 // Remove links with javascript: URIs, since
                 // they won't work after scripts have been removed from the page.
