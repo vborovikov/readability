@@ -386,15 +386,15 @@ public class DocumentReader
 
     private ArticleMetadata? GetJsonLD()
     {
-        foreach (var jsonld in this.document.FindAll<ParentTag>(
-            t => t.Name == "script" && t.Attributes["type"].Equals("application/ld+json", StringComparison.Ordinal)))
+        foreach (var jsonld in this.document.FindAll<ParentTag>(t => t.Name == "script" && t.Attributes.Has("type", "application/ld+json")))
         {
             try
             {
-                if (jsonld.FirstOrDefault(el => el is Content) is not Content content)
+                var content = jsonld.FirstOrDefault<CharacterData>();
+                if (content is null)
                     continue;
 
-                JsonElement parsed = JsonDocument.Parse(content.Data.Trim().Trim(';').Trim().ToString()).RootElement;
+                var parsed = JsonDocument.Parse(content.Data.Trim().Trim(';').Trim().ToString()).RootElement;
                 if (!parsed.TryGetString("@context", out var context) ||
                     !context.EndsWith("://schema.org", StringComparison.Ordinal))
                 {
@@ -442,22 +442,22 @@ public class DocumentReader
                     var nameMatches = ComparisonMethods.JaroWinklerSimilarity(parsedName, title) > 0.75f;
                     var headlineMatches = ComparisonMethods.JaroWinklerSimilarity(parsedHeadline, title) > 0.75f;
 
-                    metadata.Title = headlineMatches && !nameMatches ? parsedHeadline : parsedName;
+                    metadata.Title = (headlineMatches && !nameMatches ? parsedHeadline : parsedName).ToTrimString();
                 }
                 else if (parsed.TryGetString("name", out var parsedNameOnly))
                 {
-                    metadata.Title = parsedNameOnly;
+                    metadata.Title = parsedNameOnly.ToTrimString();
                 }
                 else if (parsed.TryGetString("headline", out var parsedHeadlineOnly))
                 {
-                    metadata.Title = parsedHeadlineOnly;
+                    metadata.Title = parsedHeadlineOnly.ToTrimString();
                 }
 
                 if (parsed.TryGetProperty("author", out var authorProp))
                 {
                     if (authorProp.TryGetString("name", out var oneAuthorName))
                     {
-                        metadata.Byline = oneAuthorName;
+                        metadata.Byline = oneAuthorName.ToTrimString();
                     }
                     else if (authorProp.ValueKind == JsonValueKind.Array)
                     {
@@ -471,7 +471,7 @@ public class DocumentReader
                                     authors.Append(", ");
                                 }
 
-                                authors.Append(authorName);
+                                authors.Append(authorName.ToTrimString());
                             }
                         }
 
@@ -481,22 +481,22 @@ public class DocumentReader
 
                 if (parsed.TryGetString("description", out var parsedDescription))
                 {
-                    metadata.Excerpt = parsedDescription;
+                    metadata.Excerpt = parsedDescription.ToTrimString();
                 }
                 else if (parsed.TryGetString("summary", out var parsedSummary))
                 {
-                    metadata.Excerpt = parsedSummary;
+                    metadata.Excerpt = parsedSummary.ToTrimString();
                 }
 
                 if (parsed.TryGetProperty("publisher", out var publisherProp) &&
                     publisherProp.TryGetString("name", out var publisherName))
                 {
-                    metadata.SiteName = publisherName;
+                    metadata.SiteName = publisherName.ToTrimString();
                 }
                 else if (parsed.TryGetProperty("creator", out var creatorProp) &&
                     creatorProp.TryGetString("name", out var creatorName))
                 {
-                    metadata.SiteName = creatorName;
+                    metadata.SiteName = creatorName.ToTrimString();
                 }
 
                 if (parsed.TryGetProperty("datePublished", out var datePublishedProp) &&
@@ -512,8 +512,9 @@ public class DocumentReader
 
                 return metadata;
             }
-            catch
+            catch (Exception x)
             {
+                Debug.WriteLine($"GetJsonLD: {x.Message}");
             }
         }
 
@@ -791,8 +792,7 @@ public class DocumentReader
 
         return new ArticleMetadata
         {
-            Title = WebUtility.HtmlDecode(FindLongestString(
-                jsonMetadata?.Title,
+            Title = jsonMetadata?.Title ?? WebUtility.HtmlDecode(FindLongestString(
                 values.GetValueOrDefault("dc:title"),
                 values.GetValueOrDefault("dcterm:title"),
                 values.GetValueOrDefault("og:title"),
@@ -802,14 +802,12 @@ public class DocumentReader
                 values.GetValueOrDefault("twitter:title")) ??
                 GetArticleTitle()),
 
-            Byline = WebUtility.HtmlDecode(FindLongestString(
-                jsonMetadata?.Byline,
+            Byline = jsonMetadata?.Byline ?? WebUtility.HtmlDecode(FindLongestString(
                 values.GetValueOrDefault("dc:creator"),
                 values.GetValueOrDefault("dcterm:creator"),
                 values.GetValueOrDefault("author"))),
 
-            Excerpt = WebUtility.HtmlDecode(FindLongestString(
-                jsonMetadata?.Excerpt,
+            Excerpt = jsonMetadata?.Excerpt ?? WebUtility.HtmlDecode(FindLongestString(
                 values.GetValueOrDefault("dc:description"),
                 values.GetValueOrDefault("dcterm:description"),
                 values.GetValueOrDefault("og:description"),
@@ -821,12 +819,10 @@ public class DocumentReader
             SiteName = WebUtility.HtmlDecode(FindLongestString(
                 jsonMetadata?.SiteName, values.GetValueOrDefault("og:site_name"))),
 
-            Published = jsonMetadata?.Published ??
-                (DateTimeOffset.TryParse(WebUtility.HtmlDecode(
-                    values.GetValueOrDefault("article:published_time") ??
-                    values.GetValueOrDefault("parsely-pud-date") ??
-                    values.GetValueOrDefault("article:modified_time")),
-                    out var dateTime) ? dateTime : null),
+            Published = jsonMetadata?.Published ?? (DateTimeOffset.TryParse(WebUtility.HtmlDecode(
+                values.GetValueOrDefault("article:published_time") ??
+                values.GetValueOrDefault("parsely-pud-date") ??
+                values.GetValueOrDefault("article:modified_time")), out var dateTime) ? dateTime : null),
         };
 
         static string ToCleanString(ReadOnlySpan<char> value)
@@ -1370,8 +1366,7 @@ public class DocumentReader
                     .Prepend(topCandidate.Element)
                     .Prepend(parentOfTopCandidate))
                 {
-                    var articleDir = ancestor.Attributes["dir"];
-                    if (!articleDir.IsEmpty)
+                    if (ancestor.Attributes["dir"] is { Length: > 0 } articleDir)
                     {
                         this.articleDir = articleDir.ToString();
                         break;
