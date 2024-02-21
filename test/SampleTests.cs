@@ -86,8 +86,7 @@ public class SampleTests
         Assert.IsNotNull(expected);
         Assert.IsNotNull(actual);
 
-        //todo: it looks like our title extraction algorithm is better?
-        //Assert.AreEqual(expected.Title, actual.Title, "Title");
+        Assert.AreEqual(expected.Title, actual.Title, "Title");
         Assert.AreEqual(expected.Byline, actual.Byline, "Byline");
         Assert.AreEqual(expected.Excerpt, actual.Excerpt, "Excerpt");
         Assert.AreEqual(expected.SiteName, actual.SiteName, "SiteName");
