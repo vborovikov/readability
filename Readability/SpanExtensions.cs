@@ -102,6 +102,17 @@ static class SpanExtensions
         return count;
     }
 
+    public static bool Contains(this IEnumerable<string> strings, ReadOnlySpan<char> span, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
+    {
+        foreach (var str in strings)
+        {
+            if (span.Equals(str, comparison))
+                return true;
+        }
+
+        return false;
+    }
+
     public static int IndexOf<T>(this T[] array, int windowLength, SpanPredicate<T> predicate) =>
         IndexOf(array.AsSpan(), windowLength, predicate);
 

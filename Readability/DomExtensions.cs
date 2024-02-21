@@ -100,13 +100,13 @@ static class DomExtensions
     public static Tag? NextTagOrDefault(this Tag element, bool ignoreSelfAndKids = false)
     {
         // First check for kids if those aren't being ignored
-        if (!ignoreSelfAndKids && (element as ParentTag)?.FirstOrDefault(el => el is Tag) is Tag firstElementChild)
+        if (!ignoreSelfAndKids && (element as ParentTag)?.FirstOrDefault<Tag>() is Tag firstElementChild)
         {
             return firstElementChild;
         }
 
         // Then for siblings...
-        if (element.NextSiblingOrDefault(el => el is Tag) is Tag nextElementSibling)
+        if (element.NextSiblingOrDefault<Tag>() is Tag nextElementSibling)
         {
             return nextElementSibling;
         }
@@ -124,6 +124,7 @@ static class DomExtensions
         return parent?.NextSiblingOrDefault() as Tag ?? parent;
     }
 
+    // _removeAndGetNext
     public static Tag? RemoveAndGetNextTag(this Tag element)
     {
         var next = element.NextTagOrDefault(ignoreSelfAndKids: true);

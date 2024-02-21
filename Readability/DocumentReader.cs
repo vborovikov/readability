@@ -710,11 +710,16 @@ public class DocumentReader
         }
     }
 
+    /***
+     * Determine if a node qualifies as phrasing content.
+     * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content
+    **/
+    // _isPhrasingContent
     private static bool IsPhrasingContent(Element element)
     {
         return element switch
         {
-            CharacterData => true,
+            CharacterData chars when chars is not Comment => true,
             ParentTag { Name: "a" or "del" or "ins" } tag => tag.All(IsPhrasingContent),
             Tag someTag => PhrasingTags.Contains(someTag.Name),
             _ => false
@@ -732,6 +737,8 @@ public class DocumentReader
     // _setNodeTag
     private static ParentTag ChangeTagName(ParentTag tag, string newName)
     {
+        Debug.WriteLine($"_setNodeTag {tag.ToId()} '{newName}'");
+
         if (tag.Parent is not ParentTag parent)
             throw new InvalidOperationException();
 
@@ -882,9 +889,9 @@ public class DocumentReader
 
             while (node is not null)
             {
-                if (node.Name == "html")
+                if (node.Name == "html" && node.Attributes["lang"] is { Length: > 0} lang)
                 {
-                    this.articleLang = node.Attributes["lang"].ToString();
+                    this.articleLang = lang.ToString();
                 }
 
                 var matchString = string.Concat(node.Attributes["class"], " ", node.Attributes["id"]);
@@ -930,8 +937,7 @@ public class DocumentReader
                         continue;
                     }
 
-                    var role = node.Attributes["role"].ToString();
-                    if (role.Length > 0 && UnlikelyRoles.Contains(role))
+                    if (node.Attributes["role"] is { Length: > 0 } role && UnlikelyRoles.Contains(role))
                     {
                         Debug.WriteLine($"Removing content with role '{role}' - \"{matchString}\"");
                         node = node.RemoveAndGetNextTag();
@@ -1026,7 +1032,7 @@ public class DocumentReader
                     continue;
 
                 // Exclude nodes with no ancestor.
-                var ancestors = elementToScore.EnumerateAncestors().ToArray();
+                var ancestors = elementToScore.EnumerateAncestors(maxDepth: 5).ToArray();
                 if (ancestors.Length == 0)
                     continue;
 
@@ -1039,7 +1045,7 @@ public class DocumentReader
                 contentScore += innerText.Count(Commas.Contains);
 
                 // For every 100 characters in this paragraph, add another point. Up to 3 points.
-                contentScore += Math.Min(innerText.Length / 100f, 3f);
+                contentScore += Math.Min((float)Math.Floor(innerText.Length / 100d), 3f);
 
                 // Initialize and score ancestors.
                 for (var level = 0; level < ancestors.Length; ++level)
@@ -1125,7 +1131,7 @@ public class DocumentReader
                 if (alternativeCandidateAncestors.Count >= MinTopCadidates)
                 {
                     parentOfTopCandidate = topCandidate.Element.Parent;
-                    while (parentOfTopCandidate is not null and not ParentTag { Name: "body" })
+                    while (parentOfTopCandidate is not null and not { Name: "body" })
                     {
                         var listsContainingThisAncestor = 0;
                         for (var ancestorIndex = 0;
@@ -1137,7 +1143,7 @@ public class DocumentReader
                         }
                         if (listsContainingThisAncestor >= MinTopCadidates)
                         {
-                            topCandidate = (parentOfTopCandidate, default);
+                            topCandidate = (parentOfTopCandidate, candidates.GetValueOrDefault(parentOfTopCandidate));
                             break;
                         }
                         parentOfTopCandidate = parentOfTopCandidate.Parent;
@@ -1159,7 +1165,7 @@ public class DocumentReader
                 var lastScore = topCandidate.ContentScore;
                 // The scores shouldn't get too low.
                 var scoreThreshold = lastScore / 3f;
-                while (parentOfTopCandidate is not null and not ParentTag { Name: "body" })
+                while (parentOfTopCandidate is not null and not { Name: "body" })
                 {
                     if (!candidates.TryGetValue(parentOfTopCandidate, out var parentScore))
                     {
@@ -2094,6 +2100,14 @@ public class DocumentReader
         return null;
     }
 
+    /**
+     * Get an elements class/id weight. Uses regular expressions to tell if this
+     * element looks good or bad.
+     *
+     * @param Element
+     * @return number (Integer)
+    **/
+    // _getClassWeight
     private float GetClassWeight(Tag tag)
     {
         if (!this.flags.HasFlag(CleanFlags.WeightClasses))
@@ -2101,28 +2115,36 @@ public class DocumentReader
 
         var weight = 0f;
 
-        //todo: we enumerate class names here. should we do it at all?
-        foreach (var className in tag.Attributes["class"].EnumerateValues())
+        if (tag.Attributes["class"] is { Length: > 0 } klass)
         {
-            weight += GetNameWeight(className);
+            foreach (var className in klass.EnumerateValues())
+            {
+                if (TryGetNameWeight(className, out var classWeight))
+                {
+                    weight += classWeight;
+                    break;
+                }
+            }
         }
 
-        var id = tag.Attributes["id"];
-        if (!id.IsEmpty)
+        if (tag.Attributes["id"] is { Length: > 0 } id && TryGetNameWeight(id, out var idWeight))
         {
-            weight += GetNameWeight(id);
+            weight += idWeight;
         }
 
         return weight;
 
-        static float GetNameWeight(ReadOnlySpan<char> name)
+        static bool TryGetNameWeight(ReadOnlySpan<char> name, out float weight)
         {
-            var weight = 0f;
+            var found = false;
+
+            weight = 0f;
             foreach (var negativeName in NegativeNames)
             {
                 if (name.Contains(negativeName, StringComparison.OrdinalIgnoreCase))
                 {
                     weight -= 25f;
+                    found = true;
                     break;
                 }
             }
@@ -2131,13 +2153,23 @@ public class DocumentReader
                 if (name.Contains(positiveName, StringComparison.OrdinalIgnoreCase))
                 {
                     weight += 25f;
+                    found = true;
                     break;
                 }
             }
-            return weight;
+
+            return found;
         }
     }
 
+    /**
+     * Get the density of links as a percentage of the content
+     * This is the amount of text that is inside a link divided by the total text in the node.
+     *
+     * @param Element
+     * @return number (float)
+    **/
+    // _getLinkDensity
     private static float GetLinkDensity(ParentTag parent)
     {
         var textLength = parent.GetContentLength();
@@ -2170,9 +2202,15 @@ public class DocumentReader
         return normalizeSpaces ? element.ToTrimString() : element.ToString()!.Trim();
     }
 
+    /**
+     * Determine whether element has any children block level elements.
+     *
+     * @param Element
+     */
+    //_hasChildBlockElement
     private static bool HasChildBlockElement(ParentTag parent)
     {
-        return parent.Any(el => el is ParentTag tag && (DivToParaElems.Contains(tag.Name) || HasChildBlockElement(tag)));
+        return parent.Any<ParentTag>(tag => DivToParaElems.Contains(tag.Name) || HasChildBlockElement(tag));
     }
 
     /**
