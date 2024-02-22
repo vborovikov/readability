@@ -738,7 +738,7 @@ public class DocumentReader
     // _setNodeTag
     private static ParentTag ChangeTagName(ParentTag tag, string newName)
     {
-        Debug.WriteLine($"_setNodeTag {tag.ToId()} '{newName}'");
+        Debug.WriteLine($"_setNodeTag {tag.ToIdString()} '{newName}'");
 
         if (tag.Parent is not ParentTag parent)
             throw new InvalidOperationException();
@@ -1073,7 +1073,7 @@ public class DocumentReader
                 var candidateScore = candidate.Value * (1f - GetLinkDensity(candidate.Key));
                 candidates[candidate.Key] = candidateScore;
 
-                Debug.WriteLine($"Candidate: {candidate.Key.ToId()} with score {candidateScore}");
+                Debug.WriteLine($"Candidate: {candidate.Key.ToIdString()} with score {candidateScore}");
 
                 if (topCandidates.Count < this.nbTopCandidates)
                 {
@@ -1101,7 +1101,7 @@ public class DocumentReader
                 // so we even include text directly in the body:
                 while (page.FirstOrDefault() is Element element)
                 {
-                    Debug.WriteLine($"Moving child out: \n{element.ToText()}\n");
+                    Debug.WriteLine($"Moving child out: {element.ToIdString()}");
                     page.Remove(element);
                     newTopCandidate.Add(element);
                 }
@@ -1215,7 +1215,7 @@ public class DocumentReader
                 var siblingScore = candidates.GetValueOrDefault(sibling);
                 var append = false;
 
-                Debug.WriteLine($"Looking at sibling node: {sibling.ToId()}\n{sibling.ToText()}\n{(siblingScore != default ? ("with score " + siblingScore) : "")}");
+                Debug.WriteLine($"Looking at sibling node: {sibling.ToIdString()}\n{sibling.ToText()}\n{(siblingScore != default ? ("with score " + siblingScore) : "")}");
                 Debug.WriteLine($"Sibling has score {(siblingScore != default ? siblingScore : "<unknown>")}");
 
                 if (sibling == topCandidate.Element)
@@ -1257,13 +1257,13 @@ public class DocumentReader
 
                 if (append)
                 {
-                    Debug.WriteLine($"Appending node: {sibling.ToId()}\n{sibling.ToText()}\n");
+                    Debug.WriteLine($"Appending node: {sibling.ToIdString()}\n{sibling.ToText()}\n");
 
                     if (!AlterToDivExceptions.Contains(sibling.Name))
                     {
                         // We have a node that isn't a common block level element, like a form or td tag.
                         // Turn it into a div so it doesn't get filtered out later by accident.
-                        Debug.WriteLine($"Altering sibling: {sibling.ToId()}\n{sibling.ToText()}\n to div.");
+                        Debug.WriteLine($"Altering sibling: {sibling.ToIdString()}\n{sibling.ToText()}\n to div.");
 
                         sibling = ChangeTagName(sibling, "div");
                     }
@@ -1282,10 +1282,10 @@ public class DocumentReader
                 }
             }
 
-            Debug.WriteLine($"Article content pre-prep: {articleContent.ToId()}\n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content pre-prep: {articleContent.ToIdString()}\n{articleContent.ToText()}\n");
             // So we have all of the content that we need. Now we clean it up for presentation.
             PrepArticle(articleContent);
-            Debug.WriteLine($"Article content post-prep: {articleContent.ToId()}\n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content post-prep: {articleContent.ToIdString()}\n{articleContent.ToText()}\n");
 
             if (neededToCreateTopCandidate)
             {
@@ -1309,7 +1309,7 @@ public class DocumentReader
                 articleContent.Add(div);
             }
 
-            Debug.WriteLine($"Article content after paging: {articleContent.ToId()}\n{articleContent.ToText()}\n");
+            Debug.WriteLine($"Article content after paging: {articleContent.ToIdString()}\n{articleContent.ToText()}\n");
 
             var parseSuccessful = true;
 
@@ -1322,6 +1322,7 @@ public class DocumentReader
             if (textLength < this.charThreshold)
             {
                 parseSuccessful = false;
+                // todo: here we need to restore the page internals so it becomes the part of the document again
                 page = pageCacheHtml;
 
                 if (this.flags.HasFlag(CleanFlags.StripUnlikelys))

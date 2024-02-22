@@ -2,13 +2,20 @@
 
 using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Text;
 using Brackets;
 
 static class DomExtensions
 {
-    public static string ToId(this Tag tag)
+    public static string ToIdString(this Element element) =>
+        element switch
+        {
+            Tag tag => tag.ToIdString(),
+            _ => $"{element.GetType().Name} {{}}"
+        };
+
+
+    public static string ToIdString(this Tag tag)
     {
         if (tag.HasAttributes)
         {
@@ -191,7 +198,7 @@ static class DomExtensions
         return element switch
         {
             Content content => content.Length,
-            ParentTag parent => parent.FindAll<Content>(c => true).Sum(c => c.Length),
+            ParentTag parent => parent.FindAll<Content>(c => true).Sum(c => c.Length > 0 ? c.Length + 1 : 0),
             _ => 0,
         };
     }
