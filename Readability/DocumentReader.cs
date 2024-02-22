@@ -870,6 +870,11 @@ public class DocumentReader
 
         var pageCacheHtml = (ParentTag)page.Clone();
 
+        var elementsToScore = new List<Element>();
+        var candidates = new Dictionary<ParentTag, float>();
+        var topCandidates = new PriorityQueue<ParentTag, float>(this.nbTopCandidates);
+        var alternativeCandidateAncestors = new List<ParentTag[]>();
+
         while (true)
         {
             Debug.WriteLine("Starting grabArticle loop");
@@ -878,8 +883,8 @@ public class DocumentReader
             // First, node prepping. Trash nodes that look cruddy (like ones with the
             // class name "comment", etc), and turn divs into P tags where they have been
             // used inappropriately (as in, where they contain no other block level elements.)
-            var elementsToScore = new List<Element>();
-            var node = this.document.FirstOrDefault(el => el is ParentTag) as Tag;
+            elementsToScore.Clear();
+            Tag? node = this.document.FirstOrDefault<ParentTag>() ?? page;
 
             var shouldRemoveTitleHeader = true;
 
@@ -1016,7 +1021,7 @@ public class DocumentReader
              *
              * A score is determined by things like number of commas, class names, etc. Maybe eventually link density.
             **/
-            var candidates = new Dictionary<ParentTag, float>();
+            candidates.Clear();
             foreach (var elementToScore in elementsToScore)
             {
                 if (elementToScore.Parent is null)
@@ -1064,7 +1069,7 @@ public class DocumentReader
 
             // After we've calculated scores, loop through all of the possible
             // candidate nodes we found and find the one with the highest score.
-            var topCandidates = new PriorityQueue<ParentTag, float>(this.nbTopCandidates);
+            topCandidates.Clear();
             foreach (var candidate in candidates)
             {
                 // Scale the final candidates score based on link density. Good content
@@ -1114,7 +1119,7 @@ public class DocumentReader
             {
                 // Find a better top candidate node if it contains (at least three) nodes which belong to `topCandidates` array
                 // and whose scores are quite closed with current `topCandidate` node.
-                var alternativeCandidateAncestors = new List<ParentTag[]>();
+                alternativeCandidateAncestors.Clear();
                 foreach (var otherTopCandidate in topCandidates.UnorderedItems.OrderByDescending(c => c.Priority).Skip(1))
                 {
                     if (otherTopCandidate.Priority / topCandidate.ContentScore >= 0.75f)
@@ -1215,7 +1220,7 @@ public class DocumentReader
                 var siblingScore = candidates.GetValueOrDefault(sibling);
                 var append = false;
 
-                Debug.WriteLine($"Looking at sibling node: {sibling.ToIdString()}\n{sibling.ToText()}\n{(siblingScore != default ? ("with score " + siblingScore) : "")}");
+                Debug.WriteLine($"Looking at sibling node: {sibling.ToIdString()} {(siblingScore != default ? ("with score " + siblingScore) : "")}");
                 Debug.WriteLine($"Sibling has score {(siblingScore != default ? siblingScore : "<unknown>")}");
 
                 if (sibling == topCandidate.Element)
@@ -1257,13 +1262,13 @@ public class DocumentReader
 
                 if (append)
                 {
-                    Debug.WriteLine($"Appending node: {sibling.ToIdString()}\n{sibling.ToText()}\n");
+                    Debug.WriteLine($"Appending node: {sibling.ToIdString()}");
 
                     if (!AlterToDivExceptions.Contains(sibling.Name))
                     {
                         // We have a node that isn't a common block level element, like a form or td tag.
                         // Turn it into a div so it doesn't get filtered out later by accident.
-                        Debug.WriteLine($"Altering sibling: {sibling.ToIdString()}\n{sibling.ToText()}\n to div.");
+                        Debug.WriteLine($"Altering sibling: {sibling.ToIdString()} to div.");
 
                         sibling = ChangeTagName(sibling, "div");
                     }
@@ -1759,7 +1764,7 @@ public class DocumentReader
             }
 
             var weight = GetClassWeight(node);
-            Debug.WriteLine($"Cleaning Conditionally {node.Name}\n{node.ToText()}\n");
+            Debug.WriteLine($"Cleaning Conditionally {node.ToIdString()}");
             var contentScore = 0;
             if (weight + contentScore < 0f)
             {
