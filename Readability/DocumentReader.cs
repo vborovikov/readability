@@ -1322,8 +1322,7 @@ public class DocumentReader
             if (textLength < this.charThreshold)
             {
                 parseSuccessful = false;
-                // todo: here we need to restore the page internals so it becomes the part of the document again
-                page = pageCacheHtml;
+                page.ReplaceFrom(pageCacheHtml);
 
                 if (this.flags.HasFlag(CleanFlags.StripUnlikelys))
                 {

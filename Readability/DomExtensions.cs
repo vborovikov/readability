@@ -193,6 +193,18 @@ static class DomExtensions
         return false;
     }
 
+    public static void ReplaceFrom(this ParentTag root, ParentTag clone)
+    {
+        foreach (var element in root)
+        {
+            root.Remove(element);
+        }
+        foreach (var element in clone)
+        {
+            root.Add(element.Clone());
+        }
+    }
+
     public static int GetContentLength(this Element element, bool normalizeSpaces = true)
     {
         return element switch
