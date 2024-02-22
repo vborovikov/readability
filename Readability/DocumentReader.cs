@@ -816,8 +816,8 @@ public class DocumentReader
                 values.GetValueOrDefault("description"),
                 values.GetValueOrDefault("twitter:description"))),
 
-            SiteName = WebUtility.HtmlDecode(FindLongestString(
-                jsonMetadata?.SiteName, values.GetValueOrDefault("og:site_name"))),
+            SiteName = jsonMetadata?.SiteName ?? WebUtility.HtmlDecode(FindLongestString(
+                values.GetValueOrDefault("og:site_name"))),
 
             Published = jsonMetadata?.Published ?? (DateTimeOffset.TryParse(WebUtility.HtmlDecode(
                 values.GetValueOrDefault("article:published_time") ??
