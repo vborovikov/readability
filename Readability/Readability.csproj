@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Readability</PackageId>
+    <PackageId>ReadabilityLib</PackageId>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Brackets" Version="0.5.8-beta.17" />
+    <PackageReference Include="Brackets" Version="0.6.0-beta.1" />
     <PackageReference Include="FuzzyCompare" Version="0.2.9" />
   </ItemGroup>
 
