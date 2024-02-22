@@ -767,11 +767,11 @@ public class DocumentReader
 
         foreach (var meta in metas)
         {
-            var content = meta.Attributes["content"].Trim();
+            var content = meta.Attributes["content"];
             if (content.IsEmpty)
                 continue;
 
-            var property = meta.Attributes["property"].Trim();
+            var property = meta.Attributes["property"];
             if (!property.IsEmpty)
             {
                 var contentStr = content.ToString();
@@ -782,7 +782,7 @@ public class DocumentReader
             }
             else
             {
-                var name = meta.Attributes["name"].Trim();
+                var name = meta.Attributes["name"];
                 if (!name.IsEmpty)
                 {
                     values[ToCleanString(name)] = content.ToString();
@@ -914,7 +914,7 @@ public class DocumentReader
 
                 if (shouldRemoveTitleHeader && HeaderDuplicatesTitle(node))
                 {
-                    Debug.WriteLine($"Removing header: '{node.ToTrimString()}' -- '{this.articleTitle?.Trim()}'");
+                    Debug.WriteLine($"Removing header: '{node.ToTrimString()}' -- '{this.articleTitle}'");
                     shouldRemoveTitleHeader = false;
                     node = node.RemoveAndGetNextTag();
                     continue;
@@ -2173,7 +2173,7 @@ public class DocumentReader
         var linkLength = 0f;
         foreach (var a in parent.FindAll<ParentTag>(t => t.Name == "a"))
         {
-            var href = a.Attributes["href"].Trim();
+            var href = a.Attributes["href"];
             var coefficient = href.Length > 1 && href[0] == '#' ? 0.3f : 1f;
 
             linkLength += a.GetContentLength() * coefficient;
