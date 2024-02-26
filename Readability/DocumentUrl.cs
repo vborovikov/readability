@@ -20,7 +20,7 @@ class DocumentUrl
     public DocumentUrl(Document document)
     {
         if (!TryFindDocumentUrl(document, out var documentUrl))
-            throw new InvalidOperationException();
+            throw new DocumentUrlNotFound();
 
         this.baseUrl = GetBaseUrl(documentUrl);
         this.pathUrl = GetPathUrl(documentUrl);
@@ -121,8 +121,7 @@ class DocumentUrl
             html.FirstOrDefault<ParentTag>(e => e.Name == "head") is ParentTag head)
         {
             var link = head.FirstOrDefault<Tag>(e => e.Name == "link" && e.Attributes.Has("rel", "canonical"));
-            if (link is not null &&
-                link.Attributes["href"] is { Length: > 0 } href &&
+            if (link is not null && link.Attributes["href"] is { Length: > 0 } href &&
                 Uri.TryCreate(href.ToString(), UriKind.Absolute, out var canonicalUrl))
             {
                 documentUrl = canonicalUrl;
@@ -130,8 +129,7 @@ class DocumentUrl
             }
 
             var meta = head.FirstOrDefault<Tag>(e => e.Name == "meta" && e.Attributes.Has("property", "og:url"));
-            if (meta is not null &&
-                meta.Attributes["content"] is { Length: > 0 } content &&
+            if (meta is not null && meta.Attributes["content"] is { Length: > 0 } content &&
                 Uri.TryCreate(content.ToString(), UriKind.Absolute, out var ogUrl))
             {
                 documentUrl = ogUrl;
@@ -141,5 +139,21 @@ class DocumentUrl
 
         documentUrl = null;
         return false;
+    }
+}
+
+[Serializable]
+public class DocumentUrlNotFound : Exception
+{
+    public DocumentUrlNotFound()
+    {
+    }
+
+    public DocumentUrlNotFound(string? message) : base(message)
+    {
+    }
+
+    public DocumentUrlNotFound(string? message, Exception? innerException) : base(message, innerException)
+    {
     }
 }

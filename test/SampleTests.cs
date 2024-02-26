@@ -98,10 +98,10 @@ public class SampleTests
         {
             Assert.AreEqual(expected.Language, actual.Language, "Language");
         }
-        if (expected.PublishedTime is not null)
+        if (expected.Published is not null)
         {
             // we don't compare the time-offset component here
-            Assert.AreEqual(expected.PublishedTime?.DateTime, actual.PublishedTime?.DateTime, "PublishedTime");
+            Assert.AreEqual(expected.Published?.DateTime, actual.Published?.DateTime, "PublishedTime");
         }
     }
 

@@ -321,7 +321,7 @@ public class DocumentReader
             Excerpt = metadata.Excerpt ?? GetArticleExcerpt(articleContent),
             Content = articleContent,
             SiteName = metadata.SiteName,
-            PublishedTime = metadata.Published,
+            Published = metadata.Published,
             Language = this.articleLang,
             Dir = this.articleDir,
         };

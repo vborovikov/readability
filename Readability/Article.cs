@@ -22,10 +22,10 @@ public record Article
     [JsonIgnore]
     public ParentTag Content { get; init; }
 
-    /** text content of the article, with all the HTML tags removed */
+    /* text content of the article, with all the HTML tags removed */
     //[JsonIgnore]
     //public string TextContent { get; init; }
-    
+
     /** length of an article, in characters */
     public int Length { get; init; }
     
@@ -44,9 +44,10 @@ public record Article
     /** content language */
     [JsonPropertyName("lang")]
     public string? Language { get; init; }
-    
+
     /** published time */
-    public DateTimeOffset? PublishedTime { get; init; }
+    [JsonPropertyName("publishedTime")]
+    public DateTimeOffset? Published { get; init; }
 }
 
 [Serializable]
