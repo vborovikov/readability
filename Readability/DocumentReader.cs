@@ -14,10 +14,12 @@ using FuzzyCompare.Text;
 
 public record ReadabilityOptions
 {
+    private static readonly string[] DefaultClassesToPreserve = ["caption"];
+
     public int? MaxElemsToParse { get; init; }
     public int? NbTopCandidates { get; init; }
     public int? CharThreshold { get; init; }
-    public string[] ClassesToPreserve { get; init; } = [];
+    public string[] ClassesToPreserve { get; init; } = DefaultClassesToPreserve;
     public bool? KeepClasses { get; init; }
     public bool? DisableJsonLD { get; init; }
 }
@@ -273,26 +275,28 @@ public class DocumentReader
     private readonly string[] classesToPreserve;
     private readonly List<Attempt> attempts;
 
-    public DocumentReader(Document document, ReadabilityOptions? options = null)
-        : this(document, new DocumentUrl(document), options)
-    {
-    }
+    public DocumentReader(Document document)
+        : this(document, new ReadabilityOptions()) { }
 
-    public DocumentReader(Document document, Uri documentUri, ReadabilityOptions? options = null)
-        : this(document, new DocumentUrl(documentUri), options)
-    {
-    }
+    public DocumentReader(Document document, Uri documentUri)
+        : this(document, documentUri, new ReadabilityOptions()) { }
 
-    private DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions? options)
+    public DocumentReader(Document document, ReadabilityOptions options)
+        : this(document, new DocumentUrl(document), options) { }
+
+    public DocumentReader(Document document, Uri documentUri, ReadabilityOptions options)
+        : this(document, new DocumentUrl(documentUri), options) { }
+
+    private DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions options)
     {
         this.document = document;
         this.documentUrl = documentUrl;
         this.flags = CleanFlags.All;
 
-        this.nbTopCandidates = options?.NbTopCandidates ?? DefaultNTopCandidates;
-        this.charThreshold = options?.CharThreshold ?? DefaultCharThreshold;
-        this.keepClasses = options?.KeepClasses ?? false;
-        this.classesToPreserve = [.. DefaultClassesToPreserve, .. (options?.ClassesToPreserve ?? [])];
+        this.nbTopCandidates = options.NbTopCandidates ?? DefaultNTopCandidates;
+        this.charThreshold = options.CharThreshold ?? DefaultCharThreshold;
+        this.keepClasses = options.KeepClasses ?? false;
+        this.classesToPreserve = [..DefaultClassesToPreserve, ..options.ClassesToPreserve];
 
         this.attempts = [];
     }
@@ -897,7 +901,7 @@ public class DocumentReader
 
             while (node is not null)
             {
-                if (node.Name == "html" && node.Attributes["lang"] is { Length: > 0} lang)
+                if (node.Name == "html" && node.Attributes["lang"] is { Length: > 0 } lang)
                 {
                     this.articleLang = lang.ToString();
                 }
