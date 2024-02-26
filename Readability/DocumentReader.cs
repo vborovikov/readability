@@ -533,7 +533,7 @@ public class DocumentReader
 
         var titleTokens = origTitle.Tokenize().ToArray().AsSpan();
         ReadOnlySpan<Token> curTitle = titleTokens;
-        var separatorIndex = titleTokens.IndexOf(3, tks =>
+        var separatorIndex = titleTokens.LastIndexOf(3, tks =>
         {
             if (tks[0].Category != TokenCategory.WhiteSpace || tks[^1].Category != TokenCategory.WhiteSpace)
                 return false;
@@ -541,6 +541,7 @@ public class DocumentReader
             return tks[1].Span.Length == 1 && HierarchicalSeparators.Contains(tks[1].Span[0]);
         });
 
+        // If there's a separator in the title, first remove the final part
         var titleHadHierarchicalSeparators = separatorIndex > 0;
         if (titleHadHierarchicalSeparators)
         {
@@ -549,7 +550,9 @@ public class DocumentReader
             var afterTokens = titleTokens[(separatorIndex + 3)..];
             var afterWordCount = CountWords(afterTokens);
 
-            curTitle = beforeWordCount > afterWordCount ? beforeTokens : afterTokens;
+            // If the resulting title is too short (3 words or fewer), remove
+            // the first part instead:
+            curTitle = beforeWordCount > afterWordCount || beforeWordCount >= 3 ? beforeTokens : afterTokens;
         }
         else
         {
@@ -587,6 +590,10 @@ public class DocumentReader
             }
         }
 
+        // If we now have 4 words or fewer as our title, and either no
+        // 'hierarchical' separators (\, /, > or ») were found in the original
+        // title or we decreased the number of words by more than 1 word, use
+        // the original title.
         var curTitleWordCount = CountWords(curTitle);
         if (curTitleWordCount <= 4 && (!titleHadHierarchicalSeparators || curTitleWordCount != CountWords(titleTokens) - 1))
         {
@@ -1468,7 +1475,7 @@ public class DocumentReader
             var iframeCount = paragraph.FindAll(t => t is Tag { Name: "iframe" }).Count();
             var totalCount = imgCount + embedCount + objectCount + iframeCount;
 
-            if (totalCount == 0 && paragraph.GetContentLength(false) == 0)
+            if (totalCount == 0 && GetInnerText(paragraph, false).Length == 0)
             {
                 paragraph.Remove();
             }
@@ -2198,7 +2205,7 @@ public class DocumentReader
     // _getInnerText
     private static string GetInnerText(Element element, bool normalizeSpaces = true)
     {
-        return normalizeSpaces ? element.ToTrimString() : element.ToString()!.Trim();
+        return normalizeSpaces ? element.ToTrimString() : WebUtility.HtmlDecode(element.ToString())!.Trim();
     }
 
     /**

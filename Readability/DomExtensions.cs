@@ -2,6 +2,7 @@
 
 using System;
 using System.Buffers;
+using System.Net;
 using System.Text;
 using Brackets;
 
@@ -37,7 +38,8 @@ static class DomExtensions
         return tag.Name;
     }
 
-    public static string ToTrimString(this Element element) => element.ToString()!.ToTrimString();
+    public static string ToTrimString(this Element element) => 
+        WebUtility.HtmlDecode(element.ToString())!.ToTrimString();
 
     public static IEnumerable<ParentTag> EnumerateAncestors(this Element element, int maxDepth = 0)
     {
