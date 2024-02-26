@@ -6,8 +6,6 @@ using Brackets;
 
 class ArticleMetadata
 {
-    public bool IsEmpty => string.IsNullOrWhiteSpace(this.Title);
-
     public string? Title { get; set; }
     public string? Byline { get; set; }
     public string? Excerpt { get; set; }

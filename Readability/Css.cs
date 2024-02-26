@@ -4,9 +4,10 @@ using System;
 using System.Diagnostics;
 
 // Lightweight inline CSS declaration parser
+// https://developer.mozilla.org/en-US/docs/Web/CSS/Syntax
 
-[DebuggerDisplay("{Property}: {Value};")]
-public readonly ref struct CssDeclaration
+[DebuggerDisplay("{Property,nq}: {Value,nq};")]
+readonly ref struct CssDeclaration
 {
     public CssDeclaration(ReadOnlySpan<char> property, ReadOnlySpan<char> value)
     {
