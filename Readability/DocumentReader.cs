@@ -318,7 +318,7 @@ public class DocumentReader
         {
             Title = this.articleTitle,
             Byline = metadata.Byline ?? this.articleByline,
-            Excerpt = metadata.Excerpt ?? GetArticleExcerpt(articleContent),
+            Excerpt = metadata.Excerpt?.ToTrimString() ?? GetArticleExcerpt(articleContent),
             Content = articleContent,
             SiteName = metadata.SiteName,
             Published = metadata.Published,
