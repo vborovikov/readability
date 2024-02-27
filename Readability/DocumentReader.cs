@@ -285,7 +285,7 @@ public class DocumentReader
         : this(document, new DocumentUrl(document), options) { }
 
     public DocumentReader(Document document, Uri documentUri, ReadabilityOptions options)
-        : this(document, new DocumentUrl(documentUri), options) { }
+        : this(document, new DocumentUrl(documentUri, document), options) { }
 
     private DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions options)
     {

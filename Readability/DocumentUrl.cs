@@ -10,16 +10,31 @@ class DocumentUrl
 {
     private readonly string baseUrl;
     private readonly string pathUrl;
+    private readonly Uri pathUri;
+    private readonly bool hasBase;
 
-    public DocumentUrl(Uri url)
+    public DocumentUrl(Uri uri, Document? document = null)
     {
-        this.baseUrl = GetBaseUrl(url);
-        this.pathUrl = GetPathUrl(url);
+        this.baseUrl = GetBaseUrl(uri);
+        this.pathUrl = GetPathUrl(uri);
+        this.pathUri = new Uri(this.pathUrl);
+        this.hasBase = false;
+
+        if (document is not null &&
+            TryFindBaseUrl(document, out var docBaseUrl) &&
+            TryMakeAbsolute(docBaseUrl, out var newUrl) &&
+            Uri.TryCreate(newUrl, UriKind.Absolute, out var newUri))
+        {
+            this.baseUrl = GetBaseUrl(newUri);
+            this.pathUrl = GetPathUrl(newUri);
+            this.pathUri = new Uri(this.pathUrl);
+            this.hasBase = true;
+        }
     }
 
     public DocumentUrl(Document document)
     {
-        if (!TryFindDocumentUrl(document, out var documentUrl))
+        if (!TryFindDocumentUri(document, out var documentUrl))
             throw new DocumentUrlNotFound();
 
         this.baseUrl = GetBaseUrl(documentUrl);
@@ -57,6 +72,12 @@ class DocumentUrl
 
         if (url[0] == '#')
         {
+            if (this.hasBase && Uri.TryCreate(this.pathUri, url.ToString(), out var hashUri))
+            {
+                absoluteUrl = hashUri.ToString();
+                return true;
+            }
+
             // ignore hash URLs
             absoluteUrl = null;
             return false;
@@ -115,7 +136,23 @@ class DocumentUrl
         return GetBaseUrl(uri) + uri.AbsolutePath[..(uri.AbsolutePath.LastIndexOf('/') + 1)];
     }
 
-    private static bool TryFindDocumentUrl(Document document, [MaybeNullWhen(false)] out Uri documentUrl)
+    private static bool TryFindBaseUrl(Document document, [MaybeNullWhen(false)] out string baseUrl)
+    {
+        var baze = document
+            .FirstOrDefault<ParentTag>(e => e.Name == "html")?
+            .FirstOrDefault<ParentTag>(e => e.Name == "head")?
+            .FirstOrDefault<Tag>(e => e.Name == "base" && e.Attributes.Has("href"));
+        if (baze is not null && baze.Attributes["href"] is { Length: > 0 } href)
+        {
+            baseUrl = href.ToString();
+            return true;
+        }
+
+        baseUrl = null;
+        return false;
+    }
+
+    private static bool TryFindDocumentUri(Document document, [MaybeNullWhen(false)] out Uri documentUrl)
     {
         if (document.FirstOrDefault<ParentTag>(e => e.Name == "html") is ParentTag html &&
             html.FirstOrDefault<ParentTag>(e => e.Name == "head") is ParentTag head)
