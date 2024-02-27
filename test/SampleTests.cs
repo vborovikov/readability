@@ -1,6 +1,7 @@
 namespace Readability.Tests;
 
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Brackets;
@@ -145,7 +146,8 @@ public class SampleTests
             {
                 Assert.AreEqual(expectedAttr.HasValue, actualAttr.HasValue, elemStr);
                 Assert.AreEqual(expectedAttr.Name, actualAttr.Name, elemStr);
-                Assert.AreEqual(expectedAttr.ToString(), actualAttr.ToString(), elemStr);
+                Assert.AreEqual(WebUtility.HtmlDecode(expectedAttr.ToString()), 
+                    WebUtility.HtmlDecode(actualAttr.ToString()), elemStr);
             }
             else
             {
