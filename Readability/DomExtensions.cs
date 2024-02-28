@@ -283,7 +283,7 @@ static class DomExtensions
     {
         if (element is ParentTag parent)
         {
-            if (parent.Level == ElementLevel.Block)
+            if (parent.Layout == FlowLayout.Block)
             {
                 text.Append(' ', offset);
             }
@@ -297,7 +297,7 @@ static class DomExtensions
                 text.Append(' ').AppendAttributes(parent.EnumerateAttributes());
             }
             text.Append('>');
-            if (parent.Level == ElementLevel.Block)
+            if (parent.Layout == FlowLayout.Block)
             {
                 text.AppendLine();
             }
@@ -307,7 +307,7 @@ static class DomExtensions
                 text.AppendElement(child, offset + TabSize);
             }
 
-            if (parent.Level == ElementLevel.Block)
+            if (parent.Layout == FlowLayout.Block)
             {
                 if (text[^1] is not '\n' and not '\r')
                 {
@@ -320,7 +320,7 @@ static class DomExtensions
                 text.AppendInlineOffset(offset);
             }
             text.Append("</").Append(parent.Name).Append('>');
-            if (parent.Level == ElementLevel.Block)
+            if (parent.Layout == FlowLayout.Block)
             {
                 text.AppendLine();
             }
@@ -338,7 +338,7 @@ static class DomExtensions
         switch (element)
         {
             case Tag tag:
-                if (tag.Level == ElementLevel.Block)
+                if (tag.Layout == FlowLayout.Block)
                 {
                     if (text.Length > 0 && text[^1] is not '\n' and not '\r')
                     {
@@ -358,7 +358,7 @@ static class DomExtensions
                 }
                 text.Append(" />");
 
-                if (tag.Level == ElementLevel.Block)
+                if (tag.Layout == FlowLayout.Block)
                 {
                     text.AppendLine();
                 }
