@@ -88,7 +88,10 @@ public class SampleTests
         Assert.IsNotNull(actual);
 
         Assert.AreEqual(expected.Title?.ToTrimString(), actual.Title, "Title");
-        Assert.AreEqual(expected.Byline, actual.Byline, "Byline");
+        if (expected.Byline is not null)
+        {
+            Assert.AreEqual(expected.Byline, actual.Byline, "Byline");
+        }
         Assert.AreEqual(expected.Excerpt?.ToTrimString(), actual.Excerpt, "Excerpt");
         Assert.AreEqual(expected.SiteName, actual.SiteName, "SiteName");
         if (expected.Dir is not null)

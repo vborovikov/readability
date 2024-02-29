@@ -296,7 +296,7 @@ public class DocumentReader
         this.nbTopCandidates = options.NbTopCandidates ?? DefaultNTopCandidates;
         this.charThreshold = options.CharThreshold ?? DefaultCharThreshold;
         this.keepClasses = options.KeepClasses ?? false;
-        this.classesToPreserve = [..DefaultClassesToPreserve, ..options.ClassesToPreserve];
+        this.classesToPreserve = [.. DefaultClassesToPreserve, .. options.ClassesToPreserve];
 
         this.attempts = [];
     }
@@ -805,7 +805,7 @@ public class DocumentReader
 
         return new ArticleMetadata
         {
-            Title = jsonMetadata?.Title ?? WebUtility.HtmlDecode(FindLongestString(
+            Title = jsonMetadata?.Title ?? WebUtility.HtmlDecode(FindVerboseString(
                 values.GetValueOrDefault("dc:title"),
                 values.GetValueOrDefault("dcterm:title"),
                 values.GetValueOrDefault("og:title"),
@@ -815,12 +815,12 @@ public class DocumentReader
                 values.GetValueOrDefault("twitter:title")) ??
                 GetArticleTitle()),
 
-            Byline = jsonMetadata?.Byline ?? WebUtility.HtmlDecode(FindLongestString(
+            Byline = jsonMetadata?.Byline ?? WebUtility.HtmlDecode(FindVerboseString(
                 values.GetValueOrDefault("dc:creator"),
                 values.GetValueOrDefault("dcterm:creator"),
                 values.GetValueOrDefault("author"))),
 
-            Excerpt = jsonMetadata?.Excerpt ?? WebUtility.HtmlDecode(FindLongestString(
+            Excerpt = jsonMetadata?.Excerpt ?? WebUtility.HtmlDecode(FindVerboseString(
                 values.GetValueOrDefault("dc:description"),
                 values.GetValueOrDefault("dcterm:description"),
                 values.GetValueOrDefault("og:description"),
@@ -829,8 +829,8 @@ public class DocumentReader
                 values.GetValueOrDefault("description"),
                 values.GetValueOrDefault("twitter:description"))),
 
-            SiteName = jsonMetadata?.SiteName ?? WebUtility.HtmlDecode(FindLongestString(
-                values.GetValueOrDefault("og:site_name"))),
+            SiteName = jsonMetadata?.SiteName ?? WebUtility.HtmlDecode(
+                values.GetValueOrDefault("og:site_name")),
 
             Published = jsonMetadata?.Published ?? (DateTimeOffset.TryParse(WebUtility.HtmlDecode(
                 values.GetValueOrDefault("article:published_time") ??
@@ -853,19 +853,44 @@ public class DocumentReader
             return builder.ToString();
         }
 
-        static string? FindLongestString(params string?[] strings)
+        static string? FindVerboseString(params string?[] strings)
         {
-            string? longestString = null;
+            string? verboseString = null;
+            var wordCount = 0;
 
             foreach (var str in strings)
             {
-                if (str is not null && (longestString is null || str.Length > longestString.Length))
+                if (str is not null)
                 {
-                    longestString = str;
+                    var strWordCount = CountWords(str);
+                    if (verboseString is null)
+                    {
+                        verboseString = str;
+                        wordCount = strWordCount;
+                    }
+                    else
+                    {
+                        if (strWordCount > wordCount)
+                        {
+                            verboseString = str;
+                            wordCount = strWordCount;
+                        }
+                    }
                 }
             }
 
-            return longestString;
+            return verboseString;
+        }
+
+        static int CountWords(string str)
+        {
+            var count = 0;
+            foreach (var token in str.EnumerateTokens())
+            {
+                if (token.Category == TokenCategory.Word)
+                    ++count;
+            }
+            return count;
         }
     }
 
