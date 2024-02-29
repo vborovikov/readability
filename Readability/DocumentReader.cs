@@ -659,10 +659,12 @@ public class DocumentReader
 
     private static void ReplaceBrs(ParentTag elem)
     {
-        var brs = elem.FindAll(t => t is Tag { Name: "br" }).Cast<Tag>().ToArray();
-        for (var i = 0; i < brs.Length; i++)
+        var brs = elem.FindAll<Tag>(t => t.Name == "br").ToArray();
+        foreach (var br in brs)
         {
-            var br = brs[i];
+            if (br.Parent is null)
+                continue;
+
             var next = br.NextSiblingOrDefault();
 
             // Whether 2 or more <br> elements have been found and replaced with a
@@ -672,7 +674,7 @@ public class DocumentReader
             // If we find a <br> chain, remove the <br>s until we hit another node
             // or non-whitespace. This leaves behind the first <br> in the chain
             // (which will be replaced with a <p> later).
-            while ((next = next.NextElement()) is Tag { Name: "br" })
+            while ((next = next.NextElementOrDefault()) is Tag { Name: "br" })
             {
                 replaced = true;
                 var brSibling = next.NextSiblingOrDefault();
@@ -688,13 +690,13 @@ public class DocumentReader
                 var p = (ParentTag)Document.Html.CreateTag("p");
                 br.ReplaceWith(p);
 
-                next = next?.NextSiblingOrDefault();
+                next = p.NextSiblingOrDefault();
                 while (next is not null)
                 {
                     // If we've hit another <br><br>, we're done adding children to this <p>.
                     if (next is Tag { Name: "br" })
                     {
-                        var nextElem = next.NextSiblingOrDefault()?.NextElement();
+                        var nextElem = next.NextSiblingOrDefault()?.NextElementOrDefault();
                         if (nextElem is Tag { Name: "br" })
                             break;
                     }
@@ -709,9 +711,9 @@ public class DocumentReader
                     next = sibling;
                 }
 
-                while (p.LastOrDefault() is CharacterData content && content.Data.IsWhiteSpace())
+                while (p.LastOrDefault() is Element element && IsWhiteSpace(element))
                 {
-                    p.Remove(content);
+                    p.Remove(element);
                 }
 
                 if (p.Parent?.Name == "p")
@@ -1487,7 +1489,7 @@ public class DocumentReader
 
         foreach (var br in articleContent.FindAll<ParentTag>(t => t.Name == "br").ToArray())
         {
-            var next = br.NextSiblingOrDefault().NextElement();
+            var next = br.NextSiblingOrDefault().NextElementOrDefault();
             if (next is ParentTag { Name: "p" })
             {
                 br.Remove();

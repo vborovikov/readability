@@ -86,7 +86,7 @@ static class DomExtensions
      * returned.
      */
     // _nextNode
-    public static Element? NextElement(this Element? node)
+    public static Element? NextElementOrDefault(this Element? node)
     {
         var next = node;
         while (next is not null &&
