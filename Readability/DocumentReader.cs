@@ -1010,7 +1010,7 @@ public class DocumentReader
                     // element. DIVs with only a P element inside and no text content can be
                     // safely converted into plain P elements to avoid confusing the scoring
                     // algorithm with DIVs with are, in practice, paragraphs.
-                    if (HasSingleTagInsideElement(div, "p") && GetLinkDensity(div) < 0.25f)
+                    if (div.HasSingleTagInside("p") && GetLinkDensity(div) < 0.25f)
                     {
                         var newNode = (ParentTag)div.First();
                         div.Remove(newNode);
@@ -2041,8 +2041,8 @@ public class DocumentReader
                     continue;
                 }
                 else if (node is ParentTag parent &&
-                    (HasSingleTagInsideElement(parent, "div") ||
-                    HasSingleTagInsideElement(parent, "section")))
+                    (parent.HasSingleTagInside("div") ||
+                    parent.HasSingleTagInside("section")))
                 {
                     var child = parent.First<ParentTag>();
                     foreach (var attr in parent.EnumerateAttributes())
@@ -2223,25 +2223,6 @@ public class DocumentReader
     private static bool HasChildBlockElement(ParentTag parent)
     {
         return parent.Any<ParentTag>(tag => DivToParaElems.Contains(tag.Name) || HasChildBlockElement(tag));
-    }
-
-    /**
-     * Check if this node has only whitespace and a single element with given tag
-     * Returns false if the DIV node contains non-empty text nodes
-     * or if it contains no element with given tag or more than 1 element.
-     *
-     * @param Element
-     * @param string tag of child element
-    **/
-    // _hasSingleTagInsideElement
-    private static bool HasSingleTagInsideElement(ParentTag parent, string tagName)
-    {
-        // There should be exactly 1 element child with given tag
-        if (!(parent.Count<Tag>() == 1 && parent.First<Tag>().Name == tagName))
-            return false;
-
-        // And there should be no text nodes with real content
-        return !parent.Any<Content>(content => !content.Data.IsWhiteSpace());
     }
 
     private static bool IsWhiteSpace(Element element)

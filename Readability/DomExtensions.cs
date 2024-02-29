@@ -74,9 +74,11 @@ static class DomExtensions
     // _hasSingleTagInsideElement
     public static bool HasSingleTagInside(this ParentTag parent, string tagName)
     {
+        // There should be exactly 1 element child with given tag
         if (parent.Count<Tag>() != 1 || parent.First<Tag>().Name != tagName)
             return false;
 
+        // And there should be no text nodes with real content
         return !parent.Any<Content>(e => e is { Data.IsEmpty: false } content && !content.Data.IsWhiteSpace());
     }
 
