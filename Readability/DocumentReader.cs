@@ -1487,7 +1487,7 @@ public class DocumentReader
             }
         }
 
-        foreach (var br in articleContent.FindAll<ParentTag>(t => t.Name == "br").ToArray())
+        foreach (var br in articleContent.FindAll<Tag>(t => t.Name == "br").ToArray())
         {
             var next = br.NextSiblingOrDefault().NextElementOrDefault();
             if (next is ParentTag { Name: "p" })

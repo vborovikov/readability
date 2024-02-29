@@ -74,10 +74,10 @@ static class DomExtensions
     // _hasSingleTagInsideElement
     public static bool HasSingleTagInside(this ParentTag parent, string tagName)
     {
-        if (parent.Count(e => e is Tag) != 1 || ((Tag)parent.First(e => e is Tag)).Name != tagName)
+        if (parent.Count<Tag>() != 1 || parent.First<Tag>().Name != tagName)
             return false;
 
-        return !parent.Any(e => e is Content { Data.IsEmpty: false } content && !content.Data.IsWhiteSpace());
+        return !parent.Any<Content>(e => e is { Data.IsEmpty: false } content && !content.Data.IsWhiteSpace());
     }
 
     /**
