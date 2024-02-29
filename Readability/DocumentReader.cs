@@ -2290,12 +2290,11 @@ public class DocumentReader
         if (this.articleByline is not null)
             return false;
 
-        var textContent = tag.ToTrimString();
         if ((tag.Attributes.Has("rel", "author") || tag.Attributes.Has("itemprop", "author") ||
             Bylines.Any(bl => matchString.Contains(bl, StringComparison.OrdinalIgnoreCase))) &&
-            IsValidByline(textContent))
+            IsValidByline(tag.ToString()))
         {
-            this.articleByline = textContent;
+            this.articleByline = tag.ToTrimString();
             return true;
         }
 
@@ -2312,7 +2311,8 @@ public class DocumentReader
         // _isValidByline
         static bool IsValidByline(ReadOnlySpan<char> byline)
         {
-            return byline.Length > 0 && byline.Length < 100 && !byline.IsWhiteSpace();
+            byline = byline.Trim();
+            return byline.Length > 0 && byline.Length < 100;
         }
     }
 
