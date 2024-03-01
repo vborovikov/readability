@@ -2129,9 +2129,9 @@ public class DocumentReader
         // first paragraph as the excerpt. This is used for displaying a preview of
         // the article's content.
         if (articleContent.Find<ParentTag>(e => e.Name == "p") is ParentTag para &&
-            para.FirstOrDefault() is Content textContent)
+            para.Any<Content>())
         {
-            return textContent.Data.ToTrimString();
+            return para.ToTrimString();
         }
 
         return null;
