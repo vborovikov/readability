@@ -90,7 +90,7 @@ public class SampleTests
         Assert.AreEqual(expected.Title?.ToTrimString(), actual.Title, "Title");
         if (expected.Byline is not null)
         {
-            Assert.AreEqual(expected.Byline, actual.Byline, "Byline");
+            Assert.AreEqual(expected.Byline.ToTrimString(), actual.Byline, "Byline");
         }
         Assert.AreEqual(expected.Excerpt?.ToTrimString(), actual.Excerpt, "Excerpt");
         Assert.AreEqual(expected.SiteName, actual.SiteName, "SiteName");
