@@ -870,7 +870,8 @@ public class DocumentReader
                     }
                     else
                     {
-                        if (strWordCount > wordCount)
+                        if (strWordCount > wordCount ||
+                            (strWordCount == wordCount && str.Length > verboseString.Length))
                         {
                             verboseString = str;
                             wordCount = strWordCount;
@@ -1802,7 +1803,7 @@ public class DocumentReader
             }
 
             var weight = GetClassWeight(node);
-            Debug.WriteLine($"Cleaning Conditionally {node.ToIdString()}");
+            Debug.WriteLine($"Cleaning Conditionally {node.ToIdString()} with weight {weight}");
             var contentScore = 0;
             if (weight + contentScore < 0f)
             {
@@ -1839,13 +1840,19 @@ public class DocumentReader
                 var contentLength = node.GetContentLength();
 
                 var haveToRemove =
-                  (img > 1 && p / img < 0.5 && !node.EnumerateAncestors().Any(a => a.Name == "figure")) ||
+                  (img > 1 && ((float)p / img) < 0.5f && !node.EnumerateAncestors().Any(a => a.Name == "figure")) ||
                   (!isList && li > p) ||
-                  (input > Math.Floor((double)p / 3)) ||
-                  (!isList && headingDensity < 0.9 && contentLength < 25 && (img == 0 || img > 2) && !node.EnumerateAncestors().Any(a => a.Name == "figure")) ||
-                  (!isList && weight < 25 && linkDensity > 0.2) ||
-                  (weight >= 25 && linkDensity > 0.5) ||
+                  (input > Math.Floor(p / 3d)) ||
+                  (!isList && headingDensity < 0.9f && contentLength < 25 && (img == 0 || img > 2) && !node.EnumerateAncestors().Any(a => a.Name == "figure")) ||
+                  (!isList && weight < 25 && linkDensity > 0.2f) ||
+                  (weight >= 25f && linkDensity > 0.5f) ||
                   ((embedCount == 1 && contentLength < 75) || embedCount > 1);
+
+                Debug.WriteLine(
+                    $"_cleanConditionally: link density: {linkDensity} content length: {contentLength} " +
+                    $"p count: {p} img count: {img} li count: {li} input count {input} " +
+                    $"heading density: {headingDensity} embed count: {embedCount} have to remove: {haveToRemove}");
+
                 // Allow simple lists of images to remain in pages
                 if (isList && haveToRemove)
                 {
@@ -2152,16 +2159,9 @@ public class DocumentReader
 
         var weight = 0f;
 
-        if (tag.Attributes["class"] is { Length: > 0 } klass)
+        if (tag.Attributes["class"] is { Length: > 0 } klass && TryGetNameWeight(klass, out var classWeight))
         {
-            foreach (var className in klass.EnumerateValues())
-            {
-                if (TryGetNameWeight(className, out var classWeight))
-                {
-                    weight += classWeight;
-                    break;
-                }
-            }
+            weight += classWeight;
         }
 
         if (tag.Attributes["id"] is { Length: > 0 } id && TryGetNameWeight(id, out var idWeight))
@@ -2171,30 +2171,39 @@ public class DocumentReader
 
         return weight;
 
-        static bool TryGetNameWeight(ReadOnlySpan<char> name, out float weight)
+        static bool TryGetNameWeight(ReadOnlySpan<char> names, out float weight)
         {
+            weight = 0f;
             var found = false;
 
-            weight = 0f;
-            foreach (var negativeName in NegativeNames)
+            foreach (var name in names.EnumerateValues())
             {
-                if (name.Contains(negativeName, StringComparison.OrdinalIgnoreCase))
+                foreach (var negativeName in NegativeNames)
                 {
-                    weight -= 25f;
-                    found = true;
-                    break;
-                }
-            }
-            foreach (var positiveName in PositiveNames)
-            {
-                if (name.Contains(positiveName, StringComparison.OrdinalIgnoreCase))
-                {
-                    weight += 25f;
-                    found = true;
-                    break;
+                    if (name.Contains(negativeName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        weight -= 25f;
+                        found = true;
+                        goto Outside;
+                    }
                 }
             }
 
+        Outside:
+            foreach (var name in names.EnumerateValues())
+            {
+                foreach (var positiveName in PositiveNames)
+                {
+                    if (name.Contains(positiveName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        weight += 25f;
+                        found = true;
+                        goto Finish;
+                    }
+                }
+            }
+
+        Finish:
             return found;
         }
     }
