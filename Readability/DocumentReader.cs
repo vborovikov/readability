@@ -907,7 +907,7 @@ public class DocumentReader
             return null;
         }
 
-        var pageCacheHtml = (ParentTag)page.Clone();
+        var pageCacheHtml = page.Clone();
 
         var elementsToScore = new List<Element>();
         var candidates = new Dictionary<ParentTag, float>();
