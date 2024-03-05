@@ -1038,7 +1038,7 @@ public class DocumentReader
                     // algorithm with DIVs with are, in practice, paragraphs.
                     if (div.HasSingleTagInside("p") && GetLinkDensity(div) < 0.25f)
                     {
-                        var newNode = (ParentTag)div.First();
+                        var newNode = div.First<ParentTag>();
                         div.Remove(newNode);
                         div.ReplaceWith(newNode);
                         node = newNode;
@@ -1525,13 +1525,13 @@ public class DocumentReader
         // Remove single-cell tables
         foreach (var table in articleContent.FindAll<ParentTag>(t => t.Name == "table").ToArray())
         {
-            var tbody = table.HasSingleTagInside("tbody") ? (ParentTag)table.First(e => e is ParentTag) : table;
+            var tbody = table.HasSingleTagInside("tbody") ? table.First<ParentTag>() : table;
             if (tbody.HasSingleTagInside("tr"))
             {
-                var row = (ParentTag)tbody.First(e => e is ParentTag);
+                var row = tbody.First<ParentTag>();
                 if (row.HasSingleTagInside("td"))
                 {
-                    var cell = (ParentTag)row.First(e => e is ParentTag);
+                    var cell = row.First<ParentTag>();
                     cell = ChangeTagName(cell, cell.All(IsPhrasingContent) ? "p" : "div");
                     cell.Remove();
                     table.ReplaceWith(cell);
