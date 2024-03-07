@@ -24,7 +24,7 @@ public record ReadabilityOptions
     public bool? DisableJsonLD { get; init; }
 }
 
-public class DocumentReader
+public partial class DocumentReader
 {
     private static readonly SearchValues<char> HierarchicalSeparators = SearchValues.Create("|-\\/>»");
 
