@@ -310,7 +310,7 @@ public partial class DocumentReader
     public static bool TryMakeAbsoluteUrl(Uri documentUri, string url, [MaybeNullWhen(false)] out string absoluteUrl)
     {
         var documentUrl = new DocumentUrl(documentUri);
-        return documentUrl.TryMakeAbsolute(url, out absoluteUrl);
+        return documentUrl.TryMakeAbsolute(url, out absoluteUrl) && Uri.IsWellFormedUriString(absoluteUrl, UriKind.Absolute);
     }
 
     public static bool CanParse(Document document)
