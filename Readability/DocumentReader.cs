@@ -3,6 +3,7 @@ namespace Readability;
 using System;
 using System.Buffers;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -301,9 +302,49 @@ public partial class DocumentReader
         this.attempts = [];
     }
 
-    public bool CanRead => true;
+    public static bool TryMakeAbsoluteUrl(string documentUrl, string url, [MaybeNullWhen(false)] out string absoluteUrl)
+    {
+        return TryMakeAbsoluteUrl(new Uri(documentUrl), url, out absoluteUrl);
+    }
 
-    public Article Parse()
+    public static bool TryMakeAbsoluteUrl(Uri documentUri, string url, [MaybeNullWhen(false)] out string absoluteUrl)
+    {
+        var documentUrl = new DocumentUrl(documentUri);
+        return documentUrl.TryMakeAbsolute(url, out absoluteUrl);
+    }
+
+    public static bool CanParse(Document document)
+    {
+        return false;
+    }
+
+    public static bool TryParse(Document document, [MaybeNullWhen(false)] out Article article)
+    {
+        return TryParse(document, new ReadabilityOptions(), out article);
+    }
+
+    public static bool TryParse(Document document, Uri documentUri, [MaybeNullWhen(false)] out Article article)
+    {
+        return TryParse(document, documentUri, new ReadabilityOptions(), out article);
+    }
+
+    public static bool TryParse(Document document, ReadabilityOptions options, [MaybeNullWhen(false)] out Article article)
+    {
+        return TryParse(document, new DocumentUrl(document), options, out article);
+    }
+
+    public static bool TryParse(Document document, Uri documentUri, ReadabilityOptions options, [MaybeNullWhen(false)] out Article article)
+    {
+        return TryParse(document, new DocumentUrl(documentUri, document), options, out article);
+    }
+
+    private static bool TryParse(Document document, DocumentUrl documentUrl, ReadabilityOptions options, [MaybeNullWhen(false)] out Article article)
+    {
+        var reader = new DocumentReader(document, documentUrl, options);
+        return reader.TryParse(out article);
+    }
+
+    public bool TryParse([MaybeNullWhen(false)] out Article article)
     {
         UnwrapNoscriptImages();
         var jsonMetadata = GetJsonLD();
@@ -311,10 +352,15 @@ public partial class DocumentReader
         PrepareDocument();
         var metadata = GetArticleMetadata(jsonMetadata);
         this.articleTitle = metadata.Title;
-        var articleContent = GrabArticle() ?? throw new ArticleNotFoundException();
+        var articleContent = GrabArticle();
+        if (articleContent is null)
+        {
+            article = null;
+            return false;
+        }
         PostProcessContent(articleContent);
 
-        return new Article
+        article = new Article
         {
             Title = this.articleTitle,
             Byline = metadata.Byline ?? this.articleByline,
@@ -325,6 +371,15 @@ public partial class DocumentReader
             Language = this.articleLang,
             Dir = this.articleDir,
         };
+        return true;
+    }
+
+    public Article Parse()
+    {
+        if (!TryParse(out var article))
+            throw new ArticleNotFoundException();
+
+        return article;
     }
 
     private void UnwrapNoscriptImages()
