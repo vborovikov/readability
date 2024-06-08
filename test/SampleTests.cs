@@ -72,17 +72,20 @@ public class SampleTests
 
         var metadataFileName = Path.Combine(path, "expected-metadata.json");
         await using var metadataStream = new FileStream(metadataFileName, FileMode.Open, FileAccess.Read);
-        var expectedMetadata = await JsonSerializer.DeserializeAsync<Article>(metadataStream, jsonOptions);
+        var expectedMetadata = await JsonSerializer.DeserializeAsync<ArticleInfo>(metadataStream, jsonOptions);
         Assert.IsNotNull(expectedMetadata);
         var expectedFileName = Path.Combine(path, "expected.html");
         await using var expectedStream = new FileStream(expectedFileName, FileMode.Open, FileAccess.Read);
         var expectedContent = await Document.Html.ParseAsync(expectedStream, default);
 
+        //var actualFileName = Path.Combine(path, "actual.html");
+        //await File.WriteAllTextAsync(actualFileName, parsed.Content.ToText());
+
         AssertAreEqual(expectedMetadata, parsed);
         AssertAreEqual(expectedContent, parsed.Content);
     }
 
-    private static void AssertAreEqual(Article expected, Article actual)
+    private static void AssertAreEqual(ArticleInfo expected, ArticleInfo actual)
     {
         Assert.IsNotNull(expected);
         Assert.IsNotNull(actual);

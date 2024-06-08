@@ -15,14 +15,25 @@ using FuzzyCompare.Text;
 
 public record ReadabilityOptions
 {
+    private const int DefaultNTopCandidates = 5;
+    internal const int DefaultCharThreshold = 500;
+
     private static readonly string[] DefaultClassesToPreserve = ["caption"];
 
-    public int? MaxElemsToParse { get; init; }
-    public int? NbTopCandidates { get; init; }
-    public int? CharThreshold { get; init; }
+    public static readonly ReadabilityOptions Default = new();
+
+    /// <summary>
+    /// The number of top candidates to consider when analysing how
+    /// tight the competition is among candidates. 
+    /// </summary>
+    public int NTopCandidates { get; init; } = DefaultNTopCandidates;
+
+    /// <summary>
+    /// The number of chars an article must have in order to return a result.
+    /// </summary>
+    public int CharThreshold { get; init; } = DefaultCharThreshold;
     public string[] ClassesToPreserve { get; init; } = DefaultClassesToPreserve;
-    public bool? KeepClasses { get; init; }
-    public bool? DisableJsonLD { get; init; }
+    public bool KeepClasses { get; init; }
 }
 
 public partial class DocumentReader
@@ -242,13 +253,6 @@ public partial class DocumentReader
     // These are the classes that readability sets itself.
     private static readonly string[] DefaultClassesToPreserve = ["page"];
 
-    // The number of top candidates to consider when analysing how
-    // tight the competition is among candidates.
-    private const int DefaultNTopCandidates = 5;
-
-    // The default number of chars an article must have in order to return a result
-    private const int DefaultCharThreshold = 500;
-
     [Flags]
     private enum CleanFlags
     {
@@ -277,10 +281,10 @@ public partial class DocumentReader
     private readonly List<Attempt> attempts;
 
     public DocumentReader(Document document)
-        : this(document, new ReadabilityOptions()) { }
+        : this(document, ReadabilityOptions.Default) { }
 
     public DocumentReader(Document document, Uri documentUri)
-        : this(document, documentUri, new ReadabilityOptions()) { }
+        : this(document, documentUri, ReadabilityOptions.Default) { }
 
     public DocumentReader(Document document, ReadabilityOptions options)
         : this(document, new DocumentUrl(document), options) { }
@@ -294,54 +298,12 @@ public partial class DocumentReader
         this.documentUrl = documentUrl;
         this.flags = CleanFlags.All;
 
-        this.nbTopCandidates = options.NbTopCandidates ?? DefaultNTopCandidates;
-        this.charThreshold = options.CharThreshold ?? DefaultCharThreshold;
-        this.keepClasses = options.KeepClasses ?? false;
+        this.nbTopCandidates = options.NTopCandidates;
+        this.charThreshold = options.CharThreshold;
+        this.keepClasses = options.KeepClasses;
         this.classesToPreserve = [.. DefaultClassesToPreserve, .. options.ClassesToPreserve];
 
         this.attempts = [];
-    }
-
-    public static bool TryMakeAbsoluteUrl(string documentUrl, string url, [MaybeNullWhen(false)] out string absoluteUrl)
-    {
-        return TryMakeAbsoluteUrl(new Uri(documentUrl), url, out absoluteUrl);
-    }
-
-    public static bool TryMakeAbsoluteUrl(Uri documentUri, string url, [MaybeNullWhen(false)] out string absoluteUrl)
-    {
-        var documentUrl = new DocumentUrl(documentUri);
-        return documentUrl.TryMakeAbsolute(url, out absoluteUrl) && Uri.IsWellFormedUriString(absoluteUrl, UriKind.Absolute);
-    }
-
-    public static bool CanParse(Document document)
-    {
-        return false;
-    }
-
-    public static bool TryParse(Document document, [MaybeNullWhen(false)] out Article article)
-    {
-        return TryParse(document, new ReadabilityOptions(), out article);
-    }
-
-    public static bool TryParse(Document document, Uri documentUri, [MaybeNullWhen(false)] out Article article)
-    {
-        return TryParse(document, documentUri, new ReadabilityOptions(), out article);
-    }
-
-    public static bool TryParse(Document document, ReadabilityOptions options, [MaybeNullWhen(false)] out Article article)
-    {
-        return TryParse(document, new DocumentUrl(document), options, out article);
-    }
-
-    public static bool TryParse(Document document, Uri documentUri, ReadabilityOptions options, [MaybeNullWhen(false)] out Article article)
-    {
-        return TryParse(document, new DocumentUrl(documentUri, document), options, out article);
-    }
-
-    private static bool TryParse(Document document, DocumentUrl documentUrl, ReadabilityOptions options, [MaybeNullWhen(false)] out Article article)
-    {
-        var reader = new DocumentReader(document, documentUrl, options);
-        return reader.TryParse(out article);
     }
 
     public bool TryParse([MaybeNullWhen(false)] out Article article)
@@ -355,7 +317,7 @@ public partial class DocumentReader
         var articleContent = GrabArticle();
         if (articleContent is null)
         {
-            article = null;
+            article = default;
             return false;
         }
         PostProcessContent(articleContent);
@@ -366,6 +328,7 @@ public partial class DocumentReader
             Byline = metadata.Byline ?? this.articleByline,
             Excerpt = metadata.Excerpt?.ToTrimString() ?? GetArticleExcerpt(articleContent),
             Content = articleContent,
+            Length = articleContent.Length,
             SiteName = metadata.SiteName,
             Published = metadata.Published,
             Language = this.articleLang,
@@ -1515,7 +1478,7 @@ public partial class DocumentReader
         // Clean out elements with little content that have "share" in their id/class combinations from final top candidates,
         // which means we don't remove the top candidates even they have "share".
 
-        var shareElementThreshold = DefaultCharThreshold;
+        var shareElementThreshold = ReadabilityOptions.DefaultCharThreshold;
         foreach (var element in articleContent)
         {
             if (element is not Tag e)

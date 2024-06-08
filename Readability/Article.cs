@@ -13,21 +13,10 @@ class ArticleMetadata
     public DateTimeOffset? Published { get; set; }
 }
 
-public record Article
+public record ArticleInfo
 {
     /** article title */
     public string? Title { get; init; }
-
-    /** HTML string of processed article content */
-    [JsonIgnore]
-    public ParentTag Content { get; init; }
-
-    /* text content of the article, with all the HTML tags removed */
-    //[JsonIgnore]
-    //public string TextContent { get; init; }
-
-    /** length of an article, in characters */
-    public int Length { get; init; }
     
     /** article description, or short excerpt from the content */
     public string? Excerpt { get; init; }
@@ -50,18 +39,21 @@ public record Article
     public DateTimeOffset? Published { get; init; }
 }
 
+public record Article : ArticleInfo
+{
+    /** HTML string of processed article content */
+    public required ParentTag Content { get; init; }
+
+    /** length of an article, in characters */
+    public required int Length { get; init; }
+}
+
 [Serializable]
 public class ArticleNotFoundException : Exception
 {
-    public ArticleNotFoundException()
-    {
-    }
+    public ArticleNotFoundException() { }
 
-    public ArticleNotFoundException(string? message) : base(message)
-    {
-    }
+    public ArticleNotFoundException(string? message) : base(message) { }
 
-    public ArticleNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
+    public ArticleNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
 }
