@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text;
 using Brackets;
 
-class DocumentUrl
+sealed class DocumentUrl
 {
     private readonly string baseUrl;
     private readonly string pathUrl;
@@ -176,6 +176,15 @@ class DocumentUrl
 
         documentUrl = null;
         return false;
+    }
+}
+
+public static class UrlExtensions
+{
+    public static bool TryMakeAbsoluteUrl(this Uri documentUri, string url, [MaybeNullWhen(false)] out string absoluteUrl)
+    {
+        var documentUrl = new DocumentUrl(documentUri);
+        return documentUrl.TryMakeAbsolute(url, out absoluteUrl) && Uri.IsWellFormedUriString(absoluteUrl, UriKind.Absolute);
     }
 }
 

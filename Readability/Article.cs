@@ -13,6 +13,14 @@ class ArticleMetadata
     public DateTimeOffset? Published { get; set; }
 }
 
+public record ArticlePath
+{
+    public string? Title { get; init; }
+    public string? Byline { get; init; }
+    public string? Excerpt { get; init; }
+    public required string Content { get; init; }
+}
+
 public record ArticleInfo
 {
     /** article title */

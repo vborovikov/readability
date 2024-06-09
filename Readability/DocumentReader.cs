@@ -292,7 +292,7 @@ public partial class DocumentReader
     public DocumentReader(Document document, Uri documentUri, ReadabilityOptions options)
         : this(document, new DocumentUrl(documentUri, document), options) { }
 
-    private DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions options)
+    internal DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions options)
     {
         this.document = document;
         this.documentUrl = documentUrl;
@@ -304,6 +304,20 @@ public partial class DocumentReader
         this.classesToPreserve = [.. DefaultClassesToPreserve, .. options.ClassesToPreserve];
 
         this.attempts = [];
+    }
+
+    public bool TryFind(ArticlePath articlePath, [MaybeNullWhen(false)] out Article article)
+    {
+        article = default;
+        return false;
+    }
+
+    public Article Find(ArticlePath articlePath)
+    {
+        if (!TryFind(articlePath, out var article))
+            throw new ArticleNotFoundException();
+
+        return article;
     }
 
     public bool TryParse([MaybeNullWhen(false)] out Article article)
