@@ -294,7 +294,7 @@ public partial class DocumentReader
 
     internal DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions options)
     {
-        this.document = document.Clone();
+        this.document = document.IsSerialized ? document : document.Clone();
         this.documentUrl = documentUrl;
         this.flags = CleanFlags.All;
 
