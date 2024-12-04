@@ -27,7 +27,8 @@ static class Program
             await using var htmlFileStream = htmlFile.OpenRead();
             var document = await Document.Html.ParseAsync(htmlFileStream);
 
-            var contentScores = new PriorityQueue<ParentTag, float>(DefaultNTopCandidates);
+            var nbTopCandidates = args.Length > 1 && int.TryParse(args[1], out var num) ? num : DefaultNTopCandidates;
+            var contentScores = new PriorityQueue<ParentTag, float>(nbTopCandidates);
 
             var body = document
                 .FirstOrDefault<ParentTag>(h => h.Name == "html")?
@@ -38,13 +39,13 @@ static class Program
                 var score = GetContentScore(root);
                 if (float.IsNormal(score))
                 {
-                    if (contentScores.Count == DefaultNTopCandidates)
+                    if (contentScores.Count < nbTopCandidates)
                     {
-                        contentScores.EnqueueDequeue(root, score);
+                        contentScores.Enqueue(root, score);
                     }
                     else
                     {
-                        contentScores.Enqueue(root, score);
+                        contentScores.EnqueueDequeue(root, score);
                     }
                 }
             }
