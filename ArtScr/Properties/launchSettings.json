@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ArtScr": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\test\\test-pages\\nytimes-4\\source.html"
+    }
+  }
+}
