@@ -2,7 +2,7 @@
   "profiles": {
     "ArtScr": {
       "commandName": "Project",
-      "commandLineArgs": "..\\..\\..\\..\\test\\test-pages\\002\\source.html"
+      "commandLineArgs": "..\\..\\..\\..\\test\\test-pages\\theverge\\source.html"
     }
   }
 }

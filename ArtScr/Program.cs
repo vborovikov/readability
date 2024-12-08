@@ -1,5 +1,6 @@
 ﻿namespace ArtScr;
 
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Text;
 using Brackets;
@@ -102,34 +103,82 @@ static class Program
         }
 
         var nonContentCount = CountNonContent(tag);
-        if (nonContentCount == 0)
+        var elementFactor = GetElementFactor(tag);
+        var contentScore = 0f;
+        if (nonContentCount < 2)
         {
             // pure content
+
+            if (contentCount < 50 || elementFactor > 1f)
+            {
+                // some element full of content
+                elementFactor *= 1f / (1f + MathF.Exp(-nonContentCount / (float)contentCount));
+                contentScore = contentCount * frequency * elementFactor;
+            }
+            else
+            {
+                // definitely a paragraph, almost always we want its parent
+                contentScore = frequency * elementFactor;
+            }
+            Debug.WriteLine($"{GetElementPath(tag)}: content: {contentCount}, non-content: {nonContentCount}, frequency: {frequency}, factor: {elementFactor}, score: {contentScore}");
+            return contentScore;
+        }
+        else if (contentCount == nonContentCount)
+        {
+            // noise
             return 0f;
         }
 
-        var elementFactor = GetElementFactor(tag);
-
-        Debug.WriteLine($"{GetElementPath(tag)}: # content: {contentCount}, # non-content: {nonContentCount}, frequency: {frequency}, factor: {elementFactor}");
-
-        return (((float)contentCount / nonContentCount) * frequency) * elementFactor;
+        // reduce the element factor by a bias value
+        //elementFactor *= 1f - MathF.Log10(nonContentCount) / MathF.Log10(contentCount);
+        
+        // inverse logit
+        //elementFactor *= 1f / (1f + MathF.Exp(-nonContentCount / (float)contentCount));
+        
+        contentScore = (((float)contentCount / nonContentCount) * frequency) * elementFactor;
+        Debug.WriteLine($"{GetElementPath(tag)}: content: {contentCount}, non-content: {nonContentCount}, frequency: {frequency}, factor: {elementFactor}, score: {contentScore}");
+        return contentScore;
     }
 
     private static float GetElementFactor(ParentTag tag)
     {
-        var factor = tag.Name switch
-        {
-            "article" or "section" => 1.2f,
-            "div" => 1.1f,
-            "pre" or "td" or "blockquote" => 1f,
-            "address" or "ol" or "ul" or "dl" or "dd" or "dt" or "li" or "form" => 0.9f,
-            "h1" or "h2" or "h3" or "h4" or "h5" or "h6" => 0.5f,
-            _ => 1f,
-        };
+        var factor = KnownElementFactors.GetValueOrDefault(tag.Name, defaultValue: 1f);
         factor += GetElementWeight(tag);
 
         return factor;
     }
+
+    private static readonly FrozenDictionary<string, float> KnownElementFactors = new KeyValuePair<string, float>[]
+    {
+        new("article", 1.2f),
+        new("section", 1.2f),
+        new("div", 1.1f),
+        new("main", 1.1f),
+        new("pre", 0.9f),
+        new("table", 0.9f),
+        new("tbody", 0.9f),
+        new("tr", 0.9f),
+        new("td", 0.9f),
+        new("blockquote", 0.9f),
+        new("address", 0.8f),
+        new("ol", 0.8f),
+        new("ul", 0.8f),
+        new("dl", 0.8f),
+        new("dd", 0.8f),
+        new("dt", 0.8f),
+        new("li", 0.8f),
+        new("form", 0.8f),
+        new("p", 0.5f),
+        new("h1", 0.5f),
+        new("h2", 0.5f),
+        new("h3", 0.5f),
+        new("h4", 0.5f),
+        new("h5", 0.5f),
+        new("h6", 0.5f),
+        new("hgroup", 0.5f),
+        new("header", 0.5f),
+        new("footer", 0.5f),
+    }.ToFrozenDictionary(StringComparer.Ordinal);
 
     private static float GetElementWeight(ParentTag tag)
     {
@@ -210,30 +259,45 @@ static class Program
             foreach (var token in content.Data.EnumerateTokens())
             {
                 ++tokenCount;
+
                 if (token.Category == TokenCategory.Word)
                     ++wordCount;
-                if (token.Category == TokenCategory.Number)
+                else if (token.Category == TokenCategory.Number)
                     ++numberCount;
-                if (token.Category == TokenCategory.PunctuationMark)
+                else if (token.Category == TokenCategory.PunctuationMark)
                     ++punctuationCount;
             }
         }
 
         if (tokenCount == 0)
+        {
+            // no content
             return default;
+        }
 
-        return (tokenCount, (float)(wordCount + numberCount + punctuationCount) / tokenCount);
+        if (punctuationCount >= (wordCount + numberCount))
+        {
+            // non-content
+            return default;
+        }
+
+        var contentCount = (wordCount + numberCount + punctuationCount);
+        return (contentCount, (float)contentCount / tokenCount);
     }
 
     private static int CountNonContent(ParentTag root)
     {
-        return root.FindAll<Tag>(IsNonContentElement).Count();
-    }
+        return root.FindAll<Tag>(IsNonContentElement).Count() +
+            (IsNonContentElement(root) ? 1 : 0);
 
-    private static bool IsNonContentElement(Tag tag)
-    {
-        return tag.PermittedContent != ContentCategory.Phrasing &&
-            (tag is ParentTag root && root.Any() && root.All<Tag>(t => t.PermittedContent != ContentCategory.Phrasing));
+        static bool IsNonContentElement(Tag tag)
+        {
+            return 
+                (!tag.PermittedContent.HasFlag(ContentCategory.Phrasing) || tag.Category.HasFlag(ContentCategory.Form)) ||
+                (tag is ParentTag parent && parent.Any() &&
+                    parent.All<Tag>(t => (!t.Category.HasFlag(ContentCategory.Phrasing) || t.Category.HasFlag(ContentCategory.Form)) &&
+                        !t.PermittedContent.HasFlag(ContentCategory.Phrasing)));
+        }
     }
 
     private const int DefaultNTopCandidates = 5;
@@ -284,7 +348,9 @@ static class Program
         "shopping",
         "tags",
         "tool",
-        "widget"
+        "widget",
+        //"switcher",
+        //"newsletter"
     ];
 
     public static ValueEnumerator EnumerateValues(this ReadOnlySpan<char> span) => new(span);
