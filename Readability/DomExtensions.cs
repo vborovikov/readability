@@ -263,11 +263,9 @@ static class DomExtensions
 
     private const int TabSize = 4;
 
-    public static string ToText(this Document document) => ToText(document.GetEnumerator());
+    public static string ToText(this IRoot root) => root is Element element ? ToText(element) : ToText(root.GetEnumerator());
 
-    public static string ToText(this ParentTag root) => ToText(root.GetEnumerator());
-
-    public static string ToText(this Element element) => new StringBuilder().AppendElement(element).ToString();
+    private static string ToText(this Element element) => new StringBuilder().AppendElement(element).ToString();
 
     private static string ToText(in Element.Enumerator elements)
     {
