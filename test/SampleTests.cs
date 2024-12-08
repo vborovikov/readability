@@ -76,12 +76,14 @@ public class SampleTests
         Assert.IsNotNull(expectedMetadata);
         var expectedFileName = Path.Combine(path, "expected.html");
         await using var expectedStream = new FileStream(expectedFileName, FileMode.Open, FileAccess.Read);
-        var expectedContent = await Document.Html.ParseAsync(expectedStream, default);
+        var expectedDocument = await Document.Html.ParseAsync(expectedStream, default);
 
         //var actualFileName = Path.Combine(path, "actual.html");
         //await File.WriteAllTextAsync(actualFileName, parsed.Content.ToText());
 
         AssertAreEqual(expectedMetadata, parsed);
+
+        var expectedContent = expectedDocument.FirstOrDefault<ParentTag>();
         AssertAreEqual(expectedContent, parsed.Content);
     }
 
