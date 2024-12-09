@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using Brackets;
 using FuzzyCompare.Text;
+using Termly;
 
 static class Program
 {
@@ -35,25 +36,66 @@ static class Program
                 .FirstOrDefault<ParentTag>(h => h.Name == "html")?
                 .FirstOrDefault<ParentTag>(b => b.Name == "body") ??
                 (IRoot)document;
+
             foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
             {
-                var score = GetContentScore(root);
-                if (float.IsNormal(score))
+                var (tokenCount, tokenFrequency) = GetContentStats(root);
+                if (tokenCount > 0)
                 {
-                    if (contentScores.Count < nbTopCandidates)
+                    var markupCount = CountNonContent(root);
+                    var elementFactor = GetElementFactor(root);
+                    if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
                     {
-                        contentScores.Enqueue(root, score);
-                    }
-                    else
-                    {
-                        contentScores.EnqueueDequeue(root, score);
+                        var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenFrequency * elementFactor;
+                        Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, frequency: {tokenFrequency}, factor: {elementFactor}, score: {contentScore}");
+
+                        if (contentScores.Count < nbTopCandidates)
+                        {
+                            contentScores.Enqueue(root, contentScore);
+                        }
+                        else
+                        {
+                            contentScores.EnqueueDequeue(root, contentScore);
+                        }
                     }
                 }
             }
 
+            ParentTag? articleContent = null;
+            var commonAncestors = new PriorityQueue<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var root, out var score))
             {
-                Console.Out.WriteLine($"{GetElementPath(root)}: {score:F2}");
+                Console.Out.WriteLineInColor($"{GetElementPath(root):cyan}: {score:F2:magenta}");
+
+                for (var parent = root.Parent; parent is not null && parent != body; parent = parent.Parent)
+                {
+                    if (commonAncestors.Remove(parent, out _, out var priority))
+                    {
+                        commonAncestors.Enqueue(parent, priority + 1);
+                        break;
+                    }
+                    else
+                    {
+                        commonAncestors.Enqueue(parent, 1);
+                    }
+                }
+
+                articleContent = root;
+            }
+
+            var relevanceThreshold = nbTopCandidates / 2;
+            while (commonAncestors.TryDequeue(out var ancestor, out var reoccurrence))
+            {
+                if (reoccurrence > relevanceThreshold)
+                {
+                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:magenta}");
+                    articleContent = ancestor;
+                }
+            }
+
+            if (articleContent is not null)
+            {
+                Console.Out.WriteLineInColor($"\nArticle content path: {GetElementPath(articleContent):green}");
             }
         }
         catch (Exception x)
@@ -93,55 +135,14 @@ static class Program
         return path.ToString();
     }
 
-    private static float GetContentScore(ParentTag tag)
+    private static float GetElementFactor(ParentTag root)
     {
-        var (contentCount, frequency) = GetContentStats(tag);
-        if (contentCount == 0)
+        var tag = root;
+        while (tag.Count() == 1 && tag.First() is ParentTag nested)
         {
-            // no content at all
-            return 0f;
+            tag = nested;
         }
 
-        var nonContentCount = CountNonContent(tag);
-        var elementFactor = GetElementFactor(tag);
-        var contentScore = 0f;
-        if (nonContentCount < 2)
-        {
-            // pure content
-
-            if (contentCount < 50 || elementFactor > 1f)
-            {
-                // some element full of content
-                elementFactor *= 1f / (1f + MathF.Exp(-nonContentCount / (float)contentCount));
-                contentScore = contentCount * frequency * elementFactor;
-            }
-            else
-            {
-                // definitely a paragraph, almost always we want its parent
-                contentScore = frequency * elementFactor;
-            }
-            Debug.WriteLine($"{GetElementPath(tag)}: content: {contentCount}, non-content: {nonContentCount}, frequency: {frequency}, factor: {elementFactor}, score: {contentScore}");
-            return contentScore;
-        }
-        else if (contentCount == nonContentCount)
-        {
-            // noise
-            return 0f;
-        }
-
-        // reduce the element factor by a bias value
-        //elementFactor *= 1f - MathF.Log10(nonContentCount) / MathF.Log10(contentCount);
-        
-        // inverse logit
-        //elementFactor *= 1f / (1f + MathF.Exp(-nonContentCount / (float)contentCount));
-        
-        contentScore = (((float)contentCount / nonContentCount) * frequency) * elementFactor;
-        Debug.WriteLine($"{GetElementPath(tag)}: content: {contentCount}, non-content: {nonContentCount}, frequency: {frequency}, factor: {elementFactor}, score: {contentScore}");
-        return contentScore;
-    }
-
-    private static float GetElementFactor(ParentTag tag)
-    {
         var factor = KnownElementFactors.GetValueOrDefault(tag.Name, defaultValue: 1f);
         factor += GetElementWeight(tag);
 
@@ -287,12 +288,11 @@ static class Program
 
     private static int CountNonContent(ParentTag root)
     {
-        return root.FindAll<Tag>(IsNonContentElement).Count() +
-            (IsNonContentElement(root) ? 1 : 0);
+        return root.FindAll<Tag>(IsNonContentElement).Count() + (IsNonContentElement(root) ? 1 : 0);
 
         static bool IsNonContentElement(Tag tag)
         {
-            return 
+            return
                 (!tag.PermittedContent.HasFlag(ContentCategory.Phrasing) || tag.Category.HasFlag(ContentCategory.Form)) ||
                 (tag is ParentTag parent && parent.Any() &&
                     parent.All<Tag>(t => (!t.Category.HasFlag(ContentCategory.Phrasing) || t.Category.HasFlag(ContentCategory.Form)) &&
