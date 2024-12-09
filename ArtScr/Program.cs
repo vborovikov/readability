@@ -39,10 +39,9 @@ static class Program
 
             foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
             {
-                var (tokenCount, tokenFrequency) = GetContentStats(root);
-                if (tokenCount > 0)
+                if (TryCountTokens(root, out var tokenCount, out var tokenFrequency))
                 {
-                    var markupCount = CountNonContent(root);
+                    var markupCount = CountMarkup(root);
                     var elementFactor = GetElementFactor(root);
                     if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
                     {
@@ -88,14 +87,14 @@ static class Program
             {
                 if (reoccurrence > relevanceThreshold)
                 {
-                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:magenta}");
+                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow}");
                     articleContent = ancestor;
                 }
             }
 
             if (articleContent is not null)
             {
-                Console.Out.WriteLineInColor($"\nArticle content path: {GetElementPath(articleContent):green}");
+                Console.Out.WriteLineInColor($"\nArticle: {GetElementPath(articleContent):green}");
             }
         }
         catch (Exception x)
@@ -239,13 +238,12 @@ static class Program
         }
     }
 
-    private static (int Length, float Frequency) GetContentStats(ParentTag root)
+    private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenFrequency)
     {
-        var tokenCount = 0;
+        var tokenTotal = 0;
         var wordCount = 0;
         var numberCount = 0;
         var punctuationCount = 0;
-        var contentLength = 0;
 
         foreach (var content in root.FindAll<Content>())
         {
@@ -255,11 +253,9 @@ static class Program
                 continue;
             }
 
-            contentLength += content.Length;
-
             foreach (var token in content.Data.EnumerateTokens())
             {
-                ++tokenCount;
+                ++tokenTotal;
 
                 if (token.Category == TokenCategory.Word)
                     ++wordCount;
@@ -270,23 +266,20 @@ static class Program
             }
         }
 
-        if (tokenCount == 0)
+        if (tokenTotal == 0 || punctuationCount >= (wordCount + numberCount))
         {
-            // no content
-            return default;
+            // no content or non-content
+            tokenCount = 0;
+            tokenFrequency = 0f;
+            return false;
         }
 
-        if (punctuationCount >= (wordCount + numberCount))
-        {
-            // non-content
-            return default;
-        }
-
-        var contentCount = (wordCount + numberCount + punctuationCount);
-        return (contentCount, (float)contentCount / tokenCount);
+        tokenCount = (wordCount + numberCount + punctuationCount);
+        tokenFrequency = (float)tokenCount / tokenTotal;
+        return true;
     }
 
-    private static int CountNonContent(ParentTag root)
+    private static int CountMarkup(ParentTag root)
     {
         return root.FindAll<Tag>(IsNonContentElement).Count() + (IsNonContentElement(root) ? 1 : 0);
 
