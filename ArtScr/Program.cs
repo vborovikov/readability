@@ -2,6 +2,8 @@
 
 using System.Collections.Frozen;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using Brackets;
 using FuzzyCompare.Text;
@@ -30,7 +32,7 @@ static class Program
             var document = await Document.Html.ParseAsync(htmlFileStream);
 
             var nbTopCandidates = args.Length > 1 && int.TryParse(args[1], out var num) ? num : DefaultNTopCandidates;
-            var contentScores = new PriorityQueue<ParentTag, float>(nbTopCandidates);
+            var contentScores = new PriorityQueue<ArticleCandidate, float>(nbTopCandidates);
 
             var body = document
                 .FirstOrDefault<ParentTag>(h => h.Name == "html")?
@@ -46,49 +48,70 @@ static class Program
                     if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
                     {
                         var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenFrequency * elementFactor;
+
                         Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, frequency: {tokenFrequency}, factor: {elementFactor}, score: {contentScore}");
 
                         if (contentScores.Count < nbTopCandidates)
                         {
-                            contentScores.Enqueue(root, contentScore);
+                            contentScores.Enqueue(new(root, tokenCount), contentScore);
+
                         }
                         else
                         {
-                            contentScores.EnqueueDequeue(root, contentScore);
+                            contentScores.EnqueueDequeue(new(root, tokenCount), contentScore);
                         }
                     }
                 }
             }
 
             ParentTag? articleContent = null;
-            var commonAncestors = new PriorityQueue<ParentTag, int>(nbTopCandidates);
-            while (contentScores.TryDequeue(out var root, out var score))
+            var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
+            var candidates = new Dictionary<ParentTag, int>(contentScores.Count);
+            var nestedGroupCount = 0;
+            var maxTokenCount = 0;
+            while (contentScores.TryDequeue(out var candidate, out var score))
             {
-                Console.Out.WriteLineInColor($"{GetElementPath(root):cyan}: {score:F2:magenta}");
+                Console.Out.WriteLineInColor($"{GetElementPath(candidate.Root):cyan}: {score:F2:magenta} ({candidate.TokenCount})");
 
-                for (var parent = root.Parent; parent is not null && parent != body; parent = parent.Parent)
+                for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
                 {
-                    if (commonAncestors.Remove(parent, out _, out var priority))
-                    {
-                        commonAncestors.Enqueue(parent, priority + 1);
-                        break;
-                    }
-                    else
-                    {
-                        commonAncestors.Enqueue(parent, 1);
-                    }
+                    ref var reoccurence = ref CollectionsMarshal.GetValueRefOrAddDefault(commonAncestors, parent, out _);
+                    ++reoccurence;
                 }
 
-                articleContent = root;
+                candidates.Add(candidate.Root, candidate.TokenCount);
+                if (candidate.TokenCount > maxTokenCount)
+                {
+                    maxTokenCount = candidate.TokenCount;
+                }
+                if (candidate.Root.Parent == articleContent)
+                {
+                    ++nestedGroupCount;
+                }
+                else
+                {
+                    nestedGroupCount = 0;
+                }
+
+                articleContent = candidate.Root;
             }
 
-            var relevanceThreshold = nbTopCandidates / 2;
-            while (commonAncestors.TryDequeue(out var ancestor, out var reoccurrence))
+            if (nestedGroupCount < 2)
             {
-                if (reoccurrence > relevanceThreshold)
+                var relevanceThreshold = nbTopCandidates / 2;
+                var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
+                var foundRelevantAncestor = false;
+                foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
                     Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow}");
-                    articleContent = ancestor;
+
+                    if (!foundRelevantAncestor &&
+                        (reoccurrence - relevanceThreshold == 1 || reoccurrence == nbTopCandidates) &&
+                        (!candidates.TryGetValue(ancestor, out var tokenCount) || Math.Abs(maxTokenCount - tokenCount) < tokenCountThreshold))
+                    {
+                        articleContent = ancestor;
+                        foundRelevantAncestor = true;
+                    }
                 }
             }
 
@@ -105,6 +128,8 @@ static class Program
 
         return 0;
     }
+
+    private record struct ArticleCandidate(ParentTag Root, int TokenCount);
 
     private static string GetElementPath(Tag element)
     {
