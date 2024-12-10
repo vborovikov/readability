@@ -2,7 +2,6 @@
 
 using System.Collections.Frozen;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Brackets;
@@ -39,36 +38,40 @@ static class Program
                 .FirstOrDefault<ParentTag>(b => b.Name == "body") ??
                 (IRoot)document;
 
+            var candidates = new Dictionary<ParentTag, ArticleCandidate>();
             foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
             {
-                if (TryCountTokens(root, out var tokenCount, out var tokenFrequency))
+                if (TryCountTokens(root, out var tokenCount, out var tokenDensity))
                 {
                     var markupCount = CountMarkup(root);
                     var elementFactor = GetElementFactor(root);
                     if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
                     {
-                        var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenFrequency * elementFactor;
+                        var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
 
-                        Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, frequency: {tokenFrequency}, factor: {elementFactor}, score: {contentScore}");
+                        Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
+
+                        var newCandidate = new ArticleCandidate(root, tokenCount);
+                        candidates.Add(root, newCandidate);
 
                         if (contentScores.Count < nbTopCandidates)
                         {
-                            contentScores.Enqueue(new(root, tokenCount), contentScore);
+                            contentScores.Enqueue(newCandidate, contentScore);
 
                         }
                         else
                         {
-                            contentScores.EnqueueDequeue(new(root, tokenCount), contentScore);
+                            contentScores.EnqueueDequeue(newCandidate, contentScore);
                         }
                     }
                 }
             }
 
-            ParentTag? articleContent = null;
-            var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
-            var candidates = new Dictionary<ParentTag, int>(contentScores.Count);
-            var nestedGroupCount = 0;
             var maxTokenCount = 0;
+            var nestedGroupCount = 0;
+            var articleCandidate = default(ArticleCandidate);
+            var topCandidates = new Dictionary<ParentTag, int>(contentScores.Count);
+            var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
                 Console.Out.WriteLineInColor($"{GetElementPath(candidate.Root):cyan}: {score:F2:magenta} ({candidate.TokenCount})");
@@ -79,12 +82,12 @@ static class Program
                     ++reoccurence;
                 }
 
-                candidates.Add(candidate.Root, candidate.TokenCount);
+                topCandidates.Add(candidate.Root, candidate.TokenCount);
                 if (candidate.TokenCount > maxTokenCount)
                 {
                     maxTokenCount = candidate.TokenCount;
                 }
-                if (candidate.Root.Parent == articleContent)
+                if (candidate.Root.Parent == articleCandidate.Root)
                 {
                     ++nestedGroupCount;
                 }
@@ -93,31 +96,36 @@ static class Program
                     nestedGroupCount = 0;
                 }
 
-                articleContent = candidate.Root;
+                articleCandidate = candidate;
             }
 
             if (nestedGroupCount < 2)
             {
-                var relevanceThreshold = nbTopCandidates / 2;
-                var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 var foundRelevantAncestor = false;
+                var relevanceThreshold = nbTopCandidates / 2; // 2
+                var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
                     Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow}");
 
                     if (!foundRelevantAncestor &&
                         (reoccurrence - relevanceThreshold == 1 || reoccurrence == nbTopCandidates) &&
-                        (!candidates.TryGetValue(ancestor, out var tokenCount) || Math.Abs(maxTokenCount - tokenCount) < tokenCountThreshold))
+                        (!topCandidates.TryGetValue(ancestor, out var tokenCount) || Math.Abs(maxTokenCount - tokenCount) < tokenCountThreshold))
                     {
-                        articleContent = ancestor;
-                        foundRelevantAncestor = true;
+                        if (candidates.TryGetValue(ancestor, out var ancestorCandidate) &&
+                            ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
+                        {
+                            // new article candidate must have at least the same number of tokens as previous candidate
+                            articleCandidate = ancestorCandidate;
+                            foundRelevantAncestor = true;
+                        }
                     }
                 }
             }
 
-            if (articleContent is not null)
+            if (articleCandidate != default)
             {
-                Console.Out.WriteLineInColor($"\nArticle: {GetElementPath(articleContent):green}");
+                Console.Out.WriteLineInColor($"\nArticle: {GetElementPath(articleCandidate.Root):green}");
             }
         }
         catch (Exception x)
@@ -133,10 +141,10 @@ static class Program
 
     private static string GetElementPath(Tag element)
     {
-        var path = new StringBuilder();
+        var path = new StringBuilder(512);
 
         path.Append('/').Append(element.Name);
-        for (var parent = element.Parent; parent is not null and not { Name: "body" }; parent = parent.Parent)
+        for (var parent = element.Parent; parent is not null and not { Name: "body" or "head" or "html" }; parent = parent.Parent)
         {
             path.Insert(0, parent.Name).Insert(0, '/');
         }
@@ -263,7 +271,7 @@ static class Program
         }
     }
 
-    private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenFrequency)
+    private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenDensity)
     {
         var tokenTotal = 0;
         var wordCount = 0;
@@ -295,12 +303,12 @@ static class Program
         {
             // no content or non-content
             tokenCount = 0;
-            tokenFrequency = 0f;
+            tokenDensity = 0f;
             return false;
         }
 
-        tokenCount = (wordCount + numberCount + punctuationCount);
-        tokenFrequency = (float)tokenCount / tokenTotal;
+        tokenCount = wordCount + numberCount + punctuationCount;
+        tokenDensity = (float)tokenCount / tokenTotal;
         return true;
     }
 
