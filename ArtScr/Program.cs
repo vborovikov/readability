@@ -69,6 +69,7 @@ static class Program
 
             var maxTokenCount = 0;
             var nestedGroupCount = 0;
+            var maxNestedGroupCount = 0;
             var articleCandidate = default(ArticleCandidate);
             var topCandidates = new Dictionary<ParentTag, int>(contentScores.Count);
             var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
@@ -90,6 +91,10 @@ static class Program
                 if (candidate.Root.Parent == articleCandidate.Root)
                 {
                     ++nestedGroupCount;
+                    if (nestedGroupCount > maxNestedGroupCount)
+                    {
+                        maxNestedGroupCount = nestedGroupCount;
+                    }
                 }
                 else
                 {
@@ -99,10 +104,10 @@ static class Program
                 articleCandidate = candidate;
             }
 
-            if (nestedGroupCount < 2)
+            var relevanceThreshold = nbTopCandidates / 2; // 2 occurrences
+            if (nestedGroupCount < relevanceThreshold && maxNestedGroupCount < relevanceThreshold)
             {
                 var foundRelevantAncestor = false;
-                var relevanceThreshold = nbTopCandidates / 2; // 2
                 var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
@@ -118,6 +123,8 @@ static class Program
                             // new article candidate must have at least the same number of tokens as previous candidate
                             articleCandidate = ancestorCandidate;
                             foundRelevantAncestor = true;
+
+                            //todo: DocumentReader break here
                         }
                     }
                 }
