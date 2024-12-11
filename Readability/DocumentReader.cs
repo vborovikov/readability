@@ -2,6 +2,7 @@ namespace Readability;
 
 using System;
 using System.Buffers;
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -363,7 +364,6 @@ public partial class DocumentReader
 
     private ParentTag? GetArticleContent()
     {
-        var contentScores = new PriorityQueue<ParentTag, float>(this.nbTopCandidates);
 
         var html = this.document.FirstOrDefault<ParentTag>(h => h.Name == "html");
         if (html is not null && html.Attributes["lang"] is { Length: > 0 } lang)
@@ -371,48 +371,134 @@ public partial class DocumentReader
             this.articleLang = lang.ToString();
         }
 
+        var candidates = new Dictionary<ParentTag, ArticleCandidate>();
+        var contentScores = new PriorityQueue<ArticleCandidate, float>(this.nbTopCandidates);
         var body = html?.FirstOrDefault<ParentTag>(b => b.Name == "body") ?? (IRoot)this.document;
         foreach (var root in body.FindAll<ParentTag>())
         {
+            CheckByline(root);
+
             if (root.Layout == FlowLayout.Block)
             {
-                var score = GetContentScore(root);
-                if (float.IsNormal(score))
+                if (!TryCountTokens(root, out var tokenCount, out var tokenDensity))
+                    continue;
+
+                var markupCount = CountMarkup(root);
+                var elementFactor = GetElementFactor(root);
+                if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
                 {
-                    if (contentScores.Count < this.nbTopCandidates)
+                    var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
+
+                    Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
+
+                    var newCandidate = new ArticleCandidate(root, tokenCount);
+                    candidates.Add(root, newCandidate);
+
+                    if (contentScores.Count < nbTopCandidates)
                     {
-                        contentScores.Enqueue(root, score);
+                        contentScores.Enqueue(newCandidate, contentScore);
+
                     }
                     else
                     {
-                        contentScores.EnqueueDequeue(root, score);
+                        contentScores.EnqueueDequeue(newCandidate, contentScore);
                     }
                 }
             }
-
-            CheckByline(root);
         }
 
-        ParentTag? articleContent = null;
-        float articleContentScore = 0f;
-
-        while (contentScores.TryDequeue(out var root, out var score))
+        var maxTokenCount = 0;
+        var nestedGroupCount = 0;
+        var maxNestedGroupCount = 0;
+        var articleCandidate = default(ArticleCandidate);
+        var topCandidates = new Dictionary<ParentTag, int>(contentScores.Count);
+        var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
+        while (contentScores.TryDequeue(out var candidate, out var score))
         {
-            Debug.WriteLine($"{GetElementPath(root)}: {score:F2}");
+            Debug.WriteLine($"{GetElementPath(candidate.Root)}: {score:F2} ({candidate.TokenCount})");
 
-            articleContent = root;
-            articleContentScore = score;
+            for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
+            {
+                ref var reoccurence = ref CollectionsMarshal.GetValueRefOrAddDefault(commonAncestors, parent, out _);
+                ++reoccurence;
+            }
+
+            topCandidates.Add(candidate.Root, candidate.TokenCount);
+            if (candidate.TokenCount > maxTokenCount)
+            {
+                maxTokenCount = candidate.TokenCount;
+            }
+            if (candidate.Root.Parent == articleCandidate.Root)
+            {
+                ++nestedGroupCount;
+                if (nestedGroupCount > maxNestedGroupCount)
+                {
+                    maxNestedGroupCount = nestedGroupCount;
+                }
+            }
+            else
+            {
+                nestedGroupCount = 0;
+            }
+
+            articleCandidate = candidate;
         }
+
+        var relevanceThreshold = nbTopCandidates / 2; // 2 occurrences
+        if (nestedGroupCount < relevanceThreshold && maxNestedGroupCount < relevanceThreshold)
+        {
+            var foundRelevantAncestor = false;
+            var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
+            foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
+            {
+                if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
+                    continue;
+
+                Debug.WriteLine($"{GetElementPath(ancestor)}: {reoccurrence} ({ancestorCandidate.TokenCount})");
+
+                if (!foundRelevantAncestor &&
+                    (reoccurrence - relevanceThreshold == 1 || reoccurrence == nbTopCandidates) &&
+                    (!topCandidates.ContainsKey(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
+                {
+                    if (ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
+                    {
+                        // new article candidate must have at least the same number of tokens as previous candidate
+                        articleCandidate = ancestorCandidate;
+                        foundRelevantAncestor = true;
+
+                        //todo: DocumentReader break here
+                    }
+                }
+            }
+        }
+
+        if (articleCandidate == default)
+            return null;
+
+        var articleContent = articleCandidate.Root;
+
+        // replace H1 with H2 as H1 should be only title that is displayed separately
+        ReplaceTags(articleContent, "h1", "h2");
+
+        // backward compatibility with ReadabilityJS
+        var div = (ParentTag)Document.Html.CreateTag("div");
+        div.Attributes["id"] = "readability-page-1";
+        div.Attributes["class"] = "page";
+        articleContent.Remove();
+        div.Add(articleContent);
+        articleContent = div;
 
         return articleContent;
     }
 
+    private record struct ArticleCandidate(ParentTag Root, int TokenCount);
+
     private static string GetElementPath(Tag element)
     {
-        var path = new StringBuilder();
+        var path = new StringBuilder(512);
 
         path.Append('/').Append(element.Name);
-        for (var parent = element.Parent; parent is not null and not { Name: "body" }; parent = parent.Parent)
+        for (var parent = element.Parent; parent is not null and not { Name: "body" or "head" or "html" }; parent = parent.Parent)
         {
             path.Insert(0, parent.Name).Insert(0, '/');
         }
@@ -435,44 +521,51 @@ public partial class DocumentReader
         return path.ToString();
     }
 
-    private static float GetContentScore(ParentTag tag)
+    private static float GetElementFactor(ParentTag root)
     {
-        var (contentCount, frequency) = GetContentStats(tag);
-        if (contentCount == 0)
+        var tag = root;
+        while (tag.Count() == 1 && tag.First() is ParentTag nested)
         {
-            // no content at all
-            return 0f;
+            tag = nested;
         }
 
-        var nonContentCount = CountNonContent(tag);
-        if (nonContentCount == 0)
-        {
-            // pure content
-            return 0f;
-        }
-
-        var elementFactor = GetElementFactor(tag);
-
-        //Debug.WriteLine($"{GetElementPath(tag)}: # content: {contentCount}, # non-content: {nonContentCount}, frequency: {frequency}, factor: {elementFactor}");
-
-        return (((float)contentCount / nonContentCount) * frequency) * elementFactor;
-    }
-
-    private static float GetElementFactor(ParentTag tag)
-    {
-        var factor = tag.Name switch
-        {
-            "article" or "section" => 1.2f,
-            "div" => 1.1f,
-            "pre" or "td" or "blockquote" => 1f,
-            "address" or "ol" or "ul" or "dl" or "dd" or "dt" or "li" or "form" => 0.9f,
-            "h1" or "h2" or "h3" or "h4" or "h5" or "h6" => 0.5f,
-            _ => 1f,
-        };
+        var factor = KnownElementFactors.GetValueOrDefault(tag.Name, defaultValue: 1f);
         factor += GetElementWeight(tag);
 
         return factor;
     }
+
+    private static readonly FrozenDictionary<string, float> KnownElementFactors = new KeyValuePair<string, float>[]
+    {
+        new("article", 1.2f),
+        new("section", 1.2f),
+        new("div", 1.1f),
+        new("main", 1.1f),
+        new("pre", 0.9f),
+        new("table", 0.9f),
+        new("tbody", 0.9f),
+        new("tr", 0.9f),
+        new("td", 0.9f),
+        new("blockquote", 0.9f),
+        new("address", 0.8f),
+        new("ol", 0.8f),
+        new("ul", 0.8f),
+        new("dl", 0.8f),
+        new("dd", 0.8f),
+        new("dt", 0.8f),
+        new("li", 0.8f),
+        new("form", 0.8f),
+        new("p", 0.5f),
+        new("h1", 0.5f),
+        new("h2", 0.5f),
+        new("h3", 0.5f),
+        new("h4", 0.5f),
+        new("h5", 0.5f),
+        new("h6", 0.5f),
+        new("hgroup", 0.5f),
+        new("header", 0.5f),
+        new("footer", 0.5f),
+    }.ToFrozenDictionary(StringComparer.Ordinal);
 
     private static float GetElementWeight(ParentTag tag)
     {
@@ -532,13 +625,12 @@ public partial class DocumentReader
         }
     }
 
-    private static (int Length, float Frequency) GetContentStats(ParentTag root)
+    private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenDensity)
     {
-        var tokenCount = 0;
+        var tokenTotal = 0;
         var wordCount = 0;
         var numberCount = 0;
         var punctuationCount = 0;
-        var contentLength = 0;
 
         foreach (var content in root.FindAll<Content>())
         {
@@ -548,35 +640,44 @@ public partial class DocumentReader
                 continue;
             }
 
-            contentLength += content.Length;
-
             foreach (var token in content.Data.EnumerateTokens())
             {
-                ++tokenCount;
+                ++tokenTotal;
+
                 if (token.Category == TokenCategory.Word)
                     ++wordCount;
-                if (token.Category == TokenCategory.Number)
+                else if (token.Category == TokenCategory.Number)
                     ++numberCount;
-                if (token.Category == TokenCategory.PunctuationMark)
+                else if (token.Category == TokenCategory.PunctuationMark)
                     ++punctuationCount;
             }
         }
 
-        if (tokenCount == 0)
-            return default;
+        if (tokenTotal == 0 || punctuationCount >= (wordCount + numberCount))
+        {
+            // no content or non-content
+            tokenCount = 0;
+            tokenDensity = 0f;
+            return false;
+        }
 
-        return (tokenCount, (float)(wordCount + numberCount + punctuationCount) / tokenCount);
+        tokenCount = wordCount + numberCount + punctuationCount;
+        tokenDensity = (float)tokenCount / tokenTotal;
+        return true;
     }
 
-    private static int CountNonContent(ParentTag root)
+    private static int CountMarkup(ParentTag root)
     {
-        return root.FindAll<Tag>(IsNonContentElement).Count();
-    }
+        return root.FindAll<Tag>(IsNonContentElement).Count() + (IsNonContentElement(root) ? 1 : 0);
 
-    private static bool IsNonContentElement(Tag tag)
-    {
-        return tag.PermittedContent != ContentCategory.Phrasing &&
-            (tag is ParentTag root && root.Any() && root.All<Tag>(t => t.PermittedContent != ContentCategory.Phrasing));
+        static bool IsNonContentElement(Tag tag)
+        {
+            return
+                (!tag.PermittedContent.HasFlag(ContentCategory.Phrasing) || tag.Category.HasFlag(ContentCategory.Form)) ||
+                (tag is ParentTag parent && parent.Any() &&
+                    parent.All<Tag>(t => (!t.Category.HasFlag(ContentCategory.Phrasing) || t.Category.HasFlag(ContentCategory.Form)) &&
+                        !t.PermittedContent.HasFlag(ContentCategory.Phrasing)));
+        }
     }
 
     #endregion New algorithm

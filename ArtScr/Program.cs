@@ -31,7 +31,6 @@ static class Program
             var document = await Document.Html.ParseAsync(htmlFileStream);
 
             var nbTopCandidates = args.Length > 1 && int.TryParse(args[1], out var num) ? num : DefaultNTopCandidates;
-            var contentScores = new PriorityQueue<ArticleCandidate, float>(nbTopCandidates);
 
             var body = document
                 .FirstOrDefault<ParentTag>(h => h.Name == "html")?
@@ -39,6 +38,7 @@ static class Program
                 (IRoot)document;
 
             var candidates = new Dictionary<ParentTag, ArticleCandidate>();
+            var contentScores = new PriorityQueue<ArticleCandidate, float>(nbTopCandidates);
             foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
             {
                 if (!TryCountTokens(root, out var tokenCount, out var tokenDensity))
@@ -139,7 +139,7 @@ static class Program
         }
         catch (Exception x)
         {
-            Console.Error.WriteLine(x.Message);
+            Console.Error.WriteLine(ConsoleColor.DarkRed, x.Message);
             return 3;
         }
 
