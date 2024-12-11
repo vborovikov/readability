@@ -41,28 +41,28 @@ static class Program
             var candidates = new Dictionary<ParentTag, ArticleCandidate>();
             foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
             {
-                if (TryCountTokens(root, out var tokenCount, out var tokenDensity))
+                if (!TryCountTokens(root, out var tokenCount, out var tokenDensity))
+                    continue;
+
+                var markupCount = CountMarkup(root);
+                var elementFactor = GetElementFactor(root);
+                if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
                 {
-                    var markupCount = CountMarkup(root);
-                    var elementFactor = GetElementFactor(root);
-                    if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
+                    var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
+
+                    Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
+
+                    var newCandidate = new ArticleCandidate(root, tokenCount);
+                    candidates.Add(root, newCandidate);
+
+                    if (contentScores.Count < nbTopCandidates)
                     {
-                        var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
+                        contentScores.Enqueue(newCandidate, contentScore);
 
-                        Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
-
-                        var newCandidate = new ArticleCandidate(root, tokenCount);
-                        candidates.Add(root, newCandidate);
-
-                        if (contentScores.Count < nbTopCandidates)
-                        {
-                            contentScores.Enqueue(newCandidate, contentScore);
-
-                        }
-                        else
-                        {
-                            contentScores.EnqueueDequeue(newCandidate, contentScore);
-                        }
+                    }
+                    else
+                    {
+                        contentScores.EnqueueDequeue(newCandidate, contentScore);
                     }
                 }
             }
@@ -111,14 +111,16 @@ static class Program
                 var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
-                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow}");
+                    if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
+                        continue;
+
+                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} ({ancestorCandidate.TokenCount})");
 
                     if (!foundRelevantAncestor &&
                         (reoccurrence - relevanceThreshold == 1 || reoccurrence == nbTopCandidates) &&
-                        (!topCandidates.TryGetValue(ancestor, out var tokenCount) || Math.Abs(maxTokenCount - tokenCount) < tokenCountThreshold))
+                        (!topCandidates.ContainsKey(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
                     {
-                        if (candidates.TryGetValue(ancestor, out var ancestorCandidate) &&
-                            ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
+                        if (ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
                         {
                             // new article candidate must have at least the same number of tokens as previous candidate
                             articleCandidate = ancestorCandidate;
