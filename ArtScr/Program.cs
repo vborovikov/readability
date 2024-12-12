@@ -37,6 +37,8 @@ static class Program
                 .FirstOrDefault<ParentTag>(b => b.Name == "body") ??
                 (IRoot)document;
 
+            // find candidates with highest scores
+
             var candidates = new Dictionary<ParentTag, ArticleCandidate>();
             var contentScores = new PriorityQueue<ArticleCandidate, float>(nbTopCandidates);
             foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
@@ -52,7 +54,7 @@ static class Program
 
                     Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
 
-                    var newCandidate = new ArticleCandidate(root, tokenCount);
+                    var newCandidate = new ArticleCandidate(root, tokenCount, contentScore);
                     candidates.Add(root, newCandidate);
 
                     if (contentScores.Count < nbTopCandidates)
@@ -67,11 +69,12 @@ static class Program
                 }
             }
 
-            var maxTokenCount = 0;
-            var nestedGroupCount = 0;
-            var maxNestedGroupCount = 0;
+            // check ancestors of the top candidates
+
+            var ancestryCount = 0;
+            var maxAncestryCount = 0;
             var articleCandidate = default(ArticleCandidate);
-            var topCandidates = new Dictionary<ParentTag, int>(contentScores.Count);
+            var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.Comparer);
             var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
@@ -83,32 +86,31 @@ static class Program
                     ++reoccurence;
                 }
 
-                topCandidates.Add(candidate.Root, candidate.TokenCount);
-                if (candidate.TokenCount > maxTokenCount)
-                {
-                    maxTokenCount = candidate.TokenCount;
-                }
+                topCandidates.Add(candidate, candidate.Root);
                 if (candidate.Root.Parent == articleCandidate.Root)
                 {
-                    ++nestedGroupCount;
-                    if (nestedGroupCount > maxNestedGroupCount)
+                    ++ancestryCount;
+                    if (ancestryCount > maxAncestryCount)
                     {
-                        maxNestedGroupCount = nestedGroupCount;
+                        maxAncestryCount = ancestryCount;
                     }
                 }
                 else
                 {
-                    nestedGroupCount = 0;
+                    ancestryCount = 0;
                 }
 
                 articleCandidate = candidate;
             }
 
-            var relevanceThreshold = nbTopCandidates / 2; // 2 occurrences
-            if (nestedGroupCount < relevanceThreshold && maxNestedGroupCount < relevanceThreshold)
+            var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences
+            if (ancestryCount < ancestryThreshold && maxAncestryCount < ancestryThreshold)
             {
+                // the top candidates are mostly unrelated, check their common ancestors
+
                 var foundRelevantAncestor = false;
-                var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
+                var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
+                var tokenCountThreshold = (int)(maxTokenCount * 0.3f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
@@ -117,8 +119,8 @@ static class Program
                     Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} ({ancestorCandidate.TokenCount})");
 
                     if (!foundRelevantAncestor &&
-                        (reoccurrence - relevanceThreshold == 1 || reoccurrence == nbTopCandidates) &&
-                        (!topCandidates.ContainsKey(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
+                        (reoccurrence - ancestryThreshold == 1 || reoccurrence == nbTopCandidates) &&
+                        (!topCandidates.ContainsValue(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
                     {
                         if (ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
                         {
@@ -129,6 +131,21 @@ static class Program
                             //todo: DocumentReader break here
                         }
                     }
+                }
+            }
+            else if (ancestryCount >= ancestryThreshold)
+            {
+                // too many parents, find the first parent amoung the top candidates
+
+                var firstParent = default(ParentTag);
+                foreach (var (topCandidate, topCandidateRoot) in topCandidates)
+                {
+                    if (firstParent != null && firstParent != topCandidateRoot)
+                    {
+                        break;
+                    }
+                    firstParent = topCandidateRoot.Parent;
+                    articleCandidate = topCandidate;
                 }
             }
 
@@ -146,7 +163,29 @@ static class Program
         return 0;
     }
 
-    private record struct ArticleCandidate(ParentTag Root, int TokenCount);
+    private record struct ArticleCandidate(ParentTag Root, int TokenCount, float ContentScore)
+    {
+        private sealed class DefaultComparer : IComparer<ArticleCandidate>
+        {
+            public int Compare(ArticleCandidate x, ArticleCandidate y)
+            {
+                if (x.ContentScore < y.ContentScore)
+                {
+                    return 1;
+                }
+                else if (x.ContentScore > y.ContentScore)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public static readonly IComparer<ArticleCandidate> Comparer = new DefaultComparer();
+    }
 
     private static string GetElementPath(Tag element)
     {
