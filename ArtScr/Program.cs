@@ -105,8 +105,8 @@ static class Program
 
             Console.Out.WriteLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
-            var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences
-            if (ancestryCount < ancestryThreshold && maxAncestryCount < ancestryThreshold)
+            var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences in case of 5 candidates
+            if (maxAncestryCount < ancestryThreshold)
             {
                 // the top candidates are mostly unrelated, check their common ancestors
 
