@@ -103,6 +103,8 @@ static class Program
                 articleCandidate = candidate;
             }
 
+            Console.Out.WriteLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
+
             var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences
             if (ancestryCount < ancestryThreshold && maxAncestryCount < ancestryThreshold)
             {
@@ -110,7 +112,7 @@ static class Program
 
                 var foundRelevantAncestor = false;
                 var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
-                var tokenCountThreshold = (int)(maxTokenCount * 0.3f); // 20% threshold
+                var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
