@@ -169,21 +169,9 @@ static class Program
     {
         private sealed class DefaultComparer : IComparer<ArticleCandidate>
         {
-            public int Compare(ArticleCandidate x, ArticleCandidate y)
-            {
-                if (x.ContentScore < y.ContentScore)
-                {
-                    return 1;
-                }
-                else if (x.ContentScore > y.ContentScore)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            public int Compare(ArticleCandidate x, ArticleCandidate y) =>
+                // compare scores in descending order
+                y.ContentScore.CompareTo(x.ContentScore);
         }
 
         public static readonly IComparer<ArticleCandidate> Comparer = new DefaultComparer();
