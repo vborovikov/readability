@@ -118,7 +118,7 @@ static class Program
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
                         continue;
 
-                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} ({ancestorCandidate.TokenCount})");
+                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
 
                     if (!foundRelevantAncestor &&
                         (reoccurrence - ancestryThreshold == 1 || reoccurrence == nbTopCandidates) &&
@@ -153,7 +153,7 @@ static class Program
 
             if (articleCandidate != default)
             {
-                Console.Out.WriteLineInColor($"\nArticle: {GetElementPath(articleCandidate.Root):green}");
+                Console.Out.WriteLineInColor($"\nArticle: {GetElementPath(articleCandidate.Root):green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
             }
         }
         catch (Exception x)
