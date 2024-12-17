@@ -351,6 +351,7 @@ static class Program
 
             if (directTokenDensity > 0f)
             {
+                // ignore elements with direct content
                 tokenCount = 0;
                 tokenDensity = 0f;
                 return false;
