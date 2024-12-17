@@ -311,11 +311,55 @@ static class Program
 
     private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenDensity)
     {
+        if (root.Category.HasFlag(ContentCategory.Metadata) || root.Category.HasFlag(ContentCategory.Script))
+        {
+            tokenCount = 0;
+            tokenDensity = 0f;
+            return false;
+        }
+
         var tokenTotal = 0;
         var wordCount = 0;
         var numberCount = 0;
         var punctuationCount = 0;
 
+        // direct content
+
+        foreach (var element in root)
+        {
+            if (element is not Content content)
+                continue;
+
+            foreach (var token in content.Data.EnumerateTokens())
+            {
+                ++tokenTotal;
+
+                if (token.Category == TokenCategory.Word)
+                    ++wordCount;
+                else if (token.Category == TokenCategory.Number)
+                    ++numberCount;
+                else if (token.Category == TokenCategory.PunctuationMark)
+                    ++punctuationCount;
+            }
+        }
+
+        if (tokenTotal > 0 && punctuationCount < (wordCount + numberCount))
+        {
+            // has some direct content
+            tokenCount = wordCount + numberCount + punctuationCount;
+            var directTokenDensity = (float)tokenCount / tokenTotal;
+
+            if (directTokenDensity > 0f)
+            {
+                tokenCount = 0;
+                tokenDensity = 0f;
+                return false;
+            }
+        }
+
+        // all content
+
+        tokenCount = tokenTotal = wordCount = numberCount = punctuationCount = 0;
         foreach (var content in root.FindAll<Content>())
         {
             if (content.Parent is ParentTag parent &&
