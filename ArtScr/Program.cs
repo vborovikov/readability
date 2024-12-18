@@ -2,6 +2,7 @@
 
 using System.Collections.Frozen;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using Brackets;
@@ -74,7 +75,7 @@ static class Program
             var ancestryCount = 0;
             var maxAncestryCount = 0;
             var articleCandidate = default(ArticleCandidate);
-            var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.Comparer);
+            var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.ConstentScoreComparer);
             var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
@@ -135,6 +136,10 @@ static class Program
                     }
                 }
             }
+            else if (HasOutlierCandidate(candidates.Values, out var outlier))
+            {
+                articleCandidate = outlier;
+            }
             else if (ancestryCount >= ancestryThreshold)
             {
                 // too many parents, find the first parent amoung the top candidates
@@ -165,16 +170,60 @@ static class Program
         return 0;
     }
 
-    private record struct ArticleCandidate(ParentTag Root, int TokenCount, float ContentScore)
+    private static bool HasOutlierCandidate(IReadOnlyCollection<ArticleCandidate> allCandidates, [NotNullWhen(true)] out ArticleCandidate outlier)
     {
-        private sealed class DefaultComparer : IComparer<ArticleCandidate>
+        var candidates = allCandidates
+            .OrderDescending(ArticleCandidate.TokenCountComparer)
+            .DistinctBy(c => c.TokenCount)
+            .ToArray();
+
+        var lastIndex = candidates.Length - 1;
+        if (lastIndex > 1)
         {
-            public int Compare(ArticleCandidate x, ArticleCandidate y) =>
-                // compare scores in descending order
-                y.ContentScore.CompareTo(x.ContentScore);
+            for (var i = 0; i < lastIndex; ++i)
+            {
+                var ratio = candidates[i + 1].TokenCount / (float)candidates[i].TokenCount;
+                if (ratio < 0.1f)
+                {
+                    outlier = candidates[i];
+                    return true;
+                }
+            }
         }
 
-        public static readonly IComparer<ArticleCandidate> Comparer = new DefaultComparer();
+        outlier = default;
+        return false;
+    }
+
+    private record struct ArticleCandidate(ParentTag Root, int TokenCount, float ContentScore)
+    {
+        private sealed class CandidateContentScoreComparer : IComparer<ArticleCandidate>
+        {
+            // ContentScore desc
+            public int Compare(ArticleCandidate x, ArticleCandidate y) => y.ContentScore.CompareTo(x.ContentScore);
+        }
+
+        private sealed class CandidateTokenCountComparer : IComparer<ArticleCandidate>
+        {
+            // TokenCount asc, NestingLevel desc
+            public int Compare(ArticleCandidate x, ArticleCandidate y)
+            {
+                var result = x.TokenCount.CompareTo(y.TokenCount);
+                if (result == 0 && x.Root.Parent != y.Root.Parent)
+                {
+                    if (x.Root.Parent == y.Root)
+                        return 1;
+                    else if (y.Root.Parent == x.Root)
+                        return -1;
+                    else
+                        return y.Root.NestingLevel.CompareTo(x.Root.NestingLevel);
+                }
+                return result;
+            }
+        }
+
+        public static readonly IComparer<ArticleCandidate> ConstentScoreComparer = new CandidateContentScoreComparer();
+        public static readonly IComparer<ArticleCandidate> TokenCountComparer = new CandidateTokenCountComparer();
     }
 
     private static string GetElementPath(Tag element)
