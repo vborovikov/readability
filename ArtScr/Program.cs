@@ -128,7 +128,7 @@ static class Program
                     {
                         if (ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
                         {
-                            // new article candidate must have at least the same number of tokens as previous candidate
+                            // the ancestor candidate must have at least the same number of tokens as previous candidate
                             articleCandidate = ancestorCandidate;
                             foundRelevantAncestor = true;
 
@@ -139,21 +139,18 @@ static class Program
             }
             else if (HasOutlierCandidate(candidates.Values, out var outlier))
             {
+                // the outlier candidate has much more content
                 articleCandidate = outlier;
             }
             else if (ancestryCount >= ancestryThreshold)
             {
-                // too many parents, find the first parent amoung the top candidates
-
-                var firstParent = default(ParentTag);
-                foreach (var (topCandidate, topCandidateRoot) in topCandidates)
+                // too many parents, find the first grandparent amoung the top candidates
+                var grandparent = topCandidates.Keys[ancestryCount];
+                var ratio = articleCandidate.TokenCount / (float)grandparent.TokenCount;
+                if (ratio <= 0.75f)
                 {
-                    if (firstParent != null && (firstParent != topCandidateRoot || topCandidate.TokenCount == articleCandidate.TokenCount))
-                    {
-                        break;
-                    }
-                    firstParent = topCandidateRoot.Parent;
-                    articleCandidate = topCandidate;
+                    // the grandparent candidate has significantly more content
+                    articleCandidate = grandparent;
                 }
             }
 
