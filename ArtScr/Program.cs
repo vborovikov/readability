@@ -112,7 +112,8 @@ static class Program
                 // the top candidates are mostly unrelated, check their common ancestors
 
                 var foundRelevantAncestor = false;
-                var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
+                var maxTokenCount = ancestryCount == maxAncestryCount ? 
+                    topCandidates.Max(ca => ca.Key.TokenCount) : candidates.Max(ca => ca.Value.TokenCount);
                 var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
@@ -147,7 +148,7 @@ static class Program
                 var firstParent = default(ParentTag);
                 foreach (var (topCandidate, topCandidateRoot) in topCandidates)
                 {
-                    if (firstParent != null && firstParent != topCandidateRoot)
+                    if (firstParent != null && (firstParent != topCandidateRoot || topCandidate.TokenCount == articleCandidate.TokenCount))
                     {
                         break;
                     }
