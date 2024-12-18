@@ -79,7 +79,7 @@ static class Program
             var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
-                Console.Out.WriteLineInColor($"{GetElementPath(candidate.Root):cyan}: {score:F2:magenta} ({candidate.TokenCount})");
+                Console.Out.WriteLineInColor($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount})");
 
                 for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
                 {
@@ -159,7 +159,7 @@ static class Program
 
             if (articleCandidate != default)
             {
-                Console.Out.WriteLineInColor($"\nArticle: {GetElementPath(articleCandidate.Root):green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
+                Console.Out.WriteLineInColor($"\nArticle: {articleCandidate.Path:green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
             }
         }
         catch (Exception x)
@@ -196,6 +196,7 @@ static class Program
         return false;
     }
 
+    [DebuggerDisplay("{Path,nq}: {ContentScore} ({TokenCount})")]
     private record struct ArticleCandidate(ParentTag Root, int TokenCount, float ContentScore)
     {
         private sealed class CandidateContentScoreComparer : IComparer<ArticleCandidate>
@@ -225,6 +226,8 @@ static class Program
 
         public static readonly IComparer<ArticleCandidate> ConstentScoreComparer = new CandidateContentScoreComparer();
         public static readonly IComparer<ArticleCandidate> TokenCountComparer = new CandidateTokenCountComparer();
+
+        public readonly string Path => GetElementPath(this.Root);
     }
 
     private static string GetElementPath(Tag element)
