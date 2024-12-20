@@ -371,6 +371,8 @@ public partial class DocumentReader
             this.articleLang = lang.ToString();
         }
 
+        // find candidates with highest scores
+
         var candidates = new Dictionary<ParentTag, ArticleCandidate>();
         var contentScores = new PriorityQueue<ArticleCandidate, float>(this.nbTopCandidates);
         var body = html?.FirstOrDefault<ParentTag>(b => b.Name == "body") ?? (IRoot)this.document;
@@ -391,7 +393,7 @@ public partial class DocumentReader
 
                     Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
 
-                    var newCandidate = new ArticleCandidate(root, tokenCount);
+                    var newCandidate = new ArticleCandidate(root, tokenCount, contentScore);
                     candidates.Add(root, newCandidate);
 
                     if (contentScores.Count < nbTopCandidates)
@@ -407,15 +409,16 @@ public partial class DocumentReader
             }
         }
 
-        var maxTokenCount = 0;
-        var nestedGroupCount = 0;
-        var maxNestedGroupCount = 0;
+        // check ancestors of the top candidates
+
+        var ancestryCount = 0;
+        var maxAncestryCount = 0;
         var articleCandidate = default(ArticleCandidate);
-        var topCandidates = new Dictionary<ParentTag, int>(contentScores.Count);
+        var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.ConstentScoreComparer);
         var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
         while (contentScores.TryDequeue(out var candidate, out var score))
         {
-            Debug.WriteLine($"{GetElementPath(candidate.Root)}: {score:F2} ({candidate.TokenCount})");
+            Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount})");
 
             for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
             {
@@ -423,52 +426,70 @@ public partial class DocumentReader
                 ++reoccurence;
             }
 
-            topCandidates.Add(candidate.Root, candidate.TokenCount);
-            if (candidate.TokenCount > maxTokenCount)
-            {
-                maxTokenCount = candidate.TokenCount;
-            }
+            topCandidates.Add(candidate, candidate.Root);
             if (candidate.Root.Parent == articleCandidate.Root)
             {
-                ++nestedGroupCount;
-                if (nestedGroupCount > maxNestedGroupCount)
+                ++ancestryCount;
+                if (ancestryCount > maxAncestryCount)
                 {
-                    maxNestedGroupCount = nestedGroupCount;
+                    maxAncestryCount = ancestryCount;
                 }
             }
             else
             {
-                nestedGroupCount = 0;
+                ancestryCount = 0;
             }
 
             articleCandidate = candidate;
         }
 
-        var relevanceThreshold = nbTopCandidates / 2; // 2 occurrences
-        if (nestedGroupCount < relevanceThreshold && maxNestedGroupCount < relevanceThreshold)
+        Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
+
+        var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences in case of 5 candidates
+        if (maxAncestryCount < ancestryThreshold)
         {
+            // the top candidates are mostly unrelated, check their common ancestors
+
             var foundRelevantAncestor = false;
+            var maxTokenCount = ancestryCount == maxAncestryCount ?
+                topCandidates.Max(ca => ca.Key.TokenCount) : candidates.Max(ca => ca.Value.TokenCount);
             var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
             foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
             {
                 if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
                     continue;
 
-                Debug.WriteLine($"{GetElementPath(ancestor)}: {reoccurrence} ({ancestorCandidate.TokenCount})");
+                Debug.WriteLine($"{GetElementPath(ancestor)}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount})");
 
                 if (!foundRelevantAncestor &&
-                    (reoccurrence - relevanceThreshold == 1 || reoccurrence == nbTopCandidates) &&
-                    (!topCandidates.ContainsKey(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
+                    (reoccurrence - ancestryThreshold == 1 || reoccurrence == nbTopCandidates) &&
+                    (!topCandidates.ContainsValue(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
                 {
                     if (ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
                     {
-                        // new article candidate must have at least the same number of tokens as previous candidate
+                        // the ancestor candidate must have at least the same number of tokens as previous candidate
                         articleCandidate = ancestorCandidate;
                         foundRelevantAncestor = true;
 
                         //todo: DocumentReader break here
                     }
                 }
+            }
+        }
+        else if (HasOutlierCandidate(candidates.Values, out var outlier))
+        {
+            // the outlier candidate has much more content
+            articleCandidate = outlier;
+        }
+        else if (ancestryCount >= ancestryThreshold)
+        {
+            // too many parents, find the first grandparent amoung the top candidates
+            var grandparent = topCandidates.Keys[ancestryCount];
+            var ratio = articleCandidate.TokenCount / (float)grandparent.TokenCount;
+            if (ratio <= 0.75f)
+            {
+                // the grandparent candidate has significantly more content
+                articleCandidate = grandparent;
             }
         }
 
@@ -481,20 +502,84 @@ public partial class DocumentReader
         ReplaceTags(articleContent, "h1", "h2");
 
         // backward compatibility with ReadabilityJS
-        var div = (ParentTag)Document.Html.CreateTag("div");
-        div.Attributes["id"] = "readability-page-1";
-        div.Attributes["class"] = "page";
-        articleContent.Remove();
-        div.Add(articleContent);
-        articleContent = div;
+        if (articleContent is not { Name: "article" or "section" or "div" or "main" })
+        {
+            var articleRoot = (ParentTag)Document.Html.CreateTag("div");
+            articleContent.Remove();
+            articleRoot.Add(articleContent);
+            articleContent = articleRoot;
+        }
+
+        articleContent.Attributes["id"] = "readability-page-1";
+        articleContent.Attributes["class"] = "page";
 
         return articleContent;
     }
 
-    private record struct ArticleCandidate(ParentTag Root, int TokenCount);
-
-    private static string GetElementPath(Tag element)
+    private static bool HasOutlierCandidate(IReadOnlyCollection<ArticleCandidate> allCandidates, [NotNullWhen(true)] out ArticleCandidate outlier)
     {
+        var candidates = allCandidates
+            .OrderDescending(ArticleCandidate.TokenCountComparer)
+            .DistinctBy(c => c.TokenCount)
+            .ToArray();
+
+        var lastIndex = candidates.Length - 1;
+        if (lastIndex > 1)
+        {
+            for (var i = 0; i < lastIndex; ++i)
+            {
+                var ratio = candidates[i + 1].TokenCount / (float)candidates[i].TokenCount;
+                if (ratio < 0.1f)
+                {
+                    outlier = candidates[i];
+                    return true;
+                }
+            }
+        }
+
+        outlier = default;
+        return false;
+    }
+
+    [DebuggerDisplay("{Path,nq}: {ContentScore} ({TokenCount})")]
+    private record struct ArticleCandidate(ParentTag Root, int TokenCount, float ContentScore)
+    {
+        private sealed class CandidateContentScoreComparer : IComparer<ArticleCandidate>
+        {
+            // ContentScore desc
+            public int Compare(ArticleCandidate x, ArticleCandidate y) => y.ContentScore.CompareTo(x.ContentScore);
+        }
+
+        private sealed class CandidateTokenCountComparer : IComparer<ArticleCandidate>
+        {
+            // TokenCount asc, NestingLevel desc
+            public int Compare(ArticleCandidate x, ArticleCandidate y)
+            {
+                var result = x.TokenCount.CompareTo(y.TokenCount);
+                if (result == 0 && x.Root.Parent != y.Root.Parent)
+                {
+                    if (x.Root.Parent == y.Root)
+                        return 1;
+                    else if (y.Root.Parent == x.Root)
+                        return -1;
+                    else
+                        return y.Root.NestingLevel.CompareTo(x.Root.NestingLevel);
+                }
+                return result;
+            }
+        }
+
+        public static readonly IComparer<ArticleCandidate> ConstentScoreComparer = new CandidateContentScoreComparer();
+        public static readonly IComparer<ArticleCandidate> TokenCountComparer = new CandidateTokenCountComparer();
+
+        public readonly string Path => GetElementPath(this.Root);
+    }
+
+    private static string GetElementPath(Tag? element)
+    {
+        if (element is null)
+            return "/";
+
         var path = new StringBuilder(512);
 
         path.Append('/').Append(element.Name);
@@ -627,11 +712,56 @@ public partial class DocumentReader
 
     private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenDensity)
     {
+        if (root.Category.HasFlag(ContentCategory.Metadata) || root.Category.HasFlag(ContentCategory.Script))
+        {
+            tokenCount = 0;
+            tokenDensity = 0f;
+            return false;
+        }
+
         var tokenTotal = 0;
         var wordCount = 0;
         var numberCount = 0;
         var punctuationCount = 0;
 
+        // direct content
+
+        foreach (var element in root)
+        {
+            if (element is not Content content)
+                continue;
+
+            foreach (var token in content.Data.EnumerateTokens())
+            {
+                ++tokenTotal;
+
+                if (token.Category == TokenCategory.Word)
+                    ++wordCount;
+                else if (token.Category == TokenCategory.Number)
+                    ++numberCount;
+                else if (token.Category == TokenCategory.PunctuationMark)
+                    ++punctuationCount;
+            }
+        }
+
+        if (tokenTotal > 0 && punctuationCount < (wordCount + numberCount))
+        {
+            // has some direct content
+            tokenCount = wordCount + numberCount + punctuationCount;
+            var directTokenDensity = (float)tokenCount / tokenTotal;
+
+            if (directTokenDensity > 0f)
+            {
+                // ignore elements with direct content
+                tokenCount = 0;
+                tokenDensity = 0f;
+                return false;
+            }
+        }
+
+        // all content
+
+        tokenCount = tokenTotal = wordCount = numberCount = punctuationCount = 0;
         foreach (var content in root.FindAll<Content>())
         {
             if (content.Parent is ParentTag parent &&

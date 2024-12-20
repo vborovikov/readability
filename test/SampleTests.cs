@@ -83,8 +83,19 @@ public class SampleTests
 
         AssertAreEqual(expectedMetadata, parsed);
 
-        var expectedContent = expectedDocument.FirstOrDefault<ParentTag>();
-        AssertAreEqual(expectedContent, parsed.Content);
+        var expectedContent = GetNestedRoot(expectedDocument.First<ParentTag>());
+        var actualContent = GetNestedRoot(parsed.Content);
+        AssertAreEqual(expectedContent, actualContent);
+    }
+
+    private static ParentTag GetNestedRoot(ParentTag root)
+    {
+        var tag = root;
+        while (tag.Count() == 1 && tag.First() is ParentTag nested)
+        {
+            tag = nested;
+        }
+        return tag;
     }
 
     private static void AssertAreEqual(ArticleInfo expected, ArticleInfo actual)
