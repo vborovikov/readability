@@ -227,8 +227,11 @@ static class Program
         public readonly string Path => GetElementPath(this.Root);
     }
 
-    private static string GetElementPath(Tag element)
+    private static string GetElementPath(Tag? element)
     {
+        if (element is null)
+            return "/";
+
         var path = new StringBuilder(512);
 
         path.Append('/').Append(element.Name);
