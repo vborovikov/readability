@@ -91,7 +91,7 @@ public class SampleTests
     private static ParentTag GetNestedRoot(ParentTag root)
     {
         var tag = root;
-        while (tag.Count() == 1 && tag.First() is ParentTag nested)
+        while (tag.HasOneChild && tag.First() is ParentTag nested)
         {
             tag = nested;
         }
