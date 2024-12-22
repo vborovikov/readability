@@ -498,9 +498,6 @@ public partial class DocumentReader
 
         var articleContent = articleCandidate.Root;
 
-        // replace H1 with H2 as H1 should be only title that is displayed separately
-        ReplaceTags(articleContent, "h1", "h2");
-
         // backward compatibility with ReadabilityJS
         if (articleContent is not { Name: "article" or "section" or "div" or "main" })
         {
@@ -512,6 +509,9 @@ public partial class DocumentReader
 
         articleContent.Attributes["id"] = "readability-page-1";
         articleContent.Attributes["class"] = "page";
+
+        // So we have all of the content that we need. Now we clean it up for presentation.
+        PrepArticle(articleContent);
 
         return articleContent;
     }
