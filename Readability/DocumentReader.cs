@@ -380,7 +380,7 @@ public partial class DocumentReader
         {
             CheckByline(root);
 
-            if (root.Layout == FlowLayout.Block)
+            if (root is { Layout: FlowLayout.Block, HasChildren: true })
             {
                 if (!TryCountTokens(root, out var tokenCount, out var tokenDensity))
                     continue;
@@ -451,7 +451,7 @@ public partial class DocumentReader
             // the top candidates are mostly unrelated, check their common ancestors
 
             var foundRelevantAncestor = false;
-            var maxTokenCount = ancestryCount == maxAncestryCount ?
+            var maxTokenCount = ancestryCount == maxAncestryCount && maxAncestryCount > 0 ?
                 topCandidates.Max(ca => ca.Key.TokenCount) : candidates.Max(ca => ca.Value.TokenCount);
             var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
             foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))

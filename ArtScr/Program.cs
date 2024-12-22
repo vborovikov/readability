@@ -42,7 +42,7 @@ static class Program
 
             var candidates = new Dictionary<ParentTag, ArticleCandidate>();
             var contentScores = new PriorityQueue<ArticleCandidate, float>(nbTopCandidates);
-            foreach (var root in body.FindAll<ParentTag>(p => p.Layout == FlowLayout.Block))
+            foreach (var root in body.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
             {
                 if (!TryCountTokens(root, out var tokenCount, out var tokenDensity))
                     continue;
@@ -112,7 +112,7 @@ static class Program
                 // the top candidates are mostly unrelated, check their common ancestors
 
                 var foundRelevantAncestor = false;
-                var maxTokenCount = ancestryCount == maxAncestryCount ? 
+                var maxTokenCount = ancestryCount == maxAncestryCount && maxAncestryCount > 0 ? 
                     topCandidates.Max(ca => ca.Key.TokenCount) : candidates.Max(ca => ca.Value.TokenCount);
                 var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
