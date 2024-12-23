@@ -71,6 +71,7 @@ static class Program
             }
 
             // check ancestors of the top candidates
+            Debug.WriteLine("");
 
             var ancestryCount = 0;
             var maxAncestryCount = 0;
@@ -80,6 +81,7 @@ static class Program
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
                 Console.Out.WriteLineInColor($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount})");
+                Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount})");
 
                 for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
                 {
@@ -105,6 +107,7 @@ static class Program
             }
 
             Console.Out.WriteLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
+            Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
             var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences in case of 5 candidates
             if (maxAncestryCount < ancestryThreshold)
@@ -112,7 +115,7 @@ static class Program
                 // the top candidates are mostly unrelated, check their common ancestors
 
                 var foundRelevantAncestor = false;
-                var maxTokenCount = ancestryCount == maxAncestryCount && maxAncestryCount > 0 ? 
+                var maxTokenCount = ancestryCount == maxAncestryCount && maxAncestryCount > 0 ?
                     topCandidates.Max(ca => ca.Key.TokenCount) : candidates.Max(ca => ca.Value.TokenCount);
                 var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
@@ -121,6 +124,7 @@ static class Program
                         continue;
 
                     Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
+                    Debug.WriteLine($"{GetElementPath(ancestor)}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount})");
 
                     if (!foundRelevantAncestor &&
                         (reoccurrence - ancestryThreshold == 1 || reoccurrence == nbTopCandidates) &&
@@ -157,6 +161,7 @@ static class Program
             if (articleCandidate != default)
             {
                 Console.Out.WriteLineInColor($"\nArticle: {articleCandidate.Path:green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
+                Debug.WriteLine($"\nArticle: {articleCandidate.Path} {articleCandidate.ContentScore:F2} ({articleCandidate.TokenCount})");
             }
         }
         catch (Exception x)
@@ -260,14 +265,18 @@ static class Program
 
     private static float GetElementFactor(ParentTag root)
     {
-        var tag = root;
-        while (tag.HasOneChild && tag.First() is ParentTag nested)
+        var level = 0;
+        var actual = root;
+        while (actual.HasOneChild && actual.First() is ParentTag nested)
         {
-            tag = nested;
+            actual = nested;
+            ++level;
         }
 
-        var factor = KnownElementFactors.GetValueOrDefault(tag.Name, defaultValue: 1f);
-        factor += GetElementWeight(tag);
+        var factor = KnownElementFactors.GetValueOrDefault(actual.Name, defaultValue: 1f);
+        factor += GetElementWeight(actual);
+        if (level > 0)
+            factor -= 0.1f * (level + 1);
 
         return factor;
     }
@@ -452,13 +461,27 @@ static class Program
     {
         return root.FindAll<Tag>(IsNonContentElement).Count() + (IsNonContentElement(root) ? 1 : 0);
 
-        static bool IsNonContentElement(Tag tag)
+        static bool IsNonContentElement(Tag root)
         {
-            return
-                (!tag.PermittedContent.HasFlag(ContentCategory.Phrasing) || tag.Category.HasFlag(ContentCategory.Form)) ||
-                (tag is ParentTag parent && parent.Any() &&
-                    parent.All<Tag>(t => (!t.Category.HasFlag(ContentCategory.Phrasing) || t.Category.HasFlag(ContentCategory.Form)) &&
-                        !t.PermittedContent.HasFlag(ContentCategory.Phrasing)));
+            if (!root.PermittedContent.HasFlag(ContentCategory.Phrasing) ||
+                root.Category.HasFlag(ContentCategory.Metadata) ||
+                root.Category.HasFlag(ContentCategory.Script) ||
+                root.Category.HasFlag(ContentCategory.Form))
+            {
+                return true;
+            }
+
+            if (root is ParentTag { HasChildren: true } parent)
+            {
+                return parent.All<Tag>(tag => !tag.PermittedContent.HasFlag(ContentCategory.Phrasing) && (
+                    !tag.Category.HasFlag(ContentCategory.Phrasing) ||
+                    tag.Category.HasFlag(ContentCategory.Metadata) ||
+                    tag.Category.HasFlag(ContentCategory.Script) ||
+                    tag.Category.HasFlag(ContentCategory.Form)
+                ));
+            }
+
+            return false;
         }
     }
 

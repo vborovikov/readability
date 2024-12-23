@@ -325,8 +325,8 @@ public partial class DocumentReader
     {
         UnwrapNoscriptImages();
         var jsonMetadata = GetJsonLD();
-        RemoveScripts();
-        PrepareDocument();
+        //RemoveScripts();
+        //PrepareDocument();
         var metadata = GetArticleMetadata(jsonMetadata);
         this.articleTitle = metadata.Title;
         var articleContent = GetArticleContent();
@@ -410,6 +410,7 @@ public partial class DocumentReader
         }
 
         // check ancestors of the top candidates
+        Debug.WriteLine("");
 
         var ancestryCount = 0;
         var maxAncestryCount = 0;
@@ -496,6 +497,7 @@ public partial class DocumentReader
         if (articleCandidate == default)
             return null;
 
+        Debug.WriteLine($"\nArticle: {articleCandidate.Path} {articleCandidate.ContentScore:F2} ({articleCandidate.TokenCount})");
         var articleContent = articleCandidate.Root;
 
         // backward compatibility with ReadabilityJS
@@ -608,14 +610,18 @@ public partial class DocumentReader
 
     private static float GetElementFactor(ParentTag root)
     {
-        var tag = root;
-        while (tag.HasOneChild && tag.First() is ParentTag nested)
+        var level = 0;
+        var actual = root;
+        while (actual.HasOneChild && actual.First() is ParentTag nested)
         {
-            tag = nested;
+            actual = nested;
+            ++level;
         }
 
-        var factor = KnownElementFactors.GetValueOrDefault(tag.Name, defaultValue: 1f);
-        factor += GetElementWeight(tag);
+        var factor = KnownElementFactors.GetValueOrDefault(actual.Name, defaultValue: 1f);
+        factor += GetElementWeight(actual);
+        if (level > 0)
+            factor -= 0.1f * (level + 1);
 
         return factor;
     }
@@ -800,13 +806,27 @@ public partial class DocumentReader
     {
         return root.FindAll<Tag>(IsNonContentElement).Count() + (IsNonContentElement(root) ? 1 : 0);
 
-        static bool IsNonContentElement(Tag tag)
+        static bool IsNonContentElement(Tag root)
         {
-            return
-                (!tag.PermittedContent.HasFlag(ContentCategory.Phrasing) || tag.Category.HasFlag(ContentCategory.Form)) ||
-                (tag is ParentTag parent && parent.Any() &&
-                    parent.All<Tag>(t => (!t.Category.HasFlag(ContentCategory.Phrasing) || t.Category.HasFlag(ContentCategory.Form)) &&
-                        !t.PermittedContent.HasFlag(ContentCategory.Phrasing)));
+            if (!root.PermittedContent.HasFlag(ContentCategory.Phrasing) ||
+                root.Category.HasFlag(ContentCategory.Metadata) ||
+                root.Category.HasFlag(ContentCategory.Script) ||
+                root.Category.HasFlag(ContentCategory.Form))
+            {
+                return true;
+            }
+
+            if (root is ParentTag { HasChildren: true } parent)
+            {
+                return parent.All<Tag>(tag => !tag.PermittedContent.HasFlag(ContentCategory.Phrasing) && (
+                    !tag.Category.HasFlag(ContentCategory.Phrasing) ||
+                    tag.Category.HasFlag(ContentCategory.Metadata) ||
+                    tag.Category.HasFlag(ContentCategory.Script) ||
+                    tag.Category.HasFlag(ContentCategory.Form)
+                ));
+            }
+
+            return false;
         }
     }
 
