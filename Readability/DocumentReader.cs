@@ -325,8 +325,6 @@ public partial class DocumentReader
     {
         UnwrapNoscriptImages();
         var jsonMetadata = GetJsonLD();
-        //RemoveScripts();
-        //PrepareDocument();
         var metadata = GetArticleMetadata(jsonMetadata);
         this.articleTitle = metadata.Title;
         var articleContent = GetArticleContent();
@@ -335,6 +333,10 @@ public partial class DocumentReader
             article = default;
             return false;
         }
+
+        // ReadabilityJS content alterations
+        RemoveScripts(articleContent);
+        PrepareDocument(articleContent);
         PostProcessContent(articleContent);
 
         article = new Article
@@ -1133,29 +1135,29 @@ public partial class DocumentReader
         }
     }
 
-    private void RemoveScripts()
+    private static void RemoveScripts(ParentTag root)
     {
-        foreach (var scriptTag in this.document.FindAll<Tag>(t => t.Name == "script" || t.Name == "noscript").ToArray())
+        foreach (var scriptTag in root.FindAll<Tag>(t => t.Name == "script" || t.Name == "noscript").ToArray())
         {
             scriptTag.Remove();
         }
     }
 
-    private void PrepareDocument()
+    private static void PrepareDocument(ParentTag root)
     {
         // remove comments
-        foreach (var comment in this.document.FindAll(e => e is Comment).ToArray())
+        foreach (var comment in root.FindAll(e => e is Comment).ToArray())
         {
             comment.Remove();
         }
 
         // Remove all style tags in head
-        foreach (var styleTag in this.document.FindAll<Tag>(t => t.Name == "style").ToArray())
+        foreach (var styleTag in root.FindAll<Tag>(t => t.Name == "style").ToArray())
         {
             styleTag.Remove();
         }
 
-        if (this.document.Find<ParentTag>(el => el.Name == "body") is ParentTag body)
+        if (root.Find<ParentTag>(el => el.Name == "body") is ParentTag body)
         {
             ReplaceBrs(body);
             ReplaceTags(body, "font", "span");
