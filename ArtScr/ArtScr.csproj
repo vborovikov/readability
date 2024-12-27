@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Brackets" Version="0.6.4-beta.5" />
+    <PackageReference Include="Brackets" Version="0.6.4" />
     <PackageReference Include="FuzzyCompare" Version="0.3.0" />
     <PackageReference Include="Termly" Version="0.2.3" />
   </ItemGroup>
