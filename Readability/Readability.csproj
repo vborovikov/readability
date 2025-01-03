@@ -34,6 +34,9 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Readability.Tests</_Parameter1>
     </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>ArtScr</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
