@@ -400,4 +400,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Debugging
-Properties/launchSettings.json
+**/Properties/launchSettings.json
