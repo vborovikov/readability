@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "ArtScr": {
-      "commandName": "Project",
-      "commandLineArgs": "..\\..\\..\\..\\test\\test-pages\\theverge\\source.html"
-    }
-  }
-}
