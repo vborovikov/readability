@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Brackets;
 using FuzzyCompare.Text;
+using Readability;
 using Termly;
 
 static class Program
@@ -80,7 +81,7 @@ static class Program
             var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
-                Console.Out.WriteLineInColor($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount})");
+                Console.Out.PrintLine($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount})");
                 Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount})");
 
                 for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
@@ -106,38 +107,39 @@ static class Program
                 articleCandidate = candidate;
             }
 
-            Console.Out.WriteLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
+            Console.Out.PrintLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
             Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
-            var ancestryThreshold = nbTopCandidates / 2; // 2 occurrences in case of 5 candidates
-            if (maxAncestryCount < ancestryThreshold)
+            var ancestryThreshold = nbTopCandidates / 2 + nbTopCandidates % 2; // 3 occurrences in case of 5 candidates
+            if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
+                (ancestryCount == 0 || ancestryCount != maxAncestryCount))
             {
                 // the top candidates are mostly unrelated, check their common ancestors
 
                 var foundRelevantAncestor = false;
-                var maxTokenCount = ancestryCount == maxAncestryCount && maxAncestryCount > 0 ?
-                    topCandidates.Max(ca => ca.Key.TokenCount) : candidates.Max(ca => ca.Value.TokenCount);
-                var tokenCountThreshold = (int)(maxTokenCount * 0.2f); // 20% threshold
+                var topmostCandidate = topCandidates.First().Value;
+                var midTokenCount = GetMedianTokenCount(topCandidates.Keys);
+                var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
                         continue;
 
-                    Console.Out.WriteLineInColor($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
+                    Console.Out.PrintLine($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
                     Debug.WriteLine($"{GetElementPath(ancestor)}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount})");
 
-                    if (!foundRelevantAncestor &&
-                        (reoccurrence - ancestryThreshold == 1 || reoccurrence == nbTopCandidates) &&
-                        (!topCandidates.ContainsValue(ancestor) || Math.Abs(maxTokenCount - ancestorCandidate.TokenCount) < tokenCountThreshold))
+                    if (!foundRelevantAncestor && (
+                        (reoccurrence == nbTopCandidates && !topCandidates.ContainsValue(ancestor)) ||
+                        (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
+                        (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
+                        (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) && 
+                        ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
                     {
-                        if (ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
-                        {
-                            // the ancestor candidate must have at least the same number of tokens as previous candidate
-                            articleCandidate = ancestorCandidate;
-                            foundRelevantAncestor = true;
+                        // the ancestor candidate must have at least the same number of tokens as previous candidate
+                        articleCandidate = ancestorCandidate;
+                        foundRelevantAncestor = true;
 
-                            //todo: DocumentReader break here
-                        }
+                        //todo: DocumentReader break here
                     }
                 }
             }
@@ -160,7 +162,7 @@ static class Program
 
             if (articleCandidate != default)
             {
-                Console.Out.WriteLineInColor($"\nArticle: {articleCandidate.Path:green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
+                Console.Out.PrintLine($"\nArticle: {articleCandidate.Path:green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
                 Debug.WriteLine($"\nArticle: {articleCandidate.Path} {articleCandidate.ContentScore:F2} ({articleCandidate.TokenCount})");
             }
         }
@@ -171,6 +173,20 @@ static class Program
         }
 
         return 0;
+    }
+
+    private static int GetMedianTokenCount(IList<ArticleCandidate> unsortedCandidates)
+    {
+        var candidates = unsortedCandidates.ToArray();
+        Array.Sort(candidates, ArticleCandidate.TokenCountComparer);
+
+        var count = candidates.Length;
+        var mid = count / 2;
+
+        if (count % 2 != 0)
+            return candidates[mid].TokenCount;
+
+        return (candidates[mid - 1].TokenCount + candidates[mid].TokenCount) / 2;
     }
 
     private static bool HasOutlierCandidate(IReadOnlyCollection<ArticleCandidate> allCandidates, [NotNullWhen(true)] out ArticleCandidate outlier)
@@ -292,8 +308,8 @@ static class Program
         new("tbody", 0.9f),
         new("tr", 0.9f),
         new("td", 0.9f),
-        new("blockquote", 0.9f),
         new("address", 0.8f),
+        new("blockquote", 0.8f),
         new("ol", 0.8f),
         new("ul", 0.8f),
         new("dl", 0.8f),
@@ -373,7 +389,8 @@ static class Program
 
     private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenDensity)
     {
-        if (root.Category.HasFlag(ContentCategory.Metadata) || root.Category.HasFlag(ContentCategory.Script))
+        if (root.HasOneChild || root.IsProbablyHidden() ||
+            root.Category.HasFlag(ContentCategory.Metadata) || root.Category.HasFlag(ContentCategory.Script))
         {
             tokenCount = 0;
             tokenDensity = 0f;
