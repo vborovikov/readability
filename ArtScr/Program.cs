@@ -1,7 +1,6 @@
 ﻿namespace ArtScr;
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Brackets;
 using Readability;
@@ -130,7 +129,7 @@ static partial class Program
                     }
                 }
             }
-            else if (HasOutlierCandidate(candidates.Values, out var outlier))
+            else if (ArticleCandidate.HasOutlier(candidates.Values, out var outlier))
             {
                 // the outlier candidate has much more content
                 articleCandidate = outlier;
@@ -162,7 +161,7 @@ static partial class Program
         return 0;
     }
 
-    private static int GetMedianTokenCount(IList<ArticleCandidate> topCandidates)
+    private static int GetMedianTokenCount(IReadOnlyCollection<ArticleCandidate> topCandidates)
     {
         var candidates = topCandidates
             .Order(ArticleCandidate.TokenCountComparer)
@@ -177,74 +176,5 @@ static partial class Program
         return (candidates[mid - 1].TokenCount + candidates[mid].TokenCount) / 2;
     }
 
-    private static bool HasOutlierCandidate(IReadOnlyCollection<ArticleCandidate> allCandidates, [NotNullWhen(true)] out ArticleCandidate outlier)
-    {
-        var candidates = allCandidates
-            .OrderDescending(ArticleCandidate.TokenCountComparer)
-            .DistinctBy(c => c.TokenCount)
-            .ToArray();
-
-        var lastIndex = candidates.Length - 1;
-        if (lastIndex > 1)
-        {
-            for (var i = 0; i < lastIndex; ++i)
-            {
-                var ratio = candidates[i + 1].TokenCount / (float)candidates[i].TokenCount;
-                if (ratio < 0.15f)
-                {
-                    outlier = candidates[i];
-                    return true;
-                }
-            }
-        }
-
-        outlier = default;
-        return false;
-    }
-
     private const int DefaultNTopCandidates = 5;
-
-    public static ValueEnumerator EnumerateValues(this ReadOnlySpan<char> span) => new(span);
-
-    public ref struct ValueEnumerator
-    {
-        private ReadOnlySpan<char> span;
-        private ReadOnlySpan<char> current;
-
-        public ValueEnumerator(ReadOnlySpan<char> span)
-        {
-            this.span = span;
-        }
-
-        public readonly ReadOnlySpan<char> Current => this.current;
-
-        public readonly ValueEnumerator GetEnumerator() => this;
-
-        public bool MoveNext()
-        {
-            var remaining = this.span;
-            if (remaining.IsEmpty)
-                return false;
-
-            var start = remaining.IndexOfAnyExcept(' ');
-            if (start >= 0)
-            {
-                remaining = remaining[start..];
-                var end = remaining.IndexOf(' ');
-                if (end > 0)
-                {
-                    this.current = remaining[..end];
-                    this.span = remaining[(end + 1)..];
-                    return true;
-                }
-
-                this.current = remaining;
-                this.span = default;
-                return true;
-            }
-
-            this.span = default;
-            return false;
-        }
-    }
 }

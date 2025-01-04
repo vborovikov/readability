@@ -46,6 +46,31 @@ readonly record struct ArticleCandidate
         return false;
     }
 
+    public static bool HasOutlier(IReadOnlyCollection<ArticleCandidate> allCandidates, [NotNullWhen(true)] out ArticleCandidate outlier)
+    {
+        var candidates = allCandidates
+            .OrderDescending(TokenCountComparer)
+            .DistinctBy(c => c.TokenCount)
+            .ToArray();
+
+        var lastIndex = candidates.Length - 1;
+        if (lastIndex > 1)
+        {
+            for (var i = 0; i < lastIndex; ++i)
+            {
+                var ratio = candidates[i + 1].TokenCount / (float)candidates[i].TokenCount;
+                if (ratio < 0.15f)
+                {
+                    outlier = candidates[i];
+                    return true;
+                }
+            }
+        }
+
+        outlier = default;
+        return false;
+    }
+
     private static bool TryCountTokens(ParentTag root, out int tokenCount, out float tokenDensity)
     {
         if (root.HasOneChild || root.IsProbablyHidden() ||
