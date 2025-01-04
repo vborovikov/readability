@@ -4,13 +4,12 @@ using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using System.Text;
 using Brackets;
 using FuzzyCompare.Text;
 using Readability;
 using Termly;
 
-static class Program
+static partial class Program
 {
     static async Task<int> Main(string[] args)
     {
@@ -54,7 +53,7 @@ static class Program
                 {
                     var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
 
-                    Debug.WriteLine($"{GetElementPath(root)}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
+                    Debug.WriteLine($"{root.GetPath()}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
 
                     var newCandidate = new ArticleCandidate(root, tokenCount, contentScore);
                     candidates.Add(root, newCandidate);
@@ -125,8 +124,8 @@ static class Program
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
                         continue;
 
-                    Console.Out.PrintLine($"{GetElementPath(ancestor):blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
-                    Debug.WriteLine($"{GetElementPath(ancestor)}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount})");
+                    Console.Out.PrintLine($"{ancestor.GetPath():blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
+                    Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount})");
 
                     if (!foundRelevantAncestor && (
                         (reoccurrence == nbTopCandidates && !topCandidates.ContainsValue(ancestor)) ||
@@ -148,12 +147,12 @@ static class Program
                 // the outlier candidate has much more content
                 articleCandidate = outlier;
             }
-            else if (ancestryCount >= ancestryThreshold)
+            else if (ancestryCount / (float)ancestryThreshold > 0.6f)
             {
                 // too many parents, find the first grandparent amoung the top candidates
                 var grandparent = topCandidates.Keys[ancestryCount];
                 var ratio = articleCandidate.TokenCount / (float)grandparent.TokenCount;
-                if (ratio <= 0.75f)
+                if (ratio <= 0.8f)
                 {
                     // the grandparent candidate has significantly more content
                     articleCandidate = grandparent;
@@ -175,10 +174,11 @@ static class Program
         return 0;
     }
 
-    private static int GetMedianTokenCount(IList<ArticleCandidate> unsortedCandidates)
+    private static int GetMedianTokenCount(IList<ArticleCandidate> topCandidates)
     {
-        var candidates = unsortedCandidates.ToArray();
-        Array.Sort(candidates, ArticleCandidate.TokenCountComparer);
+        var candidates = topCandidates
+            .Order(ArticleCandidate.TokenCountComparer)
+            .ToArray();
 
         var count = candidates.Length;
         var mid = count / 2;
@@ -202,7 +202,7 @@ static class Program
             for (var i = 0; i < lastIndex; ++i)
             {
                 var ratio = candidates[i + 1].TokenCount / (float)candidates[i].TokenCount;
-                if (ratio < 0.1f)
+                if (ratio < 0.15f)
                 {
                     outlier = candidates[i];
                     return true;
@@ -212,71 +212,6 @@ static class Program
 
         outlier = default;
         return false;
-    }
-
-    [DebuggerDisplay("{Path,nq}: {ContentScore} ({TokenCount})")]
-    private record struct ArticleCandidate(ParentTag Root, int TokenCount, float ContentScore)
-    {
-        private sealed class CandidateContentScoreComparer : IComparer<ArticleCandidate>
-        {
-            // ContentScore desc
-            public int Compare(ArticleCandidate x, ArticleCandidate y) => y.ContentScore.CompareTo(x.ContentScore);
-        }
-
-        private sealed class CandidateTokenCountComparer : IComparer<ArticleCandidate>
-        {
-            // TokenCount asc, NestingLevel desc
-            public int Compare(ArticleCandidate x, ArticleCandidate y)
-            {
-                var result = x.TokenCount.CompareTo(y.TokenCount);
-                if (result == 0 && x.Root.Parent != y.Root.Parent)
-                {
-                    if (x.Root.Parent == y.Root)
-                        return 1;
-                    else if (y.Root.Parent == x.Root)
-                        return -1;
-                    else
-                        return y.Root.NestingLevel.CompareTo(x.Root.NestingLevel);
-                }
-                return result;
-            }
-        }
-
-        public static readonly IComparer<ArticleCandidate> ConstentScoreComparer = new CandidateContentScoreComparer();
-        public static readonly IComparer<ArticleCandidate> TokenCountComparer = new CandidateTokenCountComparer();
-
-        public readonly string Path => GetElementPath(this.Root);
-    }
-
-    private static string GetElementPath(Tag? element)
-    {
-        if (element is null)
-            return "/";
-
-        var path = new StringBuilder(512);
-
-        path.Append('/').Append(element.Name);
-        for (var parent = element.Parent; parent is not null and not { Name: "body" or "head" or "html" }; parent = parent.Parent)
-        {
-            path.Insert(0, parent.Name).Insert(0, '/');
-        }
-
-        if (element.Attributes["id"] is { Length: > 0 } id)
-        {
-            path.Append('#').Append(id);
-        }
-
-        if (element.Attributes["name"] is { Length: > 0 } name)
-        {
-            path.Append('@').Append(name);
-        }
-
-        if (element.Attributes["class"] is { Length: > 0 } klass)
-        {
-            path.Append('[').Append(klass).Append(']');
-        }
-
-        return path.ToString();
     }
 
     private static float GetElementFactor(ParentTag root)
