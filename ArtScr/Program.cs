@@ -98,6 +98,7 @@ static partial class Program
             Console.Out.PrintLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
             Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
+            var topmostCandidate = topCandidates.First().Value;
             var ancestryThreshold = nbTopCandidates / 2 + nbTopCandidates % 2; // 3 occurrences in case of 5 candidates
             if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
                 (ancestryCount == 0 || ancestryCount != maxAncestryCount))
@@ -105,7 +106,6 @@ static partial class Program
                 // the top candidates are mostly unrelated, check their common ancestors
 
                 var foundRelevantAncestor = false;
-                var topmostCandidate = topCandidates.First().Value;
                 var midTokenCount = GetMedianTokenCount(topCandidates.Keys);
                 var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
@@ -147,6 +147,24 @@ static partial class Program
                 {
                     // the grandparent candidate has significantly more content
                     articleCandidate = grandparent;
+                }
+            }
+            else if (topCandidates.Count(ca => ca.Key.NestingLevel == topmostCandidate.NestingLevel) > 1)
+            {
+                // some top candidates have the same nesting level,
+                // choose their common ancestor if it's also a top candidate
+
+                var sameLevelCandidates = topCandidates
+                    .Where(ca => ca.Key.NestingLevel == topmostCandidate.NestingLevel)
+                    .ToArray();
+
+                foreach (var ancestor in topCandidates.IntersectBy(commonAncestors.Keys, ca => ca.Value))
+                {
+                    if (sameLevelCandidates.All(ca => ancestor.Value.Find<ParentTag>(rt => rt == ca.Value) is not null))
+                    {
+                        articleCandidate = ancestor.Key;
+                        break;
+                    }
                 }
             }
 
