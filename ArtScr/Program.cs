@@ -8,6 +8,8 @@ using Termly;
 
 static partial class Program
 {
+    private const int DefaultNTopCandidates = 5;
+
     static async Task<int> Main(string[] args)
     {
         if (args.Length < 1)
@@ -67,8 +69,8 @@ static partial class Program
             var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
-                Console.Out.PrintLine($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount})");
-                Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount})");
+                Console.Out.PrintLine($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount}) [{candidate.NestingLevel:yellow}]");
+                Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount}) [{candidate.NestingLevel}]");
 
                 for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
                 {
@@ -111,8 +113,10 @@ static partial class Program
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
                         continue;
 
-                    Console.Out.PrintLine($"{ancestor.GetPath():blue}: {reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} ({ancestorCandidate.TokenCount})");
-                    Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount})");
+                    Console.Out.PrintLine($"{ancestor.GetPath():blue}: " +
+                        $"{reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} " +
+                        $"({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel:yellow}]");
+                    Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel}]");
 
                     if (!foundRelevantAncestor && (
                         (reoccurrence == nbTopCandidates && !topCandidates.ContainsValue(ancestor)) ||
@@ -161,7 +165,7 @@ static partial class Program
         return 0;
     }
 
-    private static int GetMedianTokenCount(IReadOnlyCollection<ArticleCandidate> topCandidates)
+    private static int GetMedianTokenCount(IEnumerable<ArticleCandidate> topCandidates)
     {
         var candidates = topCandidates
             .Order(ArticleCandidate.TokenCountComparer)
@@ -175,6 +179,4 @@ static partial class Program
 
         return (candidates[mid - 1].TokenCount + candidates[mid].TokenCount) / 2;
     }
-
-    private const int DefaultNTopCandidates = 5;
 }

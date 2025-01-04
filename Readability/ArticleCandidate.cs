@@ -24,6 +24,7 @@ readonly record struct ArticleCandidate
     public float ContentScore { get; }
 
     public string Path => this.Root.GetPath();
+    public int NestingLevel => this.Root.NestingLevel;
 
     public static bool TryCreate(ParentTag root, [NotNullWhen(true)] out ArticleCandidate candidate)
     {
