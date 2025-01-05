@@ -1892,16 +1892,6 @@ public partial class DocumentReader
         return tagCount == 0 || tagCount == root.FindAll<Tag>(t => t is { Name: "br" or "hr" }).Count();
     }
 
-    private bool HeaderDuplicatesTitle(Tag tag)
-    {
-        if (tag is not ParentTag { Name: "h1" or "h2" } header)
-            return false;
-
-        var heading = header.ToTrimString();
-        Debug.WriteLine($"Evaluating similarity of header: '{heading}', '{this.articleTitle}'");
-        return ComparisonMethods.JaroWinklerSimilarity(this.articleTitle, heading) > 0.75f;
-    }
-
     private bool CheckByline(Tag tag)
     {
         if (this.articleByline is not null)
@@ -1947,29 +1937,5 @@ public partial class DocumentReader
 
             return false;
         }
-    }
-
-    private static bool IsProbablyVisible(Tag tag)
-    {
-        if (!tag.HasAttributes)
-            return true;
-
-        if (tag.Attributes["style"] is { Length: > 0 } style)
-        {
-            foreach (var cssDeclaration in style.EnumerateCssDeclarations())
-            {
-                if (cssDeclaration.Property is "display" && cssDeclaration.Value is "none")
-                    return false;
-                if (cssDeclaration.Property is "visibility" && cssDeclaration.Value is "hidden")
-                    return false;
-            }
-        }
-
-        if (tag.Attributes.Has("hidden"))
-            return false;
-        if (tag.Attributes.Has("aria-hidden", "true"))
-            return false;
-
-        return true;
     }
 }
