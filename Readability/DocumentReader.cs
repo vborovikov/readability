@@ -366,6 +366,9 @@ public partial class DocumentReader
             articleCandidate = candidate;
         }
 
+        if (topCandidates.Count == 0)
+            return null;
+
         Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
         var topmostCandidate = topCandidates.First().Value;

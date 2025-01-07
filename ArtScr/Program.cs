@@ -95,6 +95,9 @@ static partial class Program
                 articleCandidate = candidate;
             }
 
+            if (topCandidates.Count == 0)
+                return 3;
+
             Console.Out.PrintLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
             Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
@@ -172,15 +175,17 @@ static partial class Program
             {
                 Console.Out.PrintLine($"\nArticle: {articleCandidate.Path:green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
                 Debug.WriteLine($"\nArticle: {articleCandidate.Path} {articleCandidate.ContentScore:F2} ({articleCandidate.TokenCount})");
+
+                return 0;
             }
         }
         catch (Exception x)
         {
             Console.Error.WriteLine(ConsoleColor.DarkRed, x.Message);
-            return 3;
+            return 4;
         }
 
-        return 0;
+        return 3;
     }
 
     private static int GetMedianTokenCount(IEnumerable<ArticleCandidate> topCandidates)
