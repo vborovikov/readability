@@ -240,20 +240,6 @@ public partial class DocumentReader
         this.classesToPreserve = [.. DefaultClassesToPreserve, .. options.ClassesToPreserve];
     }
 
-    public bool TryFind(ArticlePath articlePath, [MaybeNullWhen(false)] out Article article)
-    {
-        article = default;
-        return false;
-    }
-
-    public Article Find(ArticlePath articlePath)
-    {
-        if (!TryFind(articlePath, out var article))
-            throw new ArticleNotFoundException();
-
-        return article;
-    }
-
     public bool TryParse([MaybeNullWhen(false)] out Article article)
     {
         UnwrapNoscriptImages();
