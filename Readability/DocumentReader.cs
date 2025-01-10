@@ -551,6 +551,10 @@ public partial class DocumentReader
                     continue;
 
                 var parsed = JsonDocument.Parse(content.Data.Trim().Trim(';').Trim().ToString()).RootElement;
+                if (parsed.ValueKind == JsonValueKind.Array && parsed.GetArrayLength() > 0)
+                {
+                    parsed = parsed.EnumerateArray().First();
+                }
                 if (!parsed.TryGetString("@context", out var context) ||
                     !context.EndsWith("://schema.org", StringComparison.Ordinal))
                 {
