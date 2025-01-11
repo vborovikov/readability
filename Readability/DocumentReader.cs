@@ -117,9 +117,11 @@ public partial class DocumentReader
     // These are the classes that readability sets itself.
     private static readonly string[] DefaultClassesToPreserve = ["page"];
 
-    private readonly Document document;
+    private readonly IRoot documentRoot;
+    private readonly IRoot documentHead;
+    private readonly IRoot documentBody;
     private readonly DocumentUrl documentUrl;
-    private string? articleLang;
+    private readonly string? articleLang;
     private string? articleByline;
     private string? articleTitle;
     private string? articleDir;
@@ -141,8 +143,20 @@ public partial class DocumentReader
 
     internal DocumentReader(Document document, DocumentUrl documentUrl, ReadabilityOptions options)
     {
-        this.document = document.IsSerialized ? document : document.Clone();
         this.documentUrl = documentUrl;
+        
+        if (!document.IsSerialized)
+        {
+            document = document.Clone();
+        }
+        var html = document.FirstOrDefault<ParentTag>(h => h.Name == "html");
+        this.documentRoot = html ?? (IRoot)document;
+        this.documentHead = this.documentRoot.FirstOrDefault<ParentTag>(b => b.Name == "head") ?? (IRoot)document;
+        this.documentBody = this.documentRoot.FirstOrDefault<ParentTag>(b => b.Name == "body") ?? (IRoot)document;
+        if (html is not null && html.Attributes["lang"] is { Length: > 0 } lang)
+        {
+            this.articleLang = lang.ToString();
+        }
 
         this.nbTopCandidates = options.NTopCandidates;
         this.keepClasses = options.KeepClasses;
@@ -193,18 +207,11 @@ public partial class DocumentReader
 
     private bool TryFindArticle([NotNullWhen(true)] out ArticleCandidate result)
     {
-        var html = this.document.FirstOrDefault<ParentTag>(h => h.Name == "html");
-        if (html is not null && html.Attributes["lang"] is { Length: > 0 } lang)
-        {
-            this.articleLang = lang.ToString();
-        }
-
         // find candidates with highest scores
 
         var candidates = new Dictionary<ParentTag, ArticleCandidate>();
         var contentScores = new PriorityQueue<ArticleCandidate, float>(this.nbTopCandidates);
-        var body = html?.FirstOrDefault<ParentTag>(b => b.Name == "body") ?? (IRoot)this.document;
-        foreach (var root in body.FindAll<ParentTag>())
+        foreach (var root in this.documentBody.FindAll<ParentTag>())
         {
             CheckByline(root);
 
@@ -237,7 +244,7 @@ public partial class DocumentReader
         {
             Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount}) [{candidate.NestingLevel}]");
 
-            for (var parent = candidate.Root.Parent; parent is not null && parent != body; parent = parent.Parent)
+            for (var parent = candidate.Root.Parent; parent is not null && parent != this.documentBody; parent = parent.Parent)
             {
                 ref var reoccurence = ref CollectionsMarshal.GetValueRefOrAddDefault(commonAncestors, parent, out _);
                 ++reoccurence;
@@ -365,7 +372,7 @@ public partial class DocumentReader
 
     private void UnwrapNoscriptImages()
     {
-        foreach (var img in this.document.FindAll<Tag>(t => t.Name == "img").ToArray())
+        foreach (var img in this.documentBody.FindAll<Tag>(t => t.Name == "img").ToArray())
         {
             if (img.Attributes.Any(at => at.Name == "src" || at.Name == "srcset" ||
                 at.Name == "data-src" || at.Name == "data-srcset" || at.ValueHasImage()))
@@ -376,7 +383,7 @@ public partial class DocumentReader
             img.Remove();
         }
 
-        foreach (var noscript in this.document.FindAll<ParentTag>(t => t.Name == "noscript").ToArray())
+        foreach (var noscript in this.documentBody.FindAll<ParentTag>(t => t.Name == "noscript").ToArray())
         {
             var tmp = noscript.FirstOrDefault()?.Clone();
             if (tmp is null)
@@ -426,7 +433,7 @@ public partial class DocumentReader
 
     private ArticleMetadata? GetJsonLD()
     {
-        foreach (var jsonld in this.document.FindAll<ParentTag>(t => t.Name == "script" && t.Attributes.Has("type", "application/ld+json")))
+        foreach (var jsonld in this.documentRoot.FindAll<ParentTag>(t => t.Name == "script" && t.Attributes.Has("type", "application/ld+json")))
         {
             try
             {
@@ -569,7 +576,7 @@ public partial class DocumentReader
     {
         var origTitle = string.Empty;
 
-        if (this.document.Find<ParentTag>(t => t.Name == "title") is ParentTag titleTag &&
+        if (this.documentHead.Find<ParentTag>(t => t.Name == "title") is ParentTag titleTag &&
             titleTag.FirstOrDefault() is Content titleText)
         {
             origTitle = titleText.Data.ToTrimString();
@@ -605,7 +612,7 @@ public partial class DocumentReader
             {
                 // Check if we have an heading containing this exact string, so we
                 // could assume it's the full title.
-                var headings = this.document.FindAll<ParentTag>(t => t.Name == "h1" || t.Name == "h2");
+                var headings = this.documentBody.FindAll<ParentTag>(t => t.Name == "h1" || t.Name == "h2");
                 if (!headings.Any(h => h.FirstOrDefault() is Content hText &&
                     hText.Data.JaroWinklerSimilarity(origTitle) > 0.9f))
                 {
@@ -626,7 +633,7 @@ public partial class DocumentReader
             }
             else if (origTitle is { Length: < 15 or > 150 })
             {
-                var hOnes = this.document.FindAll<ParentTag>(t => t.Name == "h1").ToArray();
+                var hOnes = this.documentBody.FindAll<ParentTag>(t => t.Name == "h1").ToArray();
                 if (hOnes is [ParentTag hOne] && hOne.FirstOrDefault() is Content hOneText)
                 {
                     curTitle = hOneText.Data.ToTrimString().Tokenize().ToArray().AsSpan();
@@ -815,7 +822,7 @@ public partial class DocumentReader
 
     private ArticleMetadata GetArticleMetadata(ArticleMetadata? jsonMetadata)
     {
-        var metas = this.document.FindAll<Tag>(t => t.Name == "meta");
+        var metas = this.documentHead.FindAll<Tag>(t => t.Name == "meta");
         var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var meta in metas)
