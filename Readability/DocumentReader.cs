@@ -15,7 +15,8 @@ using FuzzyCompare.Text;
 
 public record ReadabilityOptions
 {
-    private const int DefaultNTopCandidates = 5;
+    private const int DefaultTopCandidateCount = 5;
+
     internal const int DefaultCharThreshold = 500;
 
     private static readonly string[] DefaultClassesToPreserve = ["caption"];
@@ -26,14 +27,11 @@ public record ReadabilityOptions
     /// The number of top candidates to consider when analysing how
     /// tight the competition is among candidates. 
     /// </summary>
-    public int NTopCandidates { get; init; } = DefaultNTopCandidates;
+    public int TopCandidateCount { get; init; } = DefaultTopCandidateCount;
 
-    /// <summary>
-    /// The number of chars an article must have in order to return a result.
-    /// </summary>
-    public int CharThreshold { get; init; } = DefaultCharThreshold;
-    public string[] ClassesToPreserve { get; init; } = DefaultClassesToPreserve;
     public bool KeepClasses { get; init; }
+
+    public string[] ClassesToPreserve { get; init; } = DefaultClassesToPreserve;
 }
 
 public partial class DocumentReader
@@ -125,7 +123,7 @@ public partial class DocumentReader
     private string? articleByline;
     private string? articleTitle;
     private string? articleDir;
-    private readonly int nbTopCandidates;
+    private readonly int topCandidateCount;
     private readonly bool keepClasses;
     private readonly string[] classesToPreserve;
 
@@ -158,7 +156,7 @@ public partial class DocumentReader
             this.articleLang = lang.ToString();
         }
 
-        this.nbTopCandidates = options.NTopCandidates;
+        this.topCandidateCount = options.TopCandidateCount;
         this.keepClasses = options.KeepClasses;
         this.classesToPreserve = [.. DefaultClassesToPreserve, .. options.ClassesToPreserve];
     }
@@ -210,7 +208,7 @@ public partial class DocumentReader
         // find candidates with highest scores
 
         var candidates = new Dictionary<ParentTag, ArticleCandidate>();
-        var contentScores = new PriorityQueue<ArticleCandidate, float>(this.nbTopCandidates);
+        var contentScores = new PriorityQueue<ArticleCandidate, float>(this.topCandidateCount);
         foreach (var root in this.documentBody.FindAll<ParentTag>())
         {
             CheckByline(root);
@@ -220,7 +218,7 @@ public partial class DocumentReader
             {
                 candidates.Add(root, candidate);
 
-                if (contentScores.Count < nbTopCandidates)
+                if (contentScores.Count < topCandidateCount)
                 {
                     contentScores.Enqueue(candidate, candidate.ContentScore);
 
@@ -239,7 +237,7 @@ public partial class DocumentReader
         var maxAncestryCount = 0;
         var articleCandidate = default(ArticleCandidate);
         var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.ConstentScoreComparer);
-        var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
+        var commonAncestors = new Dictionary<ParentTag, int>(topCandidateCount);
         while (contentScores.TryDequeue(out var candidate, out var score))
         {
             Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount}) [{candidate.NestingLevel}]");
@@ -276,7 +274,7 @@ public partial class DocumentReader
         Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
         var topmostCandidate = topCandidates.First().Value;
-        var ancestryThreshold = nbTopCandidates / 2 + nbTopCandidates % 2; // 3 occurrences in case of 5 candidates
+        var ancestryThreshold = topCandidateCount / 2 + topCandidateCount % 2; // 3 occurrences in case of 5 candidates
         if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
             (ancestryCount == 0 || ancestryCount != maxAncestryCount))
         {
@@ -293,7 +291,7 @@ public partial class DocumentReader
                 Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel}]");
 
                 if (!foundRelevantAncestor && (
-                    (reoccurrence == nbTopCandidates && !topCandidates.ContainsValue(ancestor)) ||
+                    (reoccurrence == topCandidateCount && !topCandidates.ContainsValue(ancestor)) ||
                     (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
                     (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
                     (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&

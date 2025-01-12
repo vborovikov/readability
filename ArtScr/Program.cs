@@ -30,7 +30,7 @@ static partial class Program
             await using var htmlFileStream = htmlFile.OpenRead();
             var document = await Document.Html.ParseAsync(htmlFileStream);
 
-            var nbTopCandidates = args.Length > 1 && int.TryParse(args[1], out var num) ? num : DefaultNTopCandidates;
+            var topCandidateCount = args.Length > 1 && int.TryParse(args[1], out var num) ? num : DefaultNTopCandidates;
 
             var body = document
                 .FirstOrDefault<ParentTag>(h => h.Name == "html")?
@@ -40,7 +40,7 @@ static partial class Program
             // find candidates with highest scores
 
             var candidates = new Dictionary<ParentTag, ArticleCandidate>();
-            var contentScores = new PriorityQueue<ArticleCandidate, float>(nbTopCandidates);
+            var contentScores = new PriorityQueue<ArticleCandidate, float>(topCandidateCount);
             foreach (var root in body.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
             {
                 if (!ArticleCandidate.TryCreate(root, out var candidate))
@@ -48,7 +48,7 @@ static partial class Program
 
                 candidates.Add(root, candidate);
 
-                if (contentScores.Count < nbTopCandidates)
+                if (contentScores.Count < topCandidateCount)
                 {
                     contentScores.Enqueue(candidate, candidate.ContentScore);
 
@@ -66,7 +66,7 @@ static partial class Program
             var maxAncestryCount = 0;
             var articleCandidate = default(ArticleCandidate);
             var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.ConstentScoreComparer);
-            var commonAncestors = new Dictionary<ParentTag, int>(nbTopCandidates);
+            var commonAncestors = new Dictionary<ParentTag, int>(topCandidateCount);
             while (contentScores.TryDequeue(out var candidate, out var score))
             {
                 Console.Out.PrintLine($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount}) [{candidate.NestingLevel:yellow}]");
@@ -102,7 +102,7 @@ static partial class Program
             Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
             var topmostCandidate = topCandidates.First().Value;
-            var ancestryThreshold = nbTopCandidates / 2 + nbTopCandidates % 2; // 3 occurrences in case of 5 candidates
+            var ancestryThreshold = topCandidateCount / 2 + topCandidateCount % 2; // 3 occurrences in case of 5 candidates
             if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
                 (ancestryCount == 0 || ancestryCount != maxAncestryCount))
             {
@@ -122,7 +122,7 @@ static partial class Program
                     Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel}]");
 
                     if (!foundRelevantAncestor && (
-                        (reoccurrence == nbTopCandidates && !topCandidates.ContainsValue(ancestor)) ||
+                        (reoccurrence == topCandidateCount && !topCandidates.ContainsValue(ancestor)) ||
                         (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
                         (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
                         (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
