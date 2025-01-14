@@ -203,7 +203,7 @@ public partial class DocumentReader
 
     #region New algorithm
 
-    private bool TryFindArticle([NotNullWhen(true)] out ArticleCandidate result)
+    internal bool TryFindArticle([NotNullWhen(true)] out ArticleCandidate result)
     {
         // find candidates with highest scores
 
