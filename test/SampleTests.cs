@@ -37,31 +37,133 @@ public class SampleTests
     private static readonly Uri PageUri = new("http://fakehost/test/page.html");
 
     [DataTestMethod]
-    [DataRow("001"), DataRow("002"), DataRow("003-metadata-preferred"), DataRow("004-metadata-space-separated-properties"),
-    DataRow("005-unescape-html-entities"), DataRow("aclu"), DataRow("aktualne"), DataRow("archive-of-our-own"), DataRow("ars-1"),
-    DataRow("article-author-tag"), DataRow("base-url"), DataRow("base-url-base-element"), DataRow("base-url-base-element-relative"),
-    DataRow("basic-tags-cleaning"), DataRow("bbc-1"), DataRow("blogger"), DataRow("breitbart"), DataRow("bug-1255978"), 
-    DataRow("buzzfeed-1"), DataRow("citylab-1"), DataRow("clean-links"), DataRow("cnet"), DataRow("cnet-svg-classes"), DataRow("cnn"),
-    DataRow("comment-inside-script-parsing"), DataRow("daringfireball-1"), DataRow("data-url-image"), DataRow("dev418"),
-    DataRow("dropbox-blog"), DataRow("ebb-org"), DataRow("ehow-1"), DataRow("ehow-2"), DataRow("embedded-videos"), DataRow("engadget"),
-    DataRow("firefox-nightly-blog"), DataRow("folha"), DataRow("gitlab-blog"), DataRow("gmw"), DataRow("google-sre-book-1"), 
-    DataRow("guardian-1"), DataRow("heise"), DataRow("herald-sun-1"), DataRow("hidden-nodes"), DataRow("hukumusume"), DataRow("iab-1"),
-    DataRow("ietf-1"), DataRow("js-link-replacement"), DataRow("keep-images"), DataRow("keep-tabular-data"), DataRow("la-nacion"), 
-    DataRow("lazy-image-1"), DataRow("lazy-image-2"), DataRow("lazy-image-3"), DataRow("lemonde-1"), DataRow("liberation-1"), 
-    DataRow("lifehacker-post-comment-load"), DataRow("lifehacker-working"), DataRow("links-in-tables"), DataRow("lwn-1"), 
-    DataRow("medicalnewstoday"), DataRow("medium-1"), DataRow("medium-2"), DataRow("medium-3"), DataRow("mercurial"), 
-    DataRow("metadata-content-missing"), DataRow("missing-paragraphs"), DataRow("mozilla-1"), DataRow("mozilla-2"), DataRow("msn"),
-    DataRow("normalize-spaces"), DataRow("nytimes-1"), DataRow("nytimes-2"), DataRow("nytimes-3"), DataRow("nytimes-4"), 
-    DataRow("nytimes-5"), DataRow("ol"), DataRow("parsely-metadata"), DataRow("pixnet"), DataRow("qq"), DataRow("quanta-1"), 
-    DataRow("remove-aria-hidden"), DataRow("remove-extra-brs"), DataRow("remove-extra-paragraphs"), DataRow("remove-script-tags"), 
-    DataRow("reordering-paragraphs"), DataRow("replace-brs"), DataRow("replace-font-tags"), DataRow("royal-road"), DataRow("rtl-1"),
-    DataRow("rtl-2"), DataRow("rtl-3"), DataRow("rtl-4"), DataRow("salon-1"), DataRow("schema-org-context-object"), 
-    DataRow("seattletimes-1"), DataRow("simplyfound-1"), DataRow("social-buttons"), DataRow("style-tags-removal"), DataRow("svg-parsing"),
-    DataRow("table-style-attributes"), DataRow("telegraph"), DataRow("theverge"), DataRow("title-and-h1-discrepancy"), DataRow("tmz-1"),
-    DataRow("toc-missing"), DataRow("topicseed-1"), DataRow("tumblr"), DataRow("v8-blog"), DataRow("videos-1"), DataRow("videos-2"),
-    DataRow("visibility-hidden"), DataRow("wapo-1"), DataRow("wapo-2"), DataRow("webmd-1"), DataRow("webmd-2"), DataRow("wikia"),
-    DataRow("wikipedia"), DataRow("wikipedia-2"), DataRow("wikipedia-3"), DataRow("wikipedia-4"), DataRow("wordpress"),
-    DataRow("yahoo-1"), DataRow("yahoo-2"), DataRow("yahoo-3"), DataRow("yahoo-4"), DataRow("youth")]
+    [DataRow("001")]
+    [DataRow("002")]
+    [DataRow("003-metadata-preferred")]
+    [DataRow("004-metadata-space-separated-properties")]
+    [DataRow("005-unescape-html-entities")]
+    [DataRow("aclu")]
+    [DataRow("aktualne")]
+    [DataRow("archive-of-our-own")]
+    [DataRow("ars-1")]
+    [DataRow("article-author-tag")]
+    [DataRow("base-url")]
+    [DataRow("base-url-base-element")]
+    [DataRow("base-url-base-element-relative")]
+    [DataRow("basic-tags-cleaning")]
+    [DataRow("bbc-1")]
+    [DataRow("blogger")]
+    [DataRow("breitbart")]
+    [DataRow("bug-1255978")]
+    [DataRow("buzzfeed-1")]
+    [DataRow("citylab-1")]
+    [DataRow("clean-links")]
+    [DataRow("cnet")]
+    [DataRow("cnet-svg-classes")]
+    [DataRow("cnn")]
+    [DataRow("comment-inside-script-parsing")]
+    [DataRow("daringfireball-1")]
+    [DataRow("data-url-image")]
+    [DataRow("dev418")]
+    [DataRow("dropbox-blog")]
+    [DataRow("ebb-org")]
+    [DataRow("ehow-1")]
+    [DataRow("ehow-2")]
+    [DataRow("embedded-videos")]
+    [DataRow("engadget")]
+    [DataRow("firefox-nightly-blog")]
+    [DataRow("folha")]
+    [DataRow("gitlab-blog")]
+    [DataRow("gmw")]
+    [DataRow("google-sre-book-1")]
+    [DataRow("guardian-1")]
+    [DataRow("heise")]
+    [DataRow("herald-sun-1")]
+    [DataRow("hidden-nodes")]
+    [DataRow("hukumusume")]
+    [DataRow("iab-1")]
+    [DataRow("ietf-1")]
+    [DataRow("invalid-attributes")]
+    [DataRow("js-link-replacement")]
+    [DataRow("keep-images")]
+    [DataRow("keep-tabular-data")]
+    [DataRow("la-nacion")]
+    [DataRow("lazy-image-1")]
+    [DataRow("lazy-image-2")]
+    [DataRow("lazy-image-3")]
+    [DataRow("lemonde-1")]
+    [DataRow("liberation-1")]
+    [DataRow("lifehacker-post-comment-load")]
+    [DataRow("lifehacker-working")]
+    [DataRow("links-in-tables")]
+    [DataRow("lwn-1")]
+    [DataRow("medicalnewstoday")]
+    [DataRow("medium-1")]
+    [DataRow("medium-2")]
+    [DataRow("medium-3")]
+    [DataRow("mercurial")]
+    [DataRow("metadata-content-missing")]
+    [DataRow("missing-paragraphs")]
+    [DataRow("mozilla-1")]
+    [DataRow("mozilla-2")]
+    [DataRow("msn")]
+    [DataRow("normalize-spaces")]
+    [DataRow("nytimes-1")]
+    [DataRow("nytimes-2")]
+    [DataRow("nytimes-3")]
+    [DataRow("nytimes-4")]
+    [DataRow("nytimes-5")]
+    [DataRow("ol")]
+    [DataRow("parsely-metadata")]
+    [DataRow("pixnet")]
+    [DataRow("qq")]
+    [DataRow("quanta-1")]
+    [DataRow("remove-aria-hidden")]
+    [DataRow("remove-extra-brs")]
+    [DataRow("remove-extra-paragraphs")]
+    [DataRow("remove-script-tags")]
+    [DataRow("reordering-paragraphs")]
+    [DataRow("replace-brs")]
+    [DataRow("replace-font-tags")]
+    [DataRow("royal-road")]
+    [DataRow("rtl-1")]
+    [DataRow("rtl-2")]
+    [DataRow("rtl-3")]
+    [DataRow("rtl-4")]
+    [DataRow("salon-1")]
+    [DataRow("schema-org-context-object")]
+    [DataRow("seattletimes-1")]
+    [DataRow("simplyfound-1")]
+    [DataRow("social-buttons")]
+    [DataRow("style-tags-removal")]
+    [DataRow("svg-parsing")]
+    [DataRow("table-style-attributes")]
+    [DataRow("telegraph")]
+    [DataRow("theverge")]
+    [DataRow("title-and-h1-discrepancy")]
+    [DataRow("tmz-1")]
+    [DataRow("toc-missing")]
+    [DataRow("topicseed-1")]
+    [DataRow("tumblr")]
+    [DataRow("v8-blog")]
+    [DataRow("videos-1")]
+    [DataRow("videos-2")]
+    [DataRow("visibility-hidden")]
+    [DataRow("wapo-1")]
+    [DataRow("wapo-2")]
+    [DataRow("webmd-1")]
+    [DataRow("webmd-2")]
+    [DataRow("wikia")]
+    [DataRow("wikipedia")]
+    [DataRow("wikipedia-2")]
+    [DataRow("wikipedia-3")]
+    [DataRow("wikipedia-4")]
+    [DataRow("wordpress")]
+    [DataRow("yahoo-1")]
+    [DataRow("yahoo-2")]
+    [DataRow("yahoo-3")]
+    [DataRow("yahoo-4")]
+    [DataRow("youth")]
     public async Task Parse_SamplePage_AsExpected(string directory)
     {
         var path = Path.GetFullPath(Path.Combine(@"..\..\..\test-pages\", directory));
@@ -183,7 +285,7 @@ public class SampleTests
     }
 
     [DataTestMethod]
-    [DataRow("001", "")]
+    [DataRow("001", "/div/main/article/section")]
     [DataRow("002", "")]
     [DataRow("003-metadata-preferred", "")]
     [DataRow("004-metadata-space-separated-properties", "")]
@@ -250,15 +352,15 @@ public class SampleTests
     [DataRow("mercurial", "")]
     [DataRow("metadata-content-missing", "")]
     [DataRow("missing-paragraphs", "")]
-    [DataRow("mozilla-1", "")]
-    [DataRow("mozilla-2", "")]
+    [DataRow("mozilla-1", "/div/div/main#main-content")]
+    [DataRow("mozilla-2", "/div/div/main[sync-reminder]")]
     [DataRow("msn", "")]
     [DataRow("normalize-spaces", "")]
-    [DataRow("nytimes-1", "")]
-    [DataRow("nytimes-2", "")]
-    [DataRow("nytimes-3", "")]
-    [DataRow("nytimes-4", "")]
-    [DataRow("nytimes-5", "")]
+    [DataRow("nytimes-1", "/div/div/main/article#story[story theme-main]")]
+    [DataRow("nytimes-2", "/div/div/main/article#story[story theme-main]")]
+    [DataRow("nytimes-3", "/div/div/div/main/div/article/section@articleBody[css-1i2y565]")]
+    [DataRow("nytimes-4", "/div/div/div/main/div/article/section@articleBody[css-1i2y565]")]
+    [DataRow("nytimes-5", "/div/div/main/section#collection-espanol[css-oji1ln ewz6inz0]")]
     [DataRow("ol", "")]
     [DataRow("parsely-metadata", "")]
     [DataRow("pixnet", "")]
@@ -318,9 +420,8 @@ public class SampleTests
         var sourceFileName = Path.Combine(path, "source.html");
         await using var sourceStream = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read);
         var sourceDocument = await Document.Html.ParseAsync(sourceStream, default);
-        var reader = new DocumentReader(sourceDocument, PageUri);
 
-        var found = reader.TryFindArticle(out var articleCandidate);
+        var found = ArticleCandidate.TryFind(sourceDocument, 5, out var articleCandidate);
         Assert.IsTrue(found);
 
         Assert.AreEqual(articlePath, articleCandidate.Path);

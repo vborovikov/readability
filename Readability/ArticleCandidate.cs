@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
+using System.Runtime.InteropServices;
 using Brackets;
 using FuzzyCompare.Text;
 
@@ -48,6 +49,174 @@ readonly record struct ArticleCandidate
 
         candidate = default;
         return false;
+    }
+
+    public static bool TryFind(IRoot document, int topCandidateCount, [NotNullWhen(true)] out ArticleCandidate result)
+    {
+        // locate the document body or the root element
+
+        var documentBody = document;
+        if (document is not ParentTag { Name: "body" })
+        {
+            documentBody = document.Find<ParentTag>(p => p.Name == "body") ?? document;
+        }
+
+        // find candidates with highest scores
+
+        var candidates = new Dictionary<ParentTag, ArticleCandidate>();
+        var contentScores = new PriorityQueue<ArticleCandidate, float>(topCandidateCount);
+        foreach (var root in documentBody.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
+        {
+            if (TryCreate(root, out var candidate))
+            {
+                candidates.Add(root, candidate);
+
+                if (contentScores.Count < topCandidateCount)
+                {
+                    contentScores.Enqueue(candidate, candidate.ContentScore);
+
+                }
+                else
+                {
+                    contentScores.EnqueueDequeue(candidate, candidate.ContentScore);
+                }
+            }
+        }
+
+        // check ancestors of the top candidates
+        Debug.WriteLine("");
+
+        var ancestryCount = 0;
+        var maxAncestryCount = 0;
+        var articleCandidate = default(ArticleCandidate);
+        var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.ConstentScoreComparer);
+        var commonAncestors = new Dictionary<ParentTag, int>(topCandidateCount);
+        while (contentScores.TryDequeue(out var candidate, out var score))
+        {
+            Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount}) [{candidate.NestingLevel}]");
+
+            for (var parent = candidate.Root.Parent; parent is not null && parent != documentBody; parent = parent.Parent)
+            {
+                ref var reoccurence = ref CollectionsMarshal.GetValueRefOrAddDefault(commonAncestors, parent, out _);
+                ++reoccurence;
+            }
+
+            topCandidates.Add(candidate, candidate.Root);
+            if (candidate.Root.Parent == articleCandidate.Root)
+            {
+                ++ancestryCount;
+                if (ancestryCount > maxAncestryCount)
+                {
+                    maxAncestryCount = ancestryCount;
+                }
+            }
+            else
+            {
+                ancestryCount = 0;
+            }
+
+            articleCandidate = candidate;
+        }
+
+        if (topCandidates.Count == 0)
+        {
+            result = default;
+            return false;
+        }
+
+        Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
+
+        var topmostCandidate = topCandidates.First().Value;
+        var ancestryThreshold = topCandidateCount / 2 + topCandidateCount % 2; // 3 occurrences in case of 5 candidates
+        if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
+            (ancestryCount == 0 || ancestryCount != maxAncestryCount))
+        {
+            // the top candidates are mostly unrelated, check their common ancestors
+
+            var foundRelevantAncestor = false;
+            var midTokenCount = GetMedianTokenCount(topCandidates.Keys);
+            var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
+            foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
+            {
+                if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
+                    continue;
+
+                Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel}]");
+
+                if (!foundRelevantAncestor && (
+                    (reoccurrence == topCandidateCount && !topCandidates.ContainsValue(ancestor)) ||
+                    (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
+                    (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
+                    (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
+                    ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
+                {
+                    // the ancestor candidate must have at least the same number of tokens as previous candidate
+                    articleCandidate = ancestorCandidate;
+                    foundRelevantAncestor = true;
+
+                    //todo: DocumentReader break here
+                }
+            }
+        }
+        else if (ArticleCandidate.HasOutlier(candidates.Values, out var outlier))
+        {
+            // the outlier candidate has much more content
+            articleCandidate = outlier;
+        }
+        else if (ancestryCount / (float)ancestryThreshold > 0.6f)
+        {
+            // too many parents, find the first grandparent amoung the top candidates
+            var grandparent = topCandidates.Keys[ancestryCount];
+            var ratio = articleCandidate.TokenCount / (float)grandparent.TokenCount;
+            if (ratio <= 0.8f)
+            {
+                // the grandparent candidate has significantly more content
+                articleCandidate = grandparent;
+            }
+        }
+        else if (topCandidates.Count(ca => ca.Key.NestingLevel == topmostCandidate.NestingLevel) > 1)
+        {
+            // some top candidates have the same nesting level,
+            // choose their common ancestor if it's also a top candidate
+
+            var sameLevelCandidates = topCandidates
+                .Where(ca => ca.Key.NestingLevel == topmostCandidate.NestingLevel)
+                .ToArray();
+
+            foreach (var ancestor in topCandidates.IntersectBy(commonAncestors.Keys, ca => ca.Value))
+            {
+                if (sameLevelCandidates.All(ca => ancestor.Value.Find<ParentTag>(rt => rt == ca.Value) is not null))
+                {
+                    articleCandidate = ancestor.Key;
+                    break;
+                }
+            }
+        }
+
+        if (articleCandidate != default)
+        {
+            Debug.WriteLine($"\nArticle: {articleCandidate.Path} {articleCandidate.ContentScore:F2} ({articleCandidate.TokenCount})");
+            result = articleCandidate;
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
+
+    private static int GetMedianTokenCount(IEnumerable<ArticleCandidate> topCandidates)
+    {
+        var candidates = topCandidates
+            .Order(ArticleCandidate.TokenCountComparer)
+            .ToArray();
+
+        var count = candidates.Length;
+        var mid = count / 2;
+
+        if (count % 2 != 0)
+            return candidates[mid].TokenCount;
+
+        return (candidates[mid - 1].TokenCount + candidates[mid].TokenCount) / 2;
     }
 
     public ArticleCandidate Elect()
