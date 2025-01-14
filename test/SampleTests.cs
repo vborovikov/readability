@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Brackets;
+using Microsoft.Testing.Platform.OutputDevice;
 
 [TestClass]
 public class SampleTests
@@ -292,7 +293,7 @@ public class SampleTests
     [DataRow("005-unescape-html-entities", "")]
     [DataRow("aclu", "/div/div/div/div/div/div/div/div[panel-pane pane-aclu-components-description description]")]
     [DataRow("aktualne", "/div/div/div/div/div/div/div/div#article-content[article__content]")]
-    [DataRow("archive-of-our-own", "")]
+    [DataRow("archive-of-our-own", "/div/div/div/div/div/div/div/div[userstuff module]")]
     [DataRow("ars-1", "/div/main/article/div/div/section/div[article-content post-page]")]
     [DataRow("article-author-tag", "/div/article/div/div/div/section#article-body[ArticleBody ArticleBody__default article--body]")]
     [DataRow("base-url", "/article")]
@@ -301,9 +302,9 @@ public class SampleTests
     [DataRow("basic-tags-cleaning", "/article")]
     [DataRow("bbc-1", "/div/div/div/div/div/div/div/div/div/div[story-body__inner]")]
     [DataRow("blogger", "/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[post hentry]")]
-    [DataRow("breitbart", "")]
-    [DataRow("bug-1255978", "")]
-    [DataRow("buzzfeed-1", "")]
+    [DataRow("breitbart", "/div/div/div/div/article/div[entry-content]")]
+    [DataRow("bug-1255978", "/div/div/article/div/div[main-content-column]")]
+    [DataRow("buzzfeed-1", "/div/div/div/article/div/div/div/div#buzz_sub_buzz[c suplist_article suplist_list_show]")]
     [DataRow("citylab-1", "")]
     [DataRow("clean-links", "")]
     [DataRow("cnet", "")]
@@ -422,8 +423,10 @@ public class SampleTests
         var sourceDocument = await Document.Html.ParseAsync(sourceStream, default);
 
         var found = ArticleCandidate.TryFind(sourceDocument, 5, out var articleCandidate);
-        Assert.IsTrue(found);
-
-        Assert.AreEqual(articlePath, articleCandidate.Path);
+        Assert.AreEqual(!string.IsNullOrEmpty(articlePath), found);
+        if (found)
+        {
+            Assert.AreEqual(articlePath, articleCandidate.Path);
+        }
     }
 }
