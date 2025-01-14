@@ -412,7 +412,7 @@ public class SampleTests
     [DataRow("yahoo-2", "")]
     [DataRow("yahoo-3", "")]
     [DataRow("yahoo-4", "")]
-    [DataRow("youth", "")]
+    [DataRow("youth", "/div/div/div/div/div/div[TRS_Editor]")]
     public async Task TryFindArticle_SamplePage_CorrectPath(string directory, string articlePath)
     {
         var path = Path.GetFullPath(Path.Combine(@"..\..\..\test-pages\", directory));
