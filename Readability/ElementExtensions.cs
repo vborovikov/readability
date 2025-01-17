@@ -21,16 +21,16 @@ static class ElementExtensions
             }
         }
 
-        return 
-            tag.Attributes.Has("hidden") || 
-            tag.Attributes.Has("aria-hidden", "true") || 
+        return
+            tag.Attributes.Has("hidden") ||
+            tag.Attributes.Has("aria-hidden", "true") ||
             tag.Attributes.Has("class", "hidden") ||
             tag.Attributes.Has("type", "hidden");
     }
 
     public static string GetPath(this Tag? element)
     {
-        if (element is null)
+        if (element is null or { Name: "body" })
             return "/";
 
         var path = new StringBuilder(512);

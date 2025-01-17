@@ -53,19 +53,19 @@ readonly record struct ArticleCandidate
 
     public static bool TryFind(IRoot document, int topCandidateCount, [NotNullWhen(true)] out ArticleCandidate result)
     {
-        // locate the document body or the root element
+        // locate the document root element
 
-        var documentBody = document;
-        if (document is not ParentTag { Name: "body" })
+        var documentRoot = document;
+        if (document is not ParentTag { Name: "html" })
         {
-            documentBody = document.Find<ParentTag>(p => p.Name == "body") ?? document;
+            documentRoot = document.Find<ParentTag>(p => p.Name == "html") ?? document;
         }
 
         // find candidates with highest scores
 
         var candidates = new Dictionary<ParentTag, ArticleCandidate>();
         var contentScores = new PriorityQueue<ArticleCandidate, float>(topCandidateCount);
-        foreach (var root in documentBody.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
+        foreach (var root in documentRoot.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
         {
             if (TryCreate(root, out var candidate))
             {
@@ -95,7 +95,7 @@ readonly record struct ArticleCandidate
         {
             Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount}) [{candidate.NestingLevel}]");
 
-            for (var parent = candidate.Root.Parent; parent is not null && parent != documentBody; parent = parent.Parent)
+            for (var parent = candidate.Root.Parent; parent is not null && parent != documentRoot; parent = parent.Parent)
             {
                 ref var reoccurence = ref CollectionsMarshal.GetValueRefOrAddDefault(commonAncestors, parent, out _);
                 ++reoccurence;
