@@ -89,7 +89,7 @@ readonly record struct ArticleCandidate
         var ancestryCount = 0;
         var maxAncestryCount = 0;
         var articleCandidate = default(ArticleCandidate);
-        var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ArticleCandidate.ConstentScoreComparer);
+        var topCandidates = new SortedList<ArticleCandidate, ParentTag>(ConstentScoreComparer);
         var commonAncestors = new Dictionary<ParentTag, int>(topCandidateCount);
         while (contentScores.TryDequeue(out var candidate, out var score))
         {
@@ -158,7 +158,7 @@ readonly record struct ArticleCandidate
                 }
             }
         }
-        else if (ArticleCandidate.HasOutlier(candidates.Values, out var outlier))
+        else if (HasOutlier(candidates.Values, out var outlier))
         {
             // the outlier candidate has much more content
             articleCandidate = outlier;
@@ -207,7 +207,7 @@ readonly record struct ArticleCandidate
     private static int GetMedianTokenCount(IEnumerable<ArticleCandidate> topCandidates)
     {
         var candidates = topCandidates
-            .Order(ArticleCandidate.TokenCountComparer)
+            .Order(TokenCountComparer)
             .ToArray();
 
         var count = candidates.Length;
@@ -554,13 +554,19 @@ readonly record struct ArticleCandidate
 
     private sealed class CandidateContentScoreComparer : IComparer<ArticleCandidate>
     {
-        // ContentScore desc
-        public int Compare(ArticleCandidate x, ArticleCandidate y) => y.ContentScore.CompareTo(x.ContentScore);
+        // ContentScore desc, Root.Offset desc
+        public int Compare(ArticleCandidate x, ArticleCandidate y)
+        {
+            var result = y.ContentScore.CompareTo(x.ContentScore);
+            if (result == 0)
+                return y.Root.Offset.CompareTo(x.Root.Offset);
+            return result;
+        }
     }
 
     private sealed class CandidateTokenCountComparer : IComparer<ArticleCandidate>
     {
-        // TokenCount asc, NestingLevel desc
+        // TokenCount asc, Root.NestingLevel desc
         public int Compare(ArticleCandidate x, ArticleCandidate y)
         {
             var result = x.TokenCount.CompareTo(y.TokenCount);
