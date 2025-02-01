@@ -11,7 +11,7 @@ using Brackets;
 using FuzzyCompare.Text;
 
 [DebuggerDisplay("{Path,nq}: {ContentScore} ({TokenCount})")]
-readonly record struct ArticleCandidate
+readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 {
     private ArticleCandidate(ParentTag root, int tokenCount, float contentScore)
     {
@@ -29,6 +29,23 @@ readonly record struct ArticleCandidate
 
     public string Path => this.Root.GetPath();
     public int NestingLevel => this.Root.NestingLevel;
+
+    public int CompareTo(ArticleCandidate other)
+    {
+        var tokenCountRatio = this.TokenCount / (float)other.TokenCount;
+        var contentScoreRatio = this.ContentScore / other.ContentScore;
+
+        if (tokenCountRatio < 0.8f || contentScoreRatio < 0.5f)
+        {
+            return -1;
+        }
+        else if (tokenCountRatio > 0.8f && contentScoreRatio > 0.5f)
+        {
+            return 1;
+        }
+
+        return 0;
+    }
 
     public static bool TryCreate(ParentTag root, [NotNullWhen(true)] out ArticleCandidate candidate)
     {
@@ -148,8 +165,7 @@ readonly record struct ArticleCandidate
                     (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
                     (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
                     (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
-                    (ancestorCandidate.TokenCount >= articleCandidate.TokenCount &&
-                    (ancestorCandidate.ContentScore / articleCandidate.ContentScore) >= 0.5f))
+                    ancestorCandidate.CompareTo(articleCandidate) >= 0)
                 {
                     // the ancestor candidate must have at least the same number of tokens as previous candidate
                     articleCandidate = ancestorCandidate;
@@ -168,8 +184,7 @@ readonly record struct ArticleCandidate
         {
             // too many parents, find the first grandparent amoung the top candidates
             var grandparent = topCandidates.Keys[ancestryCount];
-            var ratio = articleCandidate.TokenCount / (float)grandparent.TokenCount;
-            if (ratio <= 0.8f)
+            if (articleCandidate.CompareTo(grandparent) <= 0)
             {
                 // the grandparent candidate has significantly more content
                 articleCandidate = grandparent;

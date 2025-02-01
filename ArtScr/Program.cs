@@ -126,7 +126,7 @@ static partial class Program
                         (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
                         (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
                         (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
-                        ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
+                        ancestorCandidate.CompareTo(articleCandidate) >= 0)
                     {
                         // the ancestor candidate must have at least the same number of tokens as previous candidate
                         articleCandidate = ancestorCandidate;
@@ -145,8 +145,7 @@ static partial class Program
             {
                 // too many parents, find the first grandparent amoung the top candidates
                 var grandparent = topCandidates.Keys[ancestryCount];
-                var ratio = articleCandidate.TokenCount / (float)grandparent.TokenCount;
-                if (ratio <= 0.8f)
+                if (articleCandidate.CompareTo(grandparent) <= 0)
                 {
                     // the grandparent candidate has significantly more content
                     articleCandidate = grandparent;
