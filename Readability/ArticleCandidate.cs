@@ -148,7 +148,8 @@ readonly record struct ArticleCandidate
                     (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
                     (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
                     (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
-                    ancestorCandidate.TokenCount >= articleCandidate.TokenCount)
+                    (ancestorCandidate.TokenCount >= articleCandidate.TokenCount &&
+                    (ancestorCandidate.ContentScore / articleCandidate.ContentScore) >= 0.5f))
                 {
                     // the ancestor candidate must have at least the same number of tokens as previous candidate
                     articleCandidate = ancestorCandidate;
