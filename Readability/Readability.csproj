@@ -22,21 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Brackets" Version="0.6.5-beta.2" />
+    <PackageReference Include="Brackets" Version="0.6.5-beta.4" />
     <PackageReference Include="FuzzyCompare" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Readability.Tests</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>ArtScr</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="Readability.Tests;ArtScr"/>
   </ItemGroup>
 
 </Project>
