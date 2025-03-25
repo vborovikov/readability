@@ -43,7 +43,7 @@ static partial class Program
             var contentScores = new PriorityQueue<ArticleCandidate, float>(topCandidateCount);
             foreach (var root in body.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
             {
-                if (!ArticleCandidate.TryCreate(root, out var candidate))
+                if (!ArticleCandidate.TryCreate(root, body, out var candidate))
                     continue;
 
                 candidates.Add(root, candidate);

@@ -47,12 +47,12 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         return 0;
     }
 
-    public static bool TryCreate(ParentTag root, [NotNullWhen(true)] out ArticleCandidate candidate)
+    public static bool TryCreate(ParentTag root, IRoot documentRoot, [NotNullWhen(true)] out ArticleCandidate candidate)
     {
         if (TryCountTokens(root, out var tokenCount, out var tokenDensity))
         {
             var markupCount = CountMarkup(root);
-            var elementFactor = GetElementFactor(root);
+            var elementFactor = GetElementFactor(root, documentRoot);
             if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
             {
                 var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
@@ -66,6 +66,16 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 
         candidate = default;
         return false;
+    }
+
+    private static float GetElementFactor(ParentTag root, IRoot documentRoot)
+    {
+        var factor = GetElementFactor(root);
+        for (var parent = root.Parent; parent is not null && parent != documentRoot; parent = parent.Parent)
+        {
+            factor *= GetElementFactor(parent);
+        }
+        return factor;
     }
 
     public static bool TryFind(IRoot document, int topCandidateCount, [NotNullWhen(true)] out ArticleCandidate result)
@@ -84,7 +94,7 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         var contentScores = new PriorityQueue<ArticleCandidate, float>(topCandidateCount);
         foreach (var root in documentRoot.FindAll<ParentTag>(p => p is { Layout: FlowLayout.Block, HasChildren: true }))
         {
-            if (TryCreate(root, out var candidate))
+            if (TryCreate(root, documentRoot, out var candidate))
             {
                 candidates.Add(root, candidate);
 
