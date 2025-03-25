@@ -22,13 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Brackets" Version="0.6.5-beta.4" />
+    <PackageReference Include="Brackets" Version="0.6.5-beta.5" />
     <PackageReference Include="FuzzyCompare" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
-    <InternalsVisibleTo Include="Readability.Tests;ArtScr"/>
+    <InternalsVisibleTo Include="Readability.Tests;ArtScr" />
   </ItemGroup>
 
 </Project>
