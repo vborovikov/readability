@@ -68,16 +68,6 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         return false;
     }
 
-    private static float GetElementFactor(ParentTag root, IRoot documentRoot)
-    {
-        var factor = GetElementFactor(root);
-        for (var parent = root.Parent; parent is not null && parent != documentRoot; parent = parent.Parent)
-        {
-            factor *= GetElementFactor(parent);
-        }
-        return factor;
-    }
-
     public static bool TryFind(IRoot document, int topCandidateCount, [NotNullWhen(true)] out ArticleCandidate result)
     {
         // locate the document root element
@@ -416,6 +406,16 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 
             return false;
         }
+    }
+
+    private static float GetElementFactor(ParentTag root, IRoot documentRoot)
+    {
+        var factor = GetElementFactor(root);
+        for (var parent = root.Parent; parent is not null && parent != documentRoot; parent = parent.Parent)
+        {
+            factor *= GetElementFactor(parent);
+        }
+        return factor;
     }
 
     private static float GetElementFactor(ParentTag root)
