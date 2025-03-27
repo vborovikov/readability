@@ -51,7 +51,6 @@ static partial class Program
                 if (contentScores.Count < topCandidateCount)
                 {
                     contentScores.Enqueue(candidate, candidate.ContentScore);
-
                 }
                 else
                 {
@@ -98,11 +97,12 @@ static partial class Program
             if (topCandidates.Count == 0)
                 return 3;
 
-            Console.Out.PrintLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
-            Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
-
             var topmostCandidate = topCandidates.First().Value;
-            var ancestryThreshold = topCandidateCount / 2 + topCandidateCount % 2; // 3 occurrences in case of 5 candidates
+            var ancestryThreshold = (topCandidateCount / 2) + (topCandidateCount % 2); // 3 occurrences in case of 5 candidates
+
+            Console.Out.PrintLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount} ancestry-threshold: {ancestryThreshold}");
+            Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount} ancestry-threshold: {ancestryThreshold}");
+
             if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
                 (ancestryCount == 0 || ancestryCount != maxAncestryCount))
             {
@@ -111,6 +111,10 @@ static partial class Program
                 var foundRelevantAncestor = false;
                 var midTokenCount = GetMedianTokenCount(topCandidates.Keys);
                 var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
+
+                Console.Out.PrintLine(ConsoleColor.Cyan, $"mid-tokens: {midTokenCount} max-tokens: {maxTokenCount}");
+                Debug.WriteLine($"mid-tokens: {midTokenCount} max-tokens: {maxTokenCount}");
+
                 foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
                 {
                     if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
@@ -123,8 +127,8 @@ static partial class Program
 
                     if (!foundRelevantAncestor && (
                         (reoccurrence == topCandidateCount && !topCandidates.ContainsValue(ancestor)) ||
-                        (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
-                        (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
+                        (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount >= maxTokenCount) ||
+                        (reoccurrence == ancestryThreshold && ((topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0) || ancestor == topmostCandidate)) ||
                         (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
                         ancestorCandidate.CompareTo(articleCandidate) >= 0)
                     {

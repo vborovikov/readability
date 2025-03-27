@@ -55,7 +55,7 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
             var elementFactor = GetElementFactor(root, documentRoot);
             if (tokenCount > markupCount && (markupCount > 0 || elementFactor > 1f))
             {
-                var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor;
+                var contentScore = tokenCount / (markupCount + MathF.Log2(tokenCount)) * tokenDensity * elementFactor * MathF.Log(root.NestingLevel);
 
                 Debug.WriteLine($"{root.GetPath()}: tokens: {tokenCount}, markup: {markupCount}, density: {tokenDensity}, factor: {elementFactor}, score: {contentScore}");
 
@@ -101,7 +101,6 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
                 if (contentScores.Count < topCandidateCount)
                 {
                     contentScores.Enqueue(candidate, candidate.ContentScore);
-
                 }
                 else
                 {
@@ -154,7 +153,7 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount}");
 
         var topmostCandidate = topCandidates.First().Value;
-        var ancestryThreshold = topCandidateCount / 2 + topCandidateCount % 2; // 3 occurrences in case of 5 candidates
+        var ancestryThreshold = (topCandidateCount / 2) + (topCandidateCount % 2); // 3 occurrences in case of 5 candidates
         if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
             (ancestryCount == 0 || ancestryCount != maxAncestryCount))
         {
@@ -172,8 +171,8 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 
                 if (!foundRelevantAncestor && (
                     (reoccurrence == topCandidateCount && !topCandidates.ContainsValue(ancestor)) ||
-                    (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount > maxTokenCount) ||
-                    (reoccurrence == ancestryThreshold && (topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0 || ancestor == topmostCandidate)) ||
+                    (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount >= maxTokenCount) ||
+                    (reoccurrence == ancestryThreshold && ((topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0) || ancestor == topmostCandidate)) ||
                     (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
                     ancestorCandidate.CompareTo(articleCandidate) >= 0)
                 {
