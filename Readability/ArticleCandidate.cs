@@ -13,6 +13,8 @@ using FuzzyCompare.Text;
 [DebuggerDisplay("{Path,nq}: {ContentScore} ({TokenCount})")]
 readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 {
+    private const int DefaultCharThreshold = 500;
+
     private ArticleCandidate(ParentTag root, int tokenCount, float contentScore)
     {
         this.Root = root;
@@ -634,7 +636,7 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         // Clean out elements with little content that have "share" in their id/class combinations from final top candidates,
         // which means we don't remove the top candidates even they have "share".
 
-        var shareElementThreshold = ReadabilityOptions.DefaultCharThreshold;
+        var shareElementThreshold = DefaultCharThreshold;
         foreach (var element in articleContent)
         {
             if (element is not Tag e)

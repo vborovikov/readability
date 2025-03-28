@@ -15,8 +15,6 @@ public record ReadabilityOptions
 {
     private const int DefaultTopCandidateCount = 5;
 
-    internal const int DefaultCharThreshold = 500;
-
     private static readonly string[] DefaultClassesToPreserve = ["caption"];
 
     public static readonly ReadabilityOptions Default = new();

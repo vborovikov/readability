@@ -8,11 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Termly" Version="0.2.4" />
+    <Compile Include="..\Readability\Article.cs" Link="Article.cs" />
+    <Compile Include="..\Readability\ArticleCandidate.cs" Link="ArticleCandidate.cs" />
+    <Compile Include="..\Readability\Css.cs" Link="Css.cs" />
+    <Compile Include="..\Readability\DataUrl.cs" Link="DataUrl.cs" />
+    <Compile Include="..\Readability\DomExtensions.cs" Link="DomExtensions.cs" />
+    <Compile Include="..\Readability\ElementExtensions.cs" Link="ElementExtensions.cs" />
+    <Compile Include="..\Readability\JsonExtensions.cs" Link="JsonExtensions.cs" />
+    <Compile Include="..\Readability\SpanExtensions.cs" Link="SpanExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Readability\Readability.csproj" />
+    <PackageReference Include="Termly" Version="0.2.4" />
+    <PackageReference Include="Brackets" Version="0.6.5-beta.5" />
+    <PackageReference Include="FuzzyCompare" Version="0.3.0" />
   </ItemGroup>
 
 </Project>
