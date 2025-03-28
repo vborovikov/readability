@@ -39,7 +39,8 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         {
             return -1;
         }
-        else if (tokenCountRatio > 0.8f && contentScoreRatio > 0.5f)
+
+        if (tokenCountRatio > 0.8f && contentScoreRatio > 0.5f)
         {
             return 1;
         }

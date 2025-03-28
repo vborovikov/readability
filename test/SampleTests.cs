@@ -303,7 +303,7 @@ public class SampleTests
     [DataRow("bbc-1", "/div/div/div/div/div/div/div/div/div/div[story-body__inner]")]
     [DataRow("blogger", "/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[post hentry]")]
     [DataRow("breitbart", "/div/div/div/div/article/div[entry-content]")]
-    [DataRow("bug-1255978", "/div/div/article/div/div[main-content-column]")]
+    [DataRow("bug-1255978", "/div/div/article/div/div/div#gigya-share-btns-2_gig_containerParent[text-wrapper]")]
     [DataRow("buzzfeed-1", "/div/div/div/article/div/div/div/div#buzz_sub_buzz[c suplist_article suplist_list_show]")]
     [DataRow("citylab-1", "/div/div/div/main/article[l-article s-cms-content]")]
     [DataRow("clean-links", "/center/table/tbody/tr/td")]
