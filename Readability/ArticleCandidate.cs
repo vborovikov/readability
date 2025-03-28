@@ -9,6 +9,9 @@ using System.Net;
 using System.Runtime.InteropServices;
 using Brackets;
 using FuzzyCompare.Text;
+#if CLI
+using Termly;
+#endif
 
 [DebuggerDisplay("{Path,nq}: {ContentScore} ({TokenCount})")]
 readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
@@ -112,6 +115,9 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
         var commonAncestors = new Dictionary<ParentTag, int>(topCandidateCount);
         while (contentScores.TryDequeue(out var candidate, out var score))
         {
+#if CLI
+            Console.Out.PrintLine($"{candidate.Path:cyan}: {score:F2:magenta} ({candidate.TokenCount}) [{candidate.NestingLevel:yellow}]");
+#endif
             Debug.WriteLine($"{candidate.Path}: {score:F2} ({candidate.TokenCount}) [{candidate.NestingLevel}]");
 
             for (var parent = candidate.Root.Parent; parent is not null && parent != documentRoot; parent = parent.Parent)
@@ -147,6 +153,12 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 
         var topmostCandidate = topCandidates.First().Value;
         var ancestryThreshold = (topCandidateCount / 2) + (topCandidateCount % 2); // 3 occurrences in case of 5 candidates
+
+#if CLI
+        Console.Out.PrintLine(ConsoleColor.Yellow, $"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount} ancestry-threshold: {ancestryThreshold}");
+#endif
+        Debug.WriteLine($"ancestry: {ancestryCount} max-ancestry: {maxAncestryCount} ancestry-threshold: {ancestryThreshold}");
+
         if (maxAncestryCount / (float)ancestryThreshold < 0.6f &&
             (ancestryCount == 0 || ancestryCount != maxAncestryCount))
         {
@@ -155,11 +167,22 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
             var foundRelevantAncestor = false;
             var midTokenCount = GetMedianTokenCount(topCandidates.Keys);
             var maxTokenCount = topCandidates.Max(ca => ca.Key.TokenCount);
+
+#if CLI
+            Console.Out.PrintLine(ConsoleColor.Cyan, $"mid-tokens: {midTokenCount} max-tokens: {maxTokenCount}");
+#endif
+            Debug.WriteLine($"mid-tokens: {midTokenCount} max-tokens: {maxTokenCount}");
+
             foreach (var (ancestor, reoccurrence) in commonAncestors.OrderBy(ca => ca.Value).ThenByDescending(ca => ca.Key.NestingLevel))
             {
                 if (!candidates.TryGetValue(ancestor, out var ancestorCandidate))
                     continue;
 
+#if CLI
+                Console.Out.PrintLine($"{ancestor.GetPath():blue}: " +
+                    $"{reoccurrence:yellow} {ancestorCandidate.ContentScore:F2:magenta} " +
+                    $"({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel:yellow}]");
+#endif
                 Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel}]");
 
                 if (!foundRelevantAncestor && (
@@ -213,6 +236,9 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 
         if (articleCandidate != default)
         {
+#if CLI
+            Console.Out.PrintLine($"\nArticle: {articleCandidate.Path:green} {articleCandidate.ContentScore:F2:magenta} ({articleCandidate.TokenCount})");
+#endif
             Debug.WriteLine($"\nArticle: {articleCandidate.Path} {articleCandidate.ContentScore:F2} ({articleCandidate.TokenCount})");
             result = articleCandidate;
             return true;
