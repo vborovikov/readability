@@ -17,66 +17,63 @@ readonly ref struct CssDeclaration
 
     public ReadOnlySpan<char> Property { get; }
     public ReadOnlySpan<char> Value { get; }
+
+    public static CssDeclarationEnumerator Enumerate(ReadOnlySpan<char> span) => new(span);
 }
 
-static class Css
+ref struct CssDeclarationEnumerator
 {
-    public static DeclarationEnumerator EnumerateCssDeclarations(this ReadOnlySpan<char> span) => new(span);
+    private ReadOnlySpan<char> span;
+    private CssDeclaration current;
 
-    public ref struct DeclarationEnumerator
+    public CssDeclarationEnumerator(ReadOnlySpan<char> span)
     {
-        private ReadOnlySpan<char> span;
-        private CssDeclaration current;
+        this.span = span;
+    }
 
-        public DeclarationEnumerator(ReadOnlySpan<char> span)
+    public readonly CssDeclaration Current => this.current;
+
+    public readonly CssDeclarationEnumerator GetEnumerator() => this;
+
+    public bool MoveNext()
+    {
+        var remaining = this.span;
+        if (remaining.IsEmpty)
+            return false;
+
+        var start = remaining.IndexOfAnyExcept(' ');
+        if (start >= 0)
         {
-            this.span = span;
-        }
-
-        public readonly CssDeclaration Current => this.current;
-
-        public readonly DeclarationEnumerator GetEnumerator() => this;
-
-        public bool MoveNext()
-        {
-            var remaining = this.span;
-            if (remaining.IsEmpty)
-                return false;
-
-            var start = remaining.IndexOfAnyExcept(' ');
-            if (start >= 0)
+            remaining = remaining[start..];
+            var end = remaining.IndexOf(';');
+            // check for escaped semicolon
+            while (end > 0 && remaining[end - 1] == '\\')
             {
-                remaining = remaining[start..];
-                var end = remaining.IndexOf(';');
-                // check for escaped semicolon
-                while (end > 0 && remaining[end - 1] == '\\')
-                {
-                    if (++end == remaining.Length)
-                        goto InvalidDeclaration;
-
-                    end = remaining[end..].IndexOf(';');
-                    if (end >= 0)
-                        end += 1;
-                }
-
-                var decl = end > 0 ? remaining[..end] : remaining;
-                var col = decl.IndexOf(':');
-                if (col <= 0)
+                if (++end == remaining.Length)
                     goto InvalidDeclaration;
 
-                var property = decl[..col].TrimEnd();
-                var value = decl[(col + 1)..].Trim();
-                if (property.IsEmpty || value.IsEmpty)
-                    goto InvalidDeclaration;
-
-                this.current = new(property, value);
-                this.span = end > 0 ? remaining[(end + 1)..] : default;
-                return true;
+                end = remaining[end..].IndexOf(';');
+                if (end >= 0)
+                    end += 1;
             }
 
-        InvalidDeclaration:
-            this.span = default;
-            return false;
+            var decl = end > 0 ? remaining[..end] : remaining;
+            var col = decl.IndexOf(':');
+            if (col <= 0)
+                goto InvalidDeclaration;
+
+            var property = decl[..col].TrimEnd();
+            var value = decl[(col + 1)..].Trim();
+            if (property.IsEmpty || value.IsEmpty)
+                goto InvalidDeclaration;
+
+            this.current = new(property, value);
+            this.span = end > 0 ? remaining[(end + 1)..] : default;
+            return true;
         }
+
+    InvalidDeclaration:
+        this.span = default;
+        return false;
     }
 }

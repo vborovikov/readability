@@ -12,7 +12,7 @@ static class ElementExtensions
 
         if (tag.Attributes["style"] is { Length: > 0 } style)
         {
-            foreach (var cssDeclaration in style.EnumerateCssDeclarations())
+            foreach (var cssDeclaration in CssDeclaration.Enumerate(style))
             {
                 if (cssDeclaration.Property is "display" && cssDeclaration.Value is "none")
                     return true;
