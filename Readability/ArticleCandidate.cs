@@ -185,18 +185,27 @@ readonly record struct ArticleCandidate : IComparable<ArticleCandidate>
 #endif
                 Debug.WriteLine($"{ancestor.GetPath()}: {reoccurrence} {ancestorCandidate.ContentScore:F2} ({ancestorCandidate.TokenCount}) [{ancestorCandidate.NestingLevel}]");
 
-                if (!foundRelevantAncestor && (
+                if (foundRelevantAncestor)
+                {
+                    //todo: DocumentReader break here
+                    continue;
+                }
+
+                var maybeRelevantAncestor =
+                    // the most common ancestor
                     (reoccurrence == topCandidateCount && !topCandidates.ContainsValue(ancestor)) ||
+                    // has more tokens than the top candidates
                     (reoccurrence > ancestryThreshold && ancestorCandidate.TokenCount >= maxTokenCount) ||
+                    // is amoung the top candidates or even the topmost one
                     (reoccurrence == ancestryThreshold && ((topCandidates.ContainsValue(ancestor) && maxAncestryCount > 0) || ancestor == topmostCandidate)) ||
-                    (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount)) &&
-                    ancestorCandidate.CompareTo(articleCandidate) >= 0)
+                    //todo: never happens
+                    (reoccurrence < ancestryThreshold && ancestor == topmostCandidate && ancestorCandidate.TokenCount >= midTokenCount);
+
+                if (maybeRelevantAncestor && ancestorCandidate.CompareTo(articleCandidate) >= 0)
                 {
                     // the ancestor candidate must have at least the same number of tokens as previous candidate
                     articleCandidate = ancestorCandidate;
                     foundRelevantAncestor = true;
-
-                    //todo: DocumentReader break here
                 }
             }
         }
