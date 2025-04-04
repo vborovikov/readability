@@ -437,7 +437,7 @@ public class SampleTests
     [DataRow("hn.html", "/center/table/tr/td/table[comment-tree]")]
     [DataRow("infoq.html", "/div/main/article/section/div/div/div/div/div[article__data]")]
     [DataRow("lobsters.html", "/div/ol/li[comments_subtree]")]
-    [DataRow("meziantou.html", " /main/div/article#14b4723b-26f7-43f8-bf52-ee92bd3e31af[aa]")]
+    [DataRow("meziantou.html", "/main/div/article#14b4723b-26f7-43f8-bf52-ee92bd3e31af[aa]")]
     [DataRow("telegram.html", "/main/div/section[tgme_channel_history js-message_history]")]
     [DataRow("vc.html", "/div/div/div/div/div/div/article[content__blocks]")]
     public async Task TryFindArticle_SamplePage_CorrectPath(string fileName, string articlePath)
