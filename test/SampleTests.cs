@@ -5,7 +5,6 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Brackets;
-using Microsoft.Testing.Platform.OutputDevice;
 
 [TestClass]
 public class SampleTests
@@ -165,7 +164,7 @@ public class SampleTests
     [DataRow("yahoo-3")]
     [DataRow("yahoo-4")]
     [DataRow("youth")]
-    public async Task Parse_SamplePage_AsExpected(string directory)
+    public async Task Parse_TestPage_AsExpected(string directory)
     {
         var path = Path.GetFullPath(Path.Combine(@"..\..\..\test-pages\", directory));
         Assert.IsTrue(Path.Exists(path), $"'{path}' doesn't exist");
@@ -413,13 +412,38 @@ public class SampleTests
     [DataRow("yahoo-3", "/html/body/div/div/div/section/div/div[body yom-art-content clearfix]")]
     [DataRow("yahoo-4", "/div/div/div/div/div/div/div/div/div/div[paragraph]")]
     [DataRow("youth", "/div/div/div/div/div/div[TRS_Editor]")]
-    public async Task TryFindArticle_SamplePage_CorrectPath(string directory, string articlePath)
+    public async Task TryFindArticle_TestPage_CorrectPath(string directory, string articlePath)
     {
         var path = Path.GetFullPath(Path.Combine(@"..\..\..\test-pages\", directory));
         Assert.IsTrue(Path.Exists(path), $"'{path}' doesn't exist");
 
         var sourceFileName = Path.Combine(path, "source.html");
         await using var sourceStream = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read);
+        var sourceDocument = await Document.Html.ParseAsync(sourceStream, default);
+
+        var found = ArticleCandidate.TryFind(sourceDocument, 5, out var articleCandidate);
+        Assert.AreEqual(!string.IsNullOrEmpty(articlePath), found);
+        if (found)
+        {
+            Assert.AreEqual(articlePath, articleCandidate.Path);
+        }
+    }
+
+    [DataTestMethod]
+    [DataRow("allrecipes.html", "/main/article/div/div#article-content_1-0[comp article-content mntl-block]")]
+    [DataRow("arstechnica.html", "/main/article[double-column h-entry post-2065254 post type-post status-publish format-standard has-post-thumbnail hentry category-tech-policy tag-booking-com tag-online-privacy tag-personally-identifying-information tag-privacy]")]
+    [DataRow("arstechnica-2.html", "/main/article[double-column h-entry post-2067796 post type-post status-publish format-standard has-post-thumbnail hentry category-space tag-parker-solar-probe tag-space]")]
+    [DataRow("habr.html", "/div/div/div/div/main/div/div/div/div/div/div/div/div/div/article/div/div#post-content-body")]
+    [DataRow("hn.html", "/center/table/tr/td/table[comment-tree]")]
+    [DataRow("infoq.html", "/div/main/article/section/div/div/div/div/div[article__data]")]
+    [DataRow("lobsters.html", "/div/ol/li[comments_subtree]")]
+    [DataRow("meziantou.html", " /main/div/article#14b4723b-26f7-43f8-bf52-ee92bd3e31af[aa]")]
+    [DataRow("telegram.html", "/main/div/section[tgme_channel_history js-message_history]")]
+    [DataRow("vc.html", "/div/div/div/div/div/div/article[content__blocks]")]
+    public async Task TryFindArticle_SamplePage_CorrectPath(string fileName, string articlePath)
+    {
+        var sourceFilePath = Path.Combine(@"..\..\..\SamplePages\", fileName);
+        await using var sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read);
         var sourceDocument = await Document.Html.ParseAsync(sourceStream, default);
 
         var found = ArticleCandidate.TryFind(sourceDocument, 5, out var articleCandidate);

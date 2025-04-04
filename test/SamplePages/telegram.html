@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>C# | Удалёнка – Telegram</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible"
+     content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    
+<meta property="og:title" content="C# | Удалёнка">
+<meta property="og:image" content="https://cdn4.cdn-telegram.org/file/aF2N_JgazcLBf2V3v8WxtdqG7HXe--qB0U1EZyZZabLL27zkEwNiVahKVBR3wnnRZSzjVnjqa-w3P-7RwsXj2072gYHZkqosVrcBOwwYqfv0pN3nJmELMTES7uccNtpc3VH3yZGR6P-Ea0abEOf9SLIvV3WxL4jJyerZvYgxMjOwvDTUbFrquT1a7Wsk46a37LOY06t4sTbzV77Iy4TEV_U3Ko21Tfb9GyY97Ds9rYGyP-iMmZBgyihM8UAIuFcgP87F0QtDE7eooj0CBKDUMcApq0yx2IJQ87A3fL0ElPBYVT7MVkV3Yktam993wqp_olq5isvAXeKSFLDV8xa_Qg.jpg">
+<meta property="og:site_name" content="Telegram">
+<meta property="og:description" content="Cайт easyoffer.ru
+Реклама @easyoffer_adv
+ВП @easyoffer_vp
+
+Бесплатно разместить вакансию: @freeIT_job
+Все каналы с вакансиями @ITjob_channels
+
+Тесты t.me/+nebTPWgpeGs1OWFi
+Вопросы собесов t.me/+sjKGQXl79ytkYzIy
+Задачи t.me/+Xy-0H7xKlgo0NDVi">
+
+<meta property="twitter:title" content="C# | Удалёнка">
+<meta property="twitter:image" content="https://cdn4.cdn-telegram.org/file/aF2N_JgazcLBf2V3v8WxtdqG7HXe--qB0U1EZyZZabLL27zkEwNiVahKVBR3wnnRZSzjVnjqa-w3P-7RwsXj2072gYHZkqosVrcBOwwYqfv0pN3nJmELMTES7uccNtpc3VH3yZGR6P-Ea0abEOf9SLIvV3WxL4jJyerZvYgxMjOwvDTUbFrquT1a7Wsk46a37LOY06t4sTbzV77Iy4TEV_U3Ko21Tfb9GyY97Ds9rYGyP-iMmZBgyihM8UAIuFcgP87F0QtDE7eooj0CBKDUMcApq0yx2IJQ87A3fL0ElPBYVT7MVkV3Yktam993wqp_olq5isvAXeKSFLDV8xa_Qg.jpg">
+<meta property="twitter:site" content="@Telegram">
+
+<meta property="al:ios:app_store_id" content="686449807">
+<meta property="al:ios:app_name" content="Telegram Messenger">
+<meta property="al:ios:url" content="tg://resolve?domain=easy_csharp_job">
+
+<meta property="al:android:url" content="tg://resolve?domain=easy_csharp_job">
+<meta property="al:android:app_name" content="Telegram">
+<meta property="al:android:package" content="org.telegram.messenger">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@Telegram">
+<meta name="twitter:description" content="Cайт easyoffer.ru
+Реклама @easyoffer_adv
+ВП @easyoffer_vp
+
+Бесплатно разместить вакансию: @freeIT_job
+Все каналы с вакансиями @ITjob_channels
+
+Тесты t.me/+nebTPWgpeGs1OWFi
+Вопросы собесов t.me/+sjKGQXl79ytkYzIy
+Задачи t.me/+Xy-0H7xKlgo0NDVi
+">
+
+    <link rel="prev" href="/s/easy_csharp_job?before=463">
+<link rel="canonical" href="/s/easy_csharp_job?before=499">
+
+    <script>window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement&&document.documentElement.classList&&document.documentElement.classList.add('theme_dark');</script>
+    <link rel="icon" type="image/svg+xml" href="//telegram.org/img/website_icon.svg?4">
+<link rel="apple-touch-icon" sizes="180x180" href="//telegram.org/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="//telegram.org/img/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="//telegram.org/img/favicon-16x16.png">
+<link rel="alternate icon" href="//telegram.org/img/favicon.ico" type="image/x-icon" />
+    <link href="//telegram.org/css/font-roboto.css?1" rel="stylesheet" type="text/css">
+    <link href="//telegram.org/css/widget-frame.css?68" rel="stylesheet" media="screen">
+    <link href="//telegram.org/css/telegram-web.css?37" rel="stylesheet" media="screen">
+    <script>TBaseUrl='/';</script>
+  </head>
+  <body class="widget_frame_base tgme_webpreview emoji_image thin_box_shadow tme_mode no_transitions">
+    <div class="tgme_background_wrap">
+      <canvas id="tgme_background" class="tgme_background" width="50" height="50" data-colors="dbddbb,6ba587,d5d88d,88b884"></canvas>
+      <div class="tgme_background_pattern"></div>
+    </div>
+    <header class="tgme_header search_collapsed">
+  <div class="tgme_container">
+    <div class="tgme_header_search">
+      <form class="tgme_header_search_form" action="/s/easy_csharp_job">
+        <svg class="tgme_header_search_form_icon" width="20" height="20" viewBox="0 0 20 20"><g fill="none" stroke="#7D7F81" stroke-width="1.4"><circle cx="9" cy="9" r="6"></circle><path d="M13.5,13.5 L17,17" stroke-linecap="round"></path></g></svg>
+        <input class="tgme_header_search_form_input js-header_search" placeholder="Search" name="q" autocomplete="off" value="" />
+        <a href="/s/easy_csharp_job" class="tgme_header_search_form_clear"><svg class="tgme_action_button_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><g class="icon_body" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" stroke-width="1.5"><path d="M6 14l8-8m0 8L6 6" stroke-dasharray="0,11.314" stroke-dashoffset="5.657"/><path d="M26 14l8-8m0 8l-8-8" stroke-dasharray="0.371,10.943" stroke-dashoffset="5.842"/><path d="M46 14l8-8m0 8l-8-8" stroke-dasharray="1.982,9.332" stroke-dashoffset="6.647756"/><path d="M66 14l8-8m0 8l-8-8" stroke-dasharray="5.173,6.14" stroke-dashoffset="8.243"/><path d="M86 14l8-8m0 8l-8-8" stroke-dasharray="7.866,3.448" stroke-dashoffset="9.59"/><path d="M106 14l8-8m0 8l-8-8" stroke-dasharray="9.471,1.843" stroke-dashoffset="10.392"/><path d="M126 14l8-8m0 8l-8-8" stroke-dasharray="10.417,0.896" stroke-dashoffset="10.866"/><path d="M146 14l8-8m0 8l-8-8" stroke-dasharray="10.961,0.353" stroke-dashoffset="11.137"/><path d="M166 14l8-8m0 8l-8-8" stroke-dasharray="11.234,0.08" stroke-dashoffset="11.274"/><path d="M186 14l8-8m0 8l-8-8"/></g></svg></a>
+      </form>
+    </div>
+    <div class="tgme_header_right_column">
+      <section class="tgme_right_column">
+        <div class="tgme_channel_info">
+          <div class="tgme_channel_info_header">
+            <i class="tgme_page_photo_image bgcolor6" data-content="CУ"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i>
+            <div class="tgme_channel_info_header_title_wrap">
+              <div class="tgme_channel_info_header_title"><span dir="auto">C# | Удалёнка</span></div>
+              <div class="tgme_channel_info_header_labels"></div>
+            </div>
+            <div class="tgme_channel_info_header_username"><a href="https://t.me/easy_csharp_job">@easy_csharp_job</a></div>
+          </div>
+          <div class="tgme_channel_info_counters"><div class="tgme_channel_info_counter"><span class="counter_value">2.92K</span> <span class="counter_type">subscribers</span></div><div class="tgme_channel_info_counter"><span class="counter_value">8</span> <span class="counter_type">photos</span></div><div class="tgme_channel_info_counter"><span class="counter_value">1</span> <span class="counter_type">video</span></div><div class="tgme_channel_info_counter"><span class="counter_value">191</span> <span class="counter_type">links</span></div></div>
+          <div class="tgme_channel_info_description">Cайт <a href="http://easyoffer.ru/" target="_blank" rel="noopener">easyoffer.ru</a><br/>Реклама <a href="https://t.me/easyoffer_adv" target="_blank">@easyoffer_adv</a><br/>ВП <a href="https://t.me/easyoffer_vp" target="_blank">@easyoffer_vp</a><br/><br/>Бесплатно разместить вакансию: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Все каналы с вакансиями <a href="https://t.me/ITjob_channels" target="_blank">@ITjob_channels</a><br/><br/>Тесты <a href="http://t.me/+nebTPWgpeGs1OWFi" target="_blank" rel="noopener">t.me/+nebTPWgpeGs1OWFi</a><br/>Вопросы собесов <a href="http://t.me/+sjKGQXl79ytkYzIy" target="_blank" rel="noopener">t.me/+sjKGQXl79ytkYzIy</a><br/>Задачи <a href="http://t.me/+Xy-0H7xKlgo0NDVi" target="_blank" rel="noopener">t.me/+Xy-0H7xKlgo0NDVi</a></div>
+          <a class="tgme_channel_download_telegram" href="//telegram.org/dl?tme=11692f6792dfae39a0_13967283187459240854">
+            <svg class="tgme_channel_download_telegram_icon" width="21px" height="18px" viewBox="0 0 21 18"><g fill="none"><path fill="#ffffff" d="M0.554,7.092 L19.117,0.078 C19.737,-0.156 20.429,0.156 20.663,0.776 C20.745,0.994 20.763,1.23 20.713,1.457 L17.513,16.059 C17.351,16.799 16.62,17.268 15.88,17.105 C15.696,17.065 15.523,16.987 15.37,16.877 L8.997,12.271 C8.614,11.994 8.527,11.458 8.805,11.074 C8.835,11.033 8.869,10.994 8.905,10.958 L15.458,4.661 C15.594,4.53 15.598,4.313 15.467,4.176 C15.354,4.059 15.174,4.037 15.036,4.125 L6.104,9.795 C5.575,10.131 4.922,10.207 4.329,10.002 L0.577,8.704 C0.13,8.55 -0.107,8.061 0.047,7.614 C0.131,7.374 0.316,7.182 0.554,7.092 Z"></path></g></svg>Download Telegram
+          </a>
+          <div class="tgme_footer">
+            <div class="tgme_footer_column">
+              <h5><a href="//telegram.org/faq">About</a></h5>
+            </div>
+            <div class="tgme_footer_column">
+              <h5><a href="//telegram.org/blog">Blog</a></h5>
+            </div>
+            <div class="tgme_footer_column">
+              <h5><a href="//telegram.org/apps">Apps</a></h5>
+            </div>
+            <div class="tgme_footer_column">
+              <h5><a href="//core.telegram.org/">Platform</a></h5>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="tgme_header_info">
+      <a class="tgme_channel_join_telegram" href="//telegram.org/dl?tme=11692f6792dfae39a0_13967283187459240854">
+        <svg class="tgme_channel_join_telegram_icon" width="19px" height="16px" viewBox="0 0 19 16"><g fill="none"><path fill="#ffffff" d="M0.465,6.638 L17.511,0.073 C18.078,-0.145 18.714,0.137 18.932,0.704 C19.009,0.903 19.026,1.121 18.981,1.33 L16.042,15.001 C15.896,15.679 15.228,16.111 14.549,15.965 C14.375,15.928 14.211,15.854 14.068,15.748 L8.223,11.443 C7.874,11.185 7.799,10.694 8.057,10.345 C8.082,10.311 8.109,10.279 8.139,10.249 L14.191,4.322 C14.315,4.201 14.317,4.002 14.195,3.878 C14.091,3.771 13.926,3.753 13.8,3.834 L5.602,9.138 C5.112,9.456 4.502,9.528 3.952,9.333 L0.486,8.112 C0.077,7.967 -0.138,7.519 0.007,7.11 C0.083,6.893 0.25,6.721 0.465,6.638 Z"></path></g></svg>Join
+      </a>
+      <a class="tgme_header_link" href="https://t.me/easy_csharp_job">
+        <i class="tgme_page_photo_image bgcolor6" data-content="CУ"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i>
+        <div class="tgme_header_title_wrap">
+          <div class="tgme_header_title"><span dir="auto">C# | Удалёнка</span></div>
+          <div class="tgme_header_labels"></div>
+        </div>
+        <div class="tgme_header_counter">2.92K subscribers</div>
+      </a>
+    </div>
+  </div>
+</header>
+<main class="tgme_main" data-url="/easy_csharp_job">
+  <div class="tgme_container">
+    <section class="tgme_channel_history js-message_history">
+      <div class="tgme_widget_message_centered js-messages_more_wrap"><a href="/s/easy_csharp_job?before=463" class="tme_messages_more js-messages_more" data-before="463"></a></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/463" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDYzLCJ0IjoxNzQzNzYwNTQzLCJoIjoiNDA0M2NiZGRiMWNhZDY0NmJiIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>Middle/ Senior C# разработчик</b> <br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> <a href="https://www.megapolis-it.ru/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Мегаполис ИТ</a><br/><b>ЗП:</b> обсуждается на собеседовании<br/><b>Занятость:</b> Полная<br/>                                                                                                   <i><br/></i>Мы занимаемся оптимизацией дорожного движения и решением транспортных проблем по всей стране. Наши решения направлены на помощь всем участникам дорожного движения: пешеходам, автомобилистам, пользователям общественного транспорта.<br/><br/><b>Обязанности:<br/>• </b>Разработка и поддержка backend-сервисов информационно-аналитических систем на базе <a href="http://ASP.NET/" target="_blank" rel="noopener">ASP.NET</a> Core + PostgreSQL + PostGIS в составе команды разработчиков<br/>• Проектирование архитектуры приложений, слоёв бизнес-логики и доступа к данным<br/>• Составление алгоритмов в соответствии с описанием бизнес-логики<br/>• Рефакторинг легаси, код-ревью<br/>• Взаимодействие со смежными специалистами: DevOps, сетевыми инженерами, разработчиками других коллективов и компаний<br/><br/><b>Требования:<br/>• </b>Продвинутые навыки работы с .NET (мы используем кодогенерацию, сервисное тестирование, автомиграции)<br/>• Опыт работы с SQL под Dapper<br/>• Аналитический склад ума, умение работать с большим объёмом информации<br/>• Ответственность и исполнительность (умение выполнять задачи в срок)<br/>• Способность самостоятельно принимать решения по своим задачам<br/>• Умение чётко излагать свои мысли при коммуникации в команде<br/>• Трепетное отношение к Git<br/><br/><b>Будет плюсом:<br/>• </b>Опыт работы с PostGIS или другими картографическими библиотеками и сервисами<br/>• Опыт в решении задач, связанных с ML/AI<br/>• Фуллстек-опыт, так как очень плотно взаимодействуем с фронтами<br/>• Опыт разработки на других языках программирования (C++/Rust)<br/><br/><b>Условия работы:<br/></b>•<b> </b>Оформление в соответствии с ТК РФ<br/>• Индивидуально обсуждаем с каждым кандидатом зарплатные ожидания<br/>• Удаленная работа<br/>• Заботимся о здоровье наших сотрудников: ДМС<br/>• В компании предоставляется бронирование от призыва на военную службу как в случае мобилизации, так и в случае последующих призывов в военное время<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> l.davidenko@megapolis-it.ru<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.2K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/463"><time datetime="2025-03-20T09:10:07+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/465" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDY1LCJ0IjoxNzQzNzYwNTQzLCJoIjoiM2FlNDBmZDAxMDY5NGZkYzI2In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><b>.Net developer senior</b><br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> ООО  Pampadu<br/><b>ЗП:</b> от 250 000 до 300 000 р. на руки<br/><b>Занятость:</b> Полная<br/>                                                                                                  <br/>Pampadu —  активно развивающаяся компания в сфере страхования, финансов и партнерского маркетинга. Мы строим онлайн платформу и создаем продукты, которые каждый день, 24/7 позволяют новичкам, профессионалам своего дела и крупным компаниям зарабатывать с нашей помощью, оформляя и продавая сотни тысяч продуктов ежегодно.<br/><br/><b>Что  нужно будет делать:</b><br/>Участие в командной разработке от бизнес идеи до продакшена;<br/>Участие в SCRUM процессе: планирование задач, оценка времени, митинги;<br/>Декомпозиция задач<br/>Онбординг новых сотрудников<br/>Поддержка и рефакторинг существующей кодовой базы;<br/>Разрабатывать новые инструменты для партнеров: виджеты, white label и др.;<br/>Писать и использовать unit-test.<br/><br/><b>Требования:</b><br/>Наличие профильного высшего образования-обязательно&#33;<br/>Опыт в разработке веб приложений от 5 лет<br/>Умение работать с многопоточностью<br/>Интерес к  функциональному программированию (F#) <br/>Стремление к развитию, готовность брать сложные задачи<br/>Интерес к позиции Тeam lead<br/><br/><b>Наш стэк:</b><br/>Asp.Net core, C#/F#<br/>Базы данных: PostgreSql, Elasticsearch;<br/>Используем технологии: RabbitMQ, GRPC, Docker, Kubernetes, ELK, Grafana.<br/><br/><b>Какие условия работы?</b><br/>Работа аккредитованной IT  компании <br/>Удаленный формат работы или в офисе Москва-Сити<br/>Возможность работать из за границы <br/>Никакой бюрократии и долгих принятий решений;<br/>Вы будете услышаны, а идеи реализованы;<br/>Перфоманс ревью раз в год<br/>Различные варианты оформления ( ИП,СЗ, ТК)<br/>Сильная команда разработчиков<br/><br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/ikoretskaya" target="_blank">@ikoretskaya</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/465" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/465"><time datetime="2025-03-20T16:10:25+00:00" class="time">16:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/468" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDY4LCJ0IjoxNzQzNzYwNTQzLCJoIjoiM2VhNDI4NDgxMmZkNjI1OTlkIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>.NET-разработчик</b><br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> <a href="https://www.gnivc.ru/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">GNIVC</a><br/><b>ЗП:</b> от 200 000 до 230 000 р. на руки<br/><b>Занятость:</b> Полная<br/>                                                                                                  <b><i><br/></i></b>Партнер государственных компаний и лидеров российского бизнеса, разработчик и системный интегратор крупнейших государственных информационных систем, а также коммерческих решений для налогового мониторинга.<br/><br/><b>Обязанности: </b><br/>• Написание программного функционала под кроссплатформенную архитектуру .NET и .NET Core<br/>• Написание запросов, их оптимизация<br/>• Адаптация функционала под работу в БД PostgreSQL и БД Oracle<br/>• Оценка и реализация поставленных задач<br/>• Тестирование ПО: unit-тесты, интеграционные тесты<br/>• Документирование (описание структуры БД)<br/>• Сопровождение разработанного программного обеспечения<br/><br/><b>Требования:</b> <br/>• Опыт работы с промышленными базами данных (Oracle, PostgreSQL)<br/>• Опыт коммерческой разработки на C# (.NET, .NET Core)<br/>• Знание и опыт применения шаблонов проектирования<br/>• Оптимизация производительности приложения на всех уровнях – БД, серверные и клиентские компоненты<br/>• Рефакторинг имеющихся решений<br/>• Опыт разработки дружественного интерфейса пользователя<br/>• Знание и опыт работы с системами кэширования: in-memory, Redis<br/>• Знание TCP/IP<br/>• Опыт командной разработки с применением систем управления версиями (TFS, Git или аналог)<br/>• Опыт работы с Jira/Confluence<br/><br/><b>Будет плюсом:<br/></b>• Опыт работы с WinForms, WPF<br/>• Навыки проектирования БД<br/>• Базовое понимание архитектуры ОС ALT Linux и Windows<br/>• Опыт работы с React<br/><br/><b>Условия работы: </b><br/>• Работа в офисе, гибридный график либо дистанционный формат работы<br/>• 200 000 —‍ 230 000 ₽ в месяц на руки<br/>• Профессиональное обучение и сертификация за счёт компании<br/>• Оформление в соответствии с требованиями ТК РФ<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> info@gnivc.ru<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/468"><time datetime="2025-03-21T09:10:11+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/470" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDcwLCJ0IjoxNzQzNzYwNTQzLCJoIjoiZDJmZDE5YzY3ZmY1MTdlZjk3In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+<div class="tgme_widget_message_forwarded_from accent_color">Forwarded from&nbsp;<a class="tgme_widget_message_forwarded_from_name" href="https://t.me/easyoffer_ru/116"><span dir="auto">easyoffer</span></a></div>
+
+<div class="media_supported_cont"><a class="tgme_widget_message_photo_wrap 5399954934520214080 1257274983_456258112" href="https://t.me/easy_csharp_job/470" style="width:800px;background-image:url('https://cdn4.cdn-telegram.org/file/oCxAHjNVHaB44XyrWOqmkdQszP6saTl5yhpje6Vvp1VDlJAvfOEfej_wC6hGfNGPMTvrSPk9uqK4PpbXhwIVD8KK4i5oZphWtOMGCHJNaiOexSIYbR0mnLNSRcojg3CiNeLO-90pS92b9HTnhrF8ydwVLwzIESYU8iSwQxtrEB4poY8HQBkGwcG4J0-3kB9qwpZIutRrSM9rH5fAHRT299npxtWxvN88ybTGe5OiyuJhSfaQeQZc0kxp-xEmoEHIi7lkx07FRKFH8f2wJxjLUHU0mNbv_ojYFe5r3mj3hrXX1pDt-5aSoWgDgZ6g9sqiA88ANWAmo6q9LjUF1erc_A.jpg')">
+  <div class="tgme_widget_message_photo" style="padding-top:59.5%"></div>
+</a><div class="tgme_widget_message_text js-message_text" dir="auto">На easyoffer 2.0 появится:<br/><b>Тренажер &quot;Реальное собеседование&quot;</b><br/><br/><tg-emoji emoji-id="5393304190091014249"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9FA0.png')"><b>🟠</b></i></tg-emoji> Сценарии вопросов из реального собеседования<br/><tg-emoji emoji-id="5393304190091014249"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9FA0.png')"><b>🟠</b></i></tg-emoji>Возможность подготовиться к собеседованию в конкретную компанию<br/><tg-emoji emoji-id="5393304190091014249"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9FA0.png')"><b>🟠</b></i></tg-emoji>Итоговая статистика (прошёл/не прошёл)<br/><br/>Сценарий вопросов взят из реального собеседования. То есть вы тренируетесь на тех вопросах, которые действительно задавались в компании X.<br/><br/>Уже в начале следующей недели стартует краудфандинг кампания, чтобы ускорить разработку easyoffer 2.0. Все кто, поддержал проект на этом этапе смогу получить 1 год доступа к сайту по цене месячной подписки. Первые 150 донатеров получать особо-выгодную цену и бонус. Следите за стартом <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9189.png')"><b>👉</b></i> <a href="https://t.me/+b2fZN17A9OQ3ZmJi" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">в этом телеграм канале</a>, в нем информация о старте будет опубликована за 6 часов до официального начала.</div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/470" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">949</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/470"><time datetime="2025-03-21T12:44:14+00:00" class="time">12:44</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/471" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDcxLCJ0IjoxNzQzNzYwNTQzLCJoIjoiMmI3N2Q0MzJhZjdhNTBhMDk3In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>C# Developer (.Net)</b><br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> Mindbox<br/><b>ЗП:</b> от 207 000 до 345 000 р. <br/><b>Занятость:</b> Полная<br/>                                                                                                <b><br/></b><a href="https://mindbox.ru/?utm_source=yandex&amp;amp;utm_medium=cpc&amp;amp;utm_campaign=search%7Cbrand%7Cp%7Cbrand_ru%7C55956107&amp;amp;utm_content=2201373070964555775%7Cgid_4338802475%7Cad_9774704504%7Cph_22933191053%7Ccrt_0%7Cpst_premium%7Cps_1%7Csrct_search%7Csrc_none%7Cdevt_mobile%7Cret_22933191053%7Cgeo_65%7Ccf_0%7Cint_%7Ctgt_22933191053%7Cadd_no&amp;amp;utm_term=mindbox%7C%7C&amp;amp;yclid=2201373070964555775" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Mindbox</a> — крупнейшая в России облачная платформа автоматизации маркетинга, в пятерке B2B SaaS России. Помогаем компаниям — от ДоДо Пиццы и МВидео до ПИК и МИФ расти за счет эффективного маркетинга. Без спама.<br/><br/><b>Требования: </b><br/>• Опыт веб-разработки с помощью C# и SQL в production от 3 лет<br/>• Знание BCL / CLR<br/>• Знание принципов чистого кода и шаблонов архитектуры<br/><br/><b>Условия работы: </b><br/>• Можно работать полностью удаленно или из комфортных офисов в Москве / Ереване<br/>• Гибкий график, больничные без справок и безлимитный отпуск<br/>• ЗП: 207 000 —‍ 345 000 ₽ в месяц <br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> info@mindbox.ru<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/471"><time datetime="2025-03-21T16:10:13+00:00" class="time">16:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/473" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDczLCJ0IjoxNzQzNzYwNTQzLCJoIjoiNjk5MTQ0YTIzZjUwMGU5MTU1In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><b>Интервьюер по направлению .NET</b><br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> Dcloud<br/><b>ЗП:</b> до 2 000 р./час<br/><b>Занятость:</b> Частичная<br/>                                                                                                <br/><b>Dcloud </b>- это сообщество независимых разработчиков, основанное более 10 лет назад выходцами из ведущих компаний, таких как Epam, Luxoft, Accenture. Мы специализируемся на микросервисной архитектуре и современных разработческих практиках. В нашей команде создаются проекты с нуля, как в партнерстве с известными венчурными компаниями, так и внутри крупных корпораций.<br/>Наши приоритеты: технологичные, масштабные и долгосрочные проекты.<br/><br/><b>Сейчас мы ищем интервьюера по направлению .NET, который готов присоединиться к нашему пулу экспертов.</b><br/><br/><b>Что мы предлагаем:</b><br/>- Удаленный формат работы — можно работать из любой точки мира. <br/>- Гибкий график.<br/>- Возможность дополнительного заработка (1-2 собеседования в день по 1-1,5 часа).<br/>- Оплата —до 2000 рублей в час.<br/><br/><b>Что потребуется:</b><br/>- Опыт проведения собеседований;<br/>- Опыт работы от 3 лет;<br/>- Опыт работы с .NET Core 8.0;<br/>- EF Core;<br/>- Postgres;<br/>- Npsql;<br/>- Minio;<br/>- Redis;<br/>- Kafka;<br/>- gRPC;<br/>- OpenAPI;<br/>- Знание микросервисной архитектуры.<br/><br/>Это отличная возможность для дополнительного заработка если у вас плотный график. Проводить требуется только техническую часть интервью. Остальную информацию о компании, финансах и проектах кандидаты узнают на других этапах. Ваша задача – оценка софт и хард скиллов кандидата.<br/><br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/DC_Sanjar" target="_blank">@DC_Sanjar</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/473" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/473"><time datetime="2025-03-22T09:10:08+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/475" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDc1LCJ0IjoxNzQzNzYwNTQzLCJoIjoiZGVmMTY0YjNjODM3NzBkODRkIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><b>Middle/ Middle+&nbsp;С#/ Unity Developer</b><br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> Jazz Games<br/><b>ЗП:</b> обсуждается на собеседовании<br/><b>Занятость:</b> Полная<br/>                                                                                                <br/><b>Наши ожидания:</b><br/>– разработка игр с нуля;<br/>– выпуск игр в Steam (желательно);<br/>– разработка 2D игр;<br/>– создание игр с мультиплеером, работа с Unity Netcode, Photon, сокетами;<br/>– разработка PC игр;<br/>– знание Unity;<br/>– знание С#, ООП;<br/>– работа со ScriptableObject, Addressable, Timeline API, Particle System;<br/>– локализация проектов;<br/>– умение находить и использовать существующие решения и инструменты: готовые ассеты, встроенные инструменты Unity.<br/><br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/miraili" target="_blank">@miraili</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/475" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/475"><time datetime="2025-03-23T09:10:10+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/477" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDc3LCJ0IjoxNzQzNzYwNTQzLCJoIjoiZjc2ZTM4MjUwNmZhYzc3NTU2In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+<div class="tgme_widget_message_forwarded_from accent_color">Forwarded from&nbsp;<a class="tgme_widget_message_forwarded_from_name" href="https://t.me/easyoffer_ru/117"><span dir="auto">easyoffer</span></a></div>
+
+<div class="media_supported_cont"><a class="tgme_widget_message_photo_wrap 5404527966588891594 1258339725_456257994" href="https://t.me/easy_csharp_job/477" style="width:800px;background-image:url('https://cdn4.cdn-telegram.org/file/KpaiCqk9hShV_Dk7leLdXMKHVIX04kD28jRFyxE8PxNDAL98Rj8GrwZktRcMD60AZR3DtU7n1J8XYS7a42xlFeXlU0SoE2O2xXf6ymDiGkaTuAmFt6PUFa03pfSpd7qk-ZN2WnMFeFXq5ILjjJXMQazxjJXyDssxpvh1qeEyax6MNm_ktbw09XLc4ePn4dwh9GKx40Z7H5M_vsAEocRtMSRTf781JVPOyE_4XQcK78y9gY3gvFwxMw20U6yUaponxUF29vlzO_WEZSlEzZOTlcj7gAW1NpDhIzY3XyIU7P1Aq8Fa8-U8Cyo-y-ab12lHMVXmdYBIsjGSkVUh1Fiqdw.jpg')">
+  <div class="tgme_widget_message_photo" style="padding-top:59.75%"></div>
+</a><div class="tgme_widget_message_text js-message_text" dir="auto">На easyoffer 2.0 появится:<br/><b>База тестовых заданий</b><br/><br/><tg-emoji emoji-id="5393304190091014249"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9FA0.png')"><b>🟠</b></i></tg-emoji>Тестовые задания для разных грейдов<br/><tg-emoji emoji-id="5393304190091014249"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9FA0.png')"><b>🟠</b></i></tg-emoji>Фильтрация тестовых заданий по технологиям и компаниям<br/><br/>Когда я только начинал учиться на программиста, я постоянно выдумывал себе задачи для практики и тратил на это много времени. Но только в момент поиска работы я столкнулся с тестовыми заданиями, и понял насколько круто они прокачивают навыки. Нужно было еще на этапе обучения пробовать их делать. Все компании стараются составить тестовое задание &quot;под себя&quot;, это дает большой выбор в тематике задач и технологий. На easyoffer 2.0 вы сможете отфильтровать тестовые задания по навыкам/грейдам и найти те, что подходят лично вам для практики.<br/><br/>В течение 1-2 дней я объявлю о краудфандинг кампании, чтобы ускорить разработку easyoffer 2.0. Все кто, поддержал проект на этом этапе смогу получить 1 год доступа к сайту по цене месячной подписки и смогут попасть на закрытое бета-тестирование. А первые 150 донатеров получать особо-выгодную цену и бонус. <br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9A80.png')"><b>🚀</b></i> Следите за стартом <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9189.png')"><b>👉</b></i> <a href="https://t.me/+b2fZN17A9OQ3ZmJi" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">в этом телеграм канале</a>, в нем информация о старте будет опубликована за 6 часов до официального начала.</div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/477" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.0K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/477"><time datetime="2025-03-23T14:15:58+00:00" class="time">14:15</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/479" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDc5LCJ0IjoxNzQzNzYwNTQzLCJoIjoiZmM3YTgyNzI5OWIyNWVlZGVlIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+<div class="tgme_widget_message_forwarded_from accent_color">Forwarded from&nbsp;<a class="tgme_widget_message_forwarded_from_name" href="https://t.me/easyoffer_ru/118"><span dir="auto">easyoffer</span></a></div>
+
+<a class="tgme_widget_message_photo_wrap 5411101079027968280 1259870147_456255768" href="https://t.me/easy_csharp_job/479" style="width:800px;background-image:url('https://cdn4.cdn-telegram.org/file/NbraPdq9FuwZQiofhOFX0Mhu3VPvQsRSdCtzS0ZFhlxZXgR65rtMEVfWsGMhVTeN-AV2Oi2-pZoTceh24cZ3iza1prIn2-LUjFedFASv1Ei1QDAHoGUNnv92eJUBYN2v_lI-s_cGKQ43DhXQjtaVX-BLsJzuxFWjOqLMREJnkgP7RIlnEIuiREsCsTSLSley6VARmPrbcKjjilq_nHBT4_woCZB_dD_xH8y3dPbQt6r-cr8CTt-j4Z_DeZpJVmNsKzd7xP654pnBZ4kSKEpfY_OeELWK-o5gnJvh0zq7192UuLWTB9BlT5LoECoG0v6QjouiWYA62twalsHcZJgHPw.jpg')">
+  <div class="tgme_widget_message_photo" style="padding-top:66.375%"></div>
+</a>
+<div class="tgme_widget_message_text js-message_text" dir="auto"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F8E89.png')"><b>🎉</b></i> <b>Краудфандинг easyoffer 2.0 стартовал&#33;</b><br/><br/>Друзья, с этого момента вы можете поддержать проект и получить существенный бонус:<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9A80.png')"><b>🚀</b></i> PRO-тариф на 1 год, по цене месячной подписки на релизе.<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29E95.png')"><b>➕</b></i> Доступ к закрытому бета-тесту easyoffer 2.0 (середина–конец мая)<br/><br/>Поддержать проект можно здесь:<br/><a href="https://planeta.ru/campaigns/easyoffer" target="_blank" rel="noopener">https://planeta.ru/campaigns/easyoffer</a><br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F938C.png')"><b>📌</b></i> Если не получается оплатить через карту РФ — напишите мне <a href="https://t.me/kivaiko" target="_blank">@kivaiko</a>, и мы найдём удобный способ</div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">941</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/479"><time datetime="2025-03-25T10:53:13+00:00" class="time">10:53</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/481" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDgxLCJ0IjoxNzQzNzYwNTQzLCJoIjoiY2RjODFmZTViZjU2YzQ4MGMxIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+<div class="tgme_widget_message_forwarded_from accent_color">Forwarded from&nbsp;<a class="tgme_widget_message_forwarded_from_name" href="https://t.me/easyoffer_ru/119"><span dir="auto">easyoffer</span></a></div>
+
+<a class="tgme_widget_message_photo_wrap 5408883454269058612 1259353816_456257076" href="https://t.me/easy_csharp_job/481" style="width:800px;background-image:url('https://cdn4.cdn-telegram.org/file/B-8G6Tud-F2ChrqVkfVFxmShKd8IVWNXH8-2Ymup5K5bOUT6H8FrYw-Jcyy6XyKVoYAxfiM4_tq0hrm2Uo9cegwa038y5FWEtCsSjR9CwhJUWq1ABi0HEIOIg4GKc4yAU1B4_gU5fpYNd6yuZwgxXy1kzFbCndtHpnpLl97fQLNFhdS1a4oHVW0CWaItlFCH7rLXcPFrgLyZ0xLV6LHuR6SQgpDKT0bjn4851M_3IN7S7DsPBjh3N9eLlV0wVcjXPgd7jOIX2gCLgvLSCD3VWA1zIkDl8v4xz10lO-A7b6T6xM2zHW3Y8VPjKDfKqG-S6PpCsrZQCHVDNKQt1-Fy9A.jpg')">
+  <div class="tgme_widget_message_photo" style="padding-top:59.625%"></div>
+</a>
+<div class="tgme_widget_message_text js-message_text" dir="auto">Я поставил целью сбора скромные 300 тыс. рублей, но ребята, вы накидали больше млн. всего за 1 день. Это просто невероятно&#33;<br/><br/>Благодаря вашей поддержке, я смогу привлечь еще больше людей для разработки сайта и обработки собеседований. Ваш вклад сделает проект качественнее и ускорит его выход&#33; Огромное вам спасибо&#33;<br/><br/>Краудфандинг будет продолжаться еще 31 день и все кто поддержать проект сейчас, до его выхода, смогут получить:<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F9A80.png')"><b>🚀</b></i> PRO-тариф на 1 год, по цене месячной подписки на релизе.<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29E95.png')"><b>➕</b></i> Доступ к закрытому бета-тесту easyoffer 2.0 (середина–конец мая) <br/><br/>Поддержать проект можно здесь:<br/><a href="https://planeta.ru/campaigns/easyoffer" target="_blank" rel="noopener">https://planeta.ru/campaigns/easyoffer</a><br/><br/>Огромное спасибо за вашу поддержку&#33; <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09FA49D.png')"><b>🤝</b></i></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">845</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/481"><time datetime="2025-03-25T12:48:37+00:00" class="time">12:48</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/482" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDgyLCJ0IjoxNzQzNzYwNTQzLCJoIjoiNDhiYWZkMWQ4YjdkY2JlMDM1In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>C#-разработчик (middle)</b><br/><br/><b>Локация:</b> Удалённо <br/><b>Компания:</b> <a href="https://enaza.pro/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Enaza Group</a><br/><b>ЗП:</b> обсуждается на собеседовании<br/><b>Занятость:</b> Полная<br/>                                                                                               <i><br/></i>Группа компаний, специализирующихся на видеоиграх и музыкальном контенте.<br/><br/><b>Обязанности: </b><br/>• Разрабатывать и поддерживать платформу сервиса GamersBase<br/>• Оптимизировать существующий функционал<br/>• Принимать участие в проектировании БД и архитектуры компонентов системы<br/>• Разрабатывать сервисы под Windows и Linux<br/>• Реализовывать API для мобильных приложений, веб-сайта<br/>• Интеграция со сторонними сервисами (платёжные системы, партнёрские API и т.п.)<br/>• Ведение документации в Confluence<br/><br/><b>Требования: </b><br/>• Опыт работы в коммерческих проектах от 2-х лет<br/>• Работа в команде, соблюдение стандартов разработки как общепринятых (SOLID, DRY, KISS), так и внутрикомандных договоренностей<br/>• Знание и применение паттернов проектирования, использование ООП.<br/>• Опыт работы с ASP NET (Core) MVC<br/>• Уверенные знания языка C# - многопоточность / асинхронность<br/>• Знание языка SQL, умение написания запросов, опыт в оптимизации запросов и работы с СУБД<br/>• Опыт работы с системами контроля версий<br/>• Умение оценивать сложность и объем задач, сроки исполнения<br/>• Умение разбираться в чужом коде<br/>• Знание английского языка на уровне чтения технической документации приветствуется<br/><br/><b>Условия работы: </b><br/>• Официальное трудоустройство или сотрудничество в другом удобном формате: ИП, ГПХ, самозанятость<br/>• Возможность удаленной работы или в новом и уютном офисе в г. Пермь<br/>• График работы с 10:00 до 19:00 по ПРМ (или любой другой гибкий - по согласованию)<br/>• ДМС (после истечения исп.срока)<br/>• Изучение английского языка с профессиональным преподавателем с первого дня работы<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> e@enaza.pro<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/482"><time datetime="2025-03-25T16:10:11+00:00" class="time">16:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/484" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDg0LCJ0IjoxNzQzNzYwNTQzLCJoIjoiZGZjOGJkYzVjMjVlNWU5ZTU1In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><b>Разработчик .NET (Senior)<br/></b><br/><b>Локация:</b> Удаленно в РФ, РБ<br/><b>Компания:</b> Новэлект (аутстафф)<br/><b>ЗП:</b> от 350 000 до 410 000 р. <br/><b>Занятость:</b> Полная<br/><br/>Аккредитация: есть<br/>При желании предоставляем технику и ДМС<br/>Устройство: ГПХ, ИП/СЗ<br/>БКС<br/><br/><b>Требования к специалисту:</b><br/>Senior Critical Skills:<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Использует в работе принципы ООП / SOLID / KISS<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Уверенно разбирается в CLR, .Net Core, C#<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Уверенно разбирается в ORM (EF Core)<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Имеет опыт работы с многопоточностью и асинхронностью<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Умеет применять шаблоны проектирования<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт написания тестов (минимум unit-тесты)<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Понимает жизненный цикл .Net Core приложения<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Уверенно использует Git (merge / rebase)<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт работы с аутентификацией / авторизацией<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт работы с очередями (RabbitMQ / Kafka)<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт работы с интеграционными шинами<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт проектирования и разработки Rest, Swagger<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт проектирования архитектуры приложений<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Понимает принципы работы реляционной БД<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Знает без ограничений T-SQL (DDL, DML, хранимые процедуры, функции)<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Есть опыт работы с NO-SQL базами данных<br/>Senior Other Skills:<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Умеет публиковать сервисы/приложения на IIS<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Имеет представление о docker, может разместить и запустить сервис/приложение в докере<br/><br/><b>Требования проекта</b>:<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Опыт и уверенные знания .NET, C#, Entity Framework, Web API<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Опыт и уверенные знания Angular 2%20, HTML %20 CSS<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Опыт работы с MS SQL<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Опыт работы с Git, понимание Git flow<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C85.png')"><b>✅</b></i>Опыт работы с RabbitMQ<br/><br/><b>Должностные обязанности</b>:<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Участие в планировании/обсуждении задач, с аналитиками / разработчиками / заказчиками<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Оценка и декомпозиция задач<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Проектирование архитектуры<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Проектирование / Разработка backend части .net<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Проектирование / Разработка frontend части Angular %20 Html %20 CSS<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Участие в разработке баз данных MS SQL<br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/E29C94.png')"><b>✔️</b></i>Code review задач<br/>​​​​​​​​​​​<br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/JulyAsap" target="_blank">@JulyAsap</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/484" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/484"><time datetime="2025-03-26T16:10:08+00:00" class="time">16:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/486" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDg2LCJ0IjoxNzQzNzYwNTQzLCJoIjoiOTFjMTQ1NDM2NWJlNzcwOWIzIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>Backend developer/Разработчик C#<br/></b><br/><b>Локация:</b> Удаленно<br/><b>Компания:</b> УЦ Основание<br/><b>ЗП:</b> от 150 000 р.<br/><b>Занятость:</b> Полная<b><br/><br/></b><a href="https://uc-osnovanie.ru/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">УЦ «Основание»</a> создает электронные подписи, обеспечивая доступ к современным цифровым информационным системам каждому гражданину России.<br/><br/><b>Требования:</b><br/>• Опыт работы от 2х лет<br/>• Опыт разработки на .NET Core 6<br/>• Опыт работы с REST<br/>• Опыт работы с rabbit<br/>• Опыт работы с MS SQL/PostgreSQL, умение писать и оптимизировать сложные запросы<br/>• Умение работать с репозиториями GIT, GitLab<br/>• Понимание принципов ООП и умение применять их на практике<br/>• Знание и понимание принципов SOLID<br/>• Понимание принципов построения архитектуры современных приложений<br/><br/><b>Условия работы: </b><br/>• Оформление по ТК РФ<br/>• Возможность выбора формата работы: удаленный, комбинированный или в офисе<br/>• Возможность работать над «живыми», актуальными задачами<br/>• ЗП: от 150 000 ₽ <br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> info@uc-osnovanie.ru<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.4K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/486"><time datetime="2025-03-27T09:10:07+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/488" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDg4LCJ0IjoxNzQzNzYwNTQzLCJoIjoiYzYxODhiZTMwNjY5ODAzNTRjIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>Senior C# разработчик<br/></b><br/><b>Локация:</b> Удаленно<br/><b>Компания:</b> <a href="https://deeplay.io/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">deeplay</a><br/><b>ЗП:</b> обсуждается на собеседовании<br/><b>Занятость:</b> Полная<b><br/><i><br/></i></b>Мы создаём системы и решения в сфере интеллектуальных игр.<br/><br/><b>Обязанности: </b><br/>• Интеграция взаимодействия нашего фреймворка со сторонними сервисами<br/>• Разработка и развитием модулей с новым функционалом и их поддержкой<br/>• Рефакторинг существующего кода<br/>• Активно участвовать в процессе code review<br/>• Развиваться и расти, реализуя крутые проекты<br/>• Выявлять узкие места в текущей архитектуре и вносить улучшения<br/><br/><b>Требования: </b><br/>• Уверенные знания платформы .NET и языка C#<br/>• Умение применять шаблоны проектирования и ООП<br/>• Понимание принципов HTTPS, REST API, gRPC<br/>• Навыки работы с сетью (сокеты, TCP, UDP, HTTP)<br/>• Опыт работы с разными протоколам сериализации (Protobuf, JSON, avro, message pack и прочее)<br/>• Опыт работы с Dependency Injection и другими шаблонами проектирования для гибкой архитектуры программного обеспечения<br/>• Умение разбираться в чужом коде<br/><br/><b>Будет плюсом: </b><br/>• Опытом работы с ASP.Net Core<br/>• Опытом работы в распределенной команде<br/>• Базовыми знаниями Docker и Kubernetes<br/><br/><b>Условия работы: <br/></b>• Удаленный формат работы или в одном из офисов в Омске, Новосибирске и Санкт-Петербурге<br/>• Официальное трудоустройство, оплата отпуска и больничного по ТК РФ<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> hr@deeplay.io<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">1.3K</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/488"><time datetime="2025-03-29T09:10:13+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/490" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDkwLCJ0IjoxNzQzNzYwNTQzLCJoIjoiMzBhZTM2MjA3NDQ3MTNhYmZiIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><a href="http://ASP.NET/" target="_blank" rel="noopener"><b>ASP.NET</b></a><b> разработчик (Middle+/ Senior)<br/></b><br/><b>Локация:</b> Удаленно в РФ<br/><b>Компания:</b> Eva<br/><b>ЗП:</b> от 280 000 до 350 000 р.<br/><b>Занятость:</b> Полная<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><b>О компании и команде</b>:<br/>IT-компания, которая разрабатывает современные программные продукты без устаревших технологий и лишней бюрократии. Мы создаем эффективные и масштабируемые решения, фокусируясь на реальных потребностях бизнеса.<br/>Команда: 17 человек<br/><br/>Сейчас мы разрабатываем ERP-систему Eva для ресторанов доставки, которая поможет автоматизировать все процессы — от приема заказов до управления складом и аналитики. Это мощная платформа, которая дает бизнесу инструменты для роста и оптимизации работы.<br/><br/><b>Что отличает нас от других?</b><br/>Реальные задачи, которые важны — твой код влияет на продукт и его пользователей.<br/>Свобода в выборе решений — мы доверяем команде и даем возможность предлагать лучшие подходы.<br/>Современный стек — .NET 8, микросервисы, Kubernetes, CI/CD, облака.<br/>Сильная команда — разработчики, которые ценят чистый код, архитектуру и готовы делиться опытом.<br/>Гибкость и комфорт — удаленная работа, минимум бюрократии, четкие процессы.<br/>Если тебе важно не просто писать код, а создавать технологичные решения, давай работать вместе.<br/><br/><b>Чем предстоит заниматься</b>:<br/>Разрабатывать ERP-систему<br/>Проектировать и реализовывать микросервисную архитектуру<br/>Работать с актуальным стеком: .NET 8, Angular 2+, PostgreSQL, Kubernetes, CI/CD<br/>Разворачивать сервисы в Docker/Linux<br/>Оптимизировать работу базы данных и взаимодействие с брокерами сообщений<br/>Работать в команде без бюрократии, но с четкими задачами<br/><br/><b>Ожидания от кандидата</b>:<br/>Мы ищем опытного .NET разработчика уровня Middle+ или Senior, который любит чистый код, продуманную архитектуру и современные технологии.<br/><br/><b>Технические навыки (Hard Skills):</b><br/>Опыт коммерческой разработки на .NET Core / .NET 5/6/7/8 от 3 лет<br/>Глубокие знания ООП, SOLID и их применение на практике<br/>Опыт работы с RESTful API и микросервисной архитектурой<br/>Работа с PostgreSQL: написание и оптимизация запросов<br/>Опыт работы с RabbitMQ<br/>Уверенное знание Docker и Linux<br/>Будет плюсом: Kubernetes, CI/CD, Google Cloud, Yandex Cloud<br/><br/><b>Софт-скиллы (Soft Skills):</b><br/>Самостоятельность и ответственность за результат<br/>Способность разбираться в новой предметной области<br/>Желание работать в команде и делиться опытом<br/>Аналитический склад ума – понимание, зачем и какие проблемы решает код<br/><br/><b>Условия работы</b>:<br/>- Полностью удаленная работа (только РФ)<br/>- Гибкий график, но с четкими сроками и синхронизацией с командой<br/>- Зарплата 280 000 – 350 000 ₽, обсуждается индивидуально<br/>- Минимум бюрократии – четкие процессы, понятные задачи, комфортная атмосфера<br/>- Современный стек и возможность влиять на продукт<br/>- Командная поддержка, совместные обсуждения, простая и понятная коммуникация<br/><br/><b>Дополнительные инструкции</b>:<br/>Мы ценим время кандидатов, поэтому процесс отбора максимально прозрачный:<br/><br/>Первый этап – короткий диалог в Telegram или звонок, чтобы понять, насколько мы подходим друг другу.<br/><br/>Техническое интервью – обсуждаем опыт, проекты, подход к разработке и решаем небольшие задачи.<br/>Финальное интервью – разговор с руководителем разработки о задачах, процессе работы и перспективах.<br/><br/>Тестового задания нет – нам важно живое обсуждение и понимание твоего опыта.<br/><br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/onaxn" target="_blank">@onaxn</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/490" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">810</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/490"><time datetime="2025-04-01T09:10:07+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/492" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDkyLCJ0IjoxNzQzNzYwNTQzLCJoIjoiMGQ3MDEyNjNkM2ExODYyMjE5In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>C# Developer<br/></b><br/><b>Локация:</b> Удаленно <br/><b>Компания:</b> Медиалогия<br/><b>ЗП:</b> обсуждается на собеседовании<br/><b>Занятость:</b> Полная<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><a href="http://www.mlg.ru/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Медиалогия</a> Мы разрабатываем высоконагруженные системы, которые в режиме реального времени обрабатывают весь текстовый сегмент Интернета (100+ млн. сообщений в сутки, 1+ млрд. метрик) и, используя собственные технологии лингвистического анализа текста, позволяют осуществлять мгновенный анализ упоминаний наших клиентов в соц.сетях, блогах, форумах и управлять их репутацией.<i><br/></i><br/><b>Обязанности</b>:<br/>• Разработка на .NET6/netcore и немного FullFramework, развитие и поддержка систем обработки данных соц.сетей;<br/>• Внедрение нового функционала для аналитических сервисов, оперирующих внушительным количеством записей;<br/><br/><b>Требования:</b><br/>• Знание платформы Microsoft .NET, языка С#, принципов написания чистого эффективного кода;<br/>• Знание <a href="http://ASP.NET/" target="_blank" rel="noopener">ASP.NET</a> MVC(если был WCF, то будет плюсом), опыт работы с базой данных MS SQL Server/PostgreSQL (опыт перехода на PG-шник приветствуется);<br/>• Желателен опыт разработки высоконагруженных приложений, понимание принципов работы брокеров сообщений (у нас - RabbitMQ, Kafka), способов взаимодействия компонентов в распределенных системах, устройства λ-архитектуры;<br/>И будет плюсом:<br/>• ElasticSearch, опыт работы с NoSQL (HBase/Cassandra/Redis/Mongo);<br/>• Опыт диагностики ошибок на большом количестве уровней (от браузера до БД);<br/>• Опыт работы с kubernetes, docker, ci&#092;cd;<br/>• Понимание принципов построения бизнес-приложений и паттернов проектирования (mvc, gof);<br/><br/><b>Условия работы:</b><br/>• Белую ЗП, официальное оформление по ТК РФ;<br/>• ДМС с хорошим выбором клиник и международной страховкой после прохождения испытательного срока;<br/>• Гибкое начало рабочего дня и отсутствие дресс-кода;<br/>• Полная удаленка, но офис тоже есть(с массажистом, кикером, турником и PlayStation), при желании можно приезжать:) мы располагаемся на м. Дмитровская, БЦ &quot;Савеловский Сити&quot;;<br/>• Комфортное рабочее место с 2 мониторами, современное оборудование и лицензионное ПО + возможность «прокачать» рабочее место на свое усмотрение;<br/>• Дружелюбную атмосферу и корпоративные мероприятия.<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> dpugovkina@mlg.ru<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">837</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/492"><time datetime="2025-04-01T16:10:12+00:00" class="time">16:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/494" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDk0LCJ0IjoxNzQzNzYwNTQzLCJoIjoiOWJlY2U0YWVmOTlmNDM5MmY0In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><b>С# разработчик<br/></b><br/><b>Локация:</b> Удаленно в РФ (часовой пояс МСК +/- 1ч)<br/><b>Компания:</b> ООО &quot;Инфотехинтеграция&quot;<br/><b>ЗП:</b> от 160 000 до 200 000 р. на руки <br/><b>Занятость:</b> Полная<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Ищу С# разработчика уровня pre-middle/ middle (от 2 лет коммерческого опыта).<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F8C90.png')"><b>🌐</b></i> Сайт: <a href="https://it-integration.tech/" target="_blank" rel="noopener">https://it-integration.tech/</a><br/><br/>Инфотехинтеграция занимается разработкой продукта для биржевой деятельности, торговли по лицензии ЦБ. Проекту 3 года. 2 года в продуктиве (приносит прибыль).<br/><br/><b>Стек:</b> C#, ASP. Net Core 8.0, SQL, Docker<br/><br/><b>Задачи: </b><br/>- разработка торговой системы;<br/>- оценка технических требований и внесение предложений по улучшению продукта;<br/>- исследование новых технологий и подходов в разработке.<br/><br/><b>Требования:</b><br/>- Уверенные знания базы C# (потоки, асинхронность&#092;параллелизм, сборщик мусора, база ООП)<br/>- Средние знания SQL (функции,хранимки,селекты,джоины)<br/>- Общие знания Docker (для чего нужен, набор базовых команд)<br/><br/><b>Условия:</b><br/>- официальное трудоустройство по ТК РФ в штат компании<br/>- достойный уровень заработной платы <br/>- удаленный формат работы <br/>- ДМС после испытательного срока<br/><br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/ZukhraSosnova" target="_blank">@ZukhraSosnova</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/494" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">829</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/494"><time datetime="2025-04-02T09:10:10+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/496" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDk2LCJ0IjoxNzQzNzYwNTQzLCJoIjoiNzQ2ZGQ3MmRkNzY4MTU2Y2VkIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="media_supported_cont"><div class="tgme_widget_message_text js-message_text" dir="auto"><b>Senior .Net Developer <br/></b><br/><b>Локация:</b> Удаленно в РФ (гражданство РФ)<br/><b>Компания:</b> Лайв Тайпинг<br/><b>ЗП:</b> от 250 000 до 300 000 р. <br/><b>Занятость:</b> Полная<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Привет&#33; <br/>Мы – компания Лайв Тайпинг. Уже более 14 лет создаём мобильные приложения и веб-сервисы для наших клиентов. Мы сотрудничали с такими известными брендами, как Sephora, ИЛЬ ДЭ БОТЭ, PepsiCo, Samsung, Mastercard.  <br/>  <br/>Входим в топ-20 лучших мобильных разработчиков России. <br/>Ищем разработчика, который захочет сотрудничать с нами по аутстаф-модели.   <br/>Вариант оформления: самозанятость / ИП <br/><br/><b>Что мы ожидаем от тебя: </b><br/>· опыт коммерческой разработки .Net, .Net Core от 5 лет<br/>· опыт написания / оптимизации запросов MS SQL или PostgreSQL <br/>· опыт коммерческой разработки с контейнеризаторами и брокерами <br/>· практические навыки работы с системой контроля версий <br/>· навыки написания юнит-тестов <br/>· внимательность к деталям, организованность, ответственность<br/><br/><b>Преимущества работы с нами:</b><br/>· гибкий график и работа на удалёнке<br/>· возможность совмещать с другими проектами <br/>· возможность взять следующий проект, если нам понравится сотрудничать друг с другом<br/><br/><tg-emoji emoji-id="5285350148451344065"><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F92AC.png')"><b>💬</b></i></tg-emoji> <b>Резюме отправлять:</b> <a href="https://t.me/anastasiaganyaeva" target="_blank">@anastasiaganyaeva</a><br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div></div><div class="media_not_supported_cont"><div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/496" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div></div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">758</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/496"><time datetime="2025-04-03T09:10:42+00:00" class="time">09:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/497" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDk3LCJ0IjoxNzQzNzYwNTQzLCJoIjoiZTk4YWJhZDRiZTM1OTMwYTU0In0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+
+<div class="tgme_widget_message_text js-message_text" dir="auto"><b>C# Developer<br/></b><br/><b>Локация:</b> Удаленно <br/><b>Компания:</b> Sportmaster Lab<br/><b>ЗП:</b> обсуждается на собеседовании<br/><b>Занятость:</b> Полная<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><a href="https://xn----8sbd2bd3a.xn--p1ai/" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Sportmaster Lab</a> — ИТ-компания в составе группы компаний Спортмастер. Они развивают флагманские продукты — продающие сайты и мобильные приложения, разрабатывают внутренние продукты для сотрудников — платформы, сервисы, back-office системы и другое. Спортмастер входит в ТОП-4 ведущих розничных спортивных компаний Европы (SGI Europe 2019).<br/><br/><b>Обязанности:</b><br/>• Разработка desktop и сервисов<br/>• Обновление технологий и библиотек<br/>• Участие в разработке и принятии архитектурных решений<br/>• Мониторинг и оптимизация производительности<br/>• Проведение код-ревью<br/><br/><b>Требования:</b><br/>• Опыт разработки на C# от 4 лет<br/>• Опыт работы с реляционной базой данных<br/>• Опыт командной разработки<br/>• Навык чтения и написания документации<br/>• Вовлечённость в процесс создания продукта<br/>• Желание развиваться и делиться знаниями<br/><br/><b>Будет плюсом: </b><br/>• Участие в разработке больших систем<br/>• Работа с устройствами на уровне драйверов (C#)<br/>• Опыт работы с Oracle/Go/Java<br/>• Опыт проведения код-ревью<br/>• Хорошее владение Jira, Confluence, Crucible, Gitlab<br/><br/><b>Условия работы:</b><br/>• Формат работы на выбор: офис/гибрид/удаленка<br/>• Гибкий график (с 8 до 17, с 9 до 18 или с 10 до 19)<br/>• Участие в проекте кафетерия льгот (ДМС, спорт, мобильная связь, обучение)<br/>• Внутреннее и внешнее обучение, конференции<br/><br/><i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F93A9.png')"><b>📩</b></i> <b>Резюме отправлять:</b> it-hr@sportmasterlab.net<br/><br/>–––<br/>Бесплатный постинг вакансий: <a href="https://t.me/freeIT_job" target="_blank">@freeIT_job</a><br/>Забирай <i class="emoji" style="background-image:url('//telegram.org/img/emoji/40/F09F939A.png')"><b>📚</b></i> <a href="https://t.me/easy_csharp_job/116" target="_blank" rel="noopener" onclick="return confirm('Open this link?\n\n'+this.href);">Базу Знаний</a></div>
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">669</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/497"><time datetime="2025-04-03T16:10:09+00:00" class="time">16:10</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div><div class="tgme_widget_message_wrap js-widget_message_wrap"><div class="tgme_widget_message text_not_supported_wrap js-widget_message" data-post="easy_csharp_job/498" data-view="eyJjIjotMTg5MDcyNjU5MiwicCI6NDk4LCJ0IjoxNzQzNzYwNTQzLCJoIjoiOGY3YzZlZGUyOTMyYmNhN2YyIn0">
+  <div class="tgme_widget_message_user"><a href="https://t.me/easy_csharp_job"><i class="tgme_widget_message_user_photo bgcolor6" data-content="C"><img src="https://cdn4.cdn-telegram.org/file/MXrJCaOaoUuaLodajFJDFW325VsMALcenRe3c7QAao8qXlWy32t8fC7MyW1oGI6ugomzpAHrOeteMuedLzvUmr0LZHgl3B9Htma6FDXdMqRwIphN3UQqrsevRxnBV9_4N9NXH4qAVZjMgPd0WVFllAc4MsDXGOKaWiM7oXsOOao1sgHfG3TSWFmlLUO11lWuNNlvvVM3Di3wyCi8YQPVip9wqmDfQTAglgEH5QHEsH1DpNqYLccw56---L4SkDm8K3BM1gpNXpnPrEjSAB6yYgWkMYg764eZEUlcCzSyA0NaHbHvOQkWScvT07IToKA0vU6K7_2hi4i7im_T1beuwA.jpg"></i></a></div>
+  <div class="tgme_widget_message_bubble">
+    
+        <i class="tgme_widget_message_bubble_tail">
+      <svg class="bubble_icon" width="9px" height="20px" viewBox="0 0 9 20">
+        <g fill="none">
+          <path class="background" fill="#ffffff" d="M8,1 L9,1 L9,20 L8,20 L8,18 C7.807,15.161 7.124,12.233 5.950,9.218 C5.046,6.893 3.504,4.733 1.325,2.738 L1.325,2.738 C0.917,2.365 0.89,1.732 1.263,1.325 C1.452,1.118 1.72,1 2,1 L8,1 Z"></path>
+          <path class="border_1x" fill="#d7e3ec" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0 L9,0 L9,20 L7,20 L7,20 L7.002,18.068 C6.816,15.333 6.156,12.504 5.018,9.58 C4.172,7.406 2.72,5.371 0.649,3.475 C-0.165,2.729 -0.221,1.464 0.525,0.649 C0.904,0.236 1.439,0 2,0 Z"></path>
+          <path class="border_2x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.5 L9,0.5 L9,20 L7.5,20 L7.5,20 L7.501,18.034 C7.312,15.247 6.64,12.369 5.484,9.399 C4.609,7.15 3.112,5.052 0.987,3.106 C0.376,2.547 0.334,1.598 0.894,0.987 C1.178,0.677 1.579,0.5 2,0.5 Z"></path>
+          <path class="border_3x" d="M9,1 L2,1 C1.72,1 1.452,1.118 1.263,1.325 C0.89,1.732 0.917,2.365 1.325,2.738 C3.504,4.733 5.046,6.893 5.95,9.218 C7.124,12.233 7.807,15.161 8,18 L8,20 L9,20 L9,1 Z M2,0.667 L9,0.667 L9,20 L7.667,20 L7.667,20 L7.668,18.023 C7.477,15.218 6.802,12.324 5.64,9.338 C4.755,7.064 3.243,4.946 1.1,2.983 C0.557,2.486 0.52,1.643 1.017,1.1 C1.269,0.824 1.626,0.667 2,0.667 Z"></path>
+        </g>
+      </svg>
+    </i>
+    <div class="tgme_widget_message_author accent_color"><a class="tgme_widget_message_owner_name" href="https://t.me/easy_csharp_job"><span dir="auto">C# | Удалёнка</span></a></div>
+
+
+<div class="message_media_not_supported_wrap">
+  <div class="message_media_not_supported">
+    <div class="message_media_not_supported_label">Please open Telegram to view this post</div>
+    <a href="https://t.me/easy_csharp_job/498" class="message_media_view_in_telegram">VIEW IN TELEGRAM</a>
+  </div>
+</div>
+
+
+<div class="tgme_widget_message_footer compact js-message_footer">
+  
+  <div class="tgme_widget_message_info short js-message_info">
+    <span class="tgme_widget_message_views">608</span><span class="copyonly"> views</span><span class="tgme_widget_message_meta"><a class="tgme_widget_message_date" href="https://t.me/easy_csharp_job/498"><time datetime="2025-04-03T19:06:10+00:00" class="time">19:06</time></a></span>
+  </div>
+</div>
+  </div>
+  
+</div></div>
+    </section>
+  </div>
+</main>
+    <script src="//telegram.org/js/jquery.min.js"></script>
+    <script src="//telegram.org/js/jquery-ui.min.js"></script>
+    <script src="//telegram.org/js/tgwallpaper.min.js?3"></script>
+<script src="//telegram.org/js/tgsticker.js?31"></script>
+
+    <script src="//telegram.org/js/widget-frame.js?63"></script>
+    <script src="//telegram.org/js/telegram-web.js?14"></script>
+    <script>TWeb.init();
+</script>
+    
+  </body>
+</html>
+<!-- page generated in 509.68ms -->
